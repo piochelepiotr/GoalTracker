@@ -1,6 +1,7 @@
 # motivation_app
 
-A new Flutter project.
+An app designed to keep up motivation and help people achieve their goals
+
 
 ## Getting Started
 
