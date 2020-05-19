@@ -1,6 +1,6 @@
 # motivation_app
 
-An app designed to keep up motivation and help people achieve their goals
+An app designed to keep up motivation and help people achieve their goals.
 
 
 ## Getting Started
