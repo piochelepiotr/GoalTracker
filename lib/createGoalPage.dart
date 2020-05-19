@@ -8,12 +8,22 @@ class CreateGoalPage extends StatelessWidget {
         title: Text('Create goal'),
       ),
       body: Center(
-        child: RaisedButton(
-          child: Text('Save'),
+          child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: TextField(
+                  decoration: InputDecoration(
+                      hintText: 'Goal name',
+                  ),
+              ),
+          ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             Navigator.pop(context);
+
           },
-        ),
+          label: Text('Save'),
+          backgroundColor: Colors.pink,
       ),
     );
   }
