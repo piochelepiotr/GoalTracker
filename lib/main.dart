@@ -51,7 +51,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int counter = 0;
-  List<String> goals = new List(0);
+  List<String> goals = new List<String>();
 
   void _incrementCounter() {
     setState(() {
@@ -73,6 +73,14 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+    List<Widget> goalsWidgets = new List<Widget>();
+    for(String goal in goals) {
+      goalsWidgets.add(
+        Text(
+          goal,
+        )   
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -98,18 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            Text(
-                'added a button',
-            ),
-          ],
+          children: goalsWidgets,
         ),
       ),
       floatingActionButton: FloatingActionButton(
