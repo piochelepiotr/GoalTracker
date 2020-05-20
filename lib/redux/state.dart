@@ -1,5 +1,7 @@
+import '../model/goal.dart';
+
 class AppState {
-  List<String> goals = List<String>();
+  List<Goal> goals = List<Goal>();
 
   AppState({this.goals});
 

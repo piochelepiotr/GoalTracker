@@ -1,4 +1,4 @@
 class AddGoal {
-  final String goal;
-  AddGoal(this.goal);
+  final String goalName;
+  AddGoal(this.goalName);
 }

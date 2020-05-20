@@ -1,5 +1,6 @@
 import 'actions.dart';
 import 'state.dart';
+import '../model/goal.dart';
 
 AppState reducer(AppState state, dynamic action) {
   if (action is AddGoal) {
@@ -9,7 +10,8 @@ AppState reducer(AppState state, dynamic action) {
 }
 
 AppState addGoal(AppState state, AddGoal action) {
+  Goal goal = Goal(name:action.goalName);
   return AppState(
-      goals: List.from(state.goals)..add(action.goal),
+      goals: List.from(state.goals)..add(goal),
   );
 }

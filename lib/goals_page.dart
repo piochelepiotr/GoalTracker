@@ -3,6 +3,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 
 import 'create_goal_page.dart';
 import 'redux/state.dart';
+import 'model/goal.dart';
 
 class GoalsPage extends StatelessWidget {
   @override
@@ -11,7 +12,7 @@ class GoalsPage extends StatelessWidget {
         appBar: AppBar(
             title: Text('My Goals'),
         ),
-        body: new StoreConnector<AppState, List<String>>(
+        body: new StoreConnector<AppState, List<Goal>>(
             converter: (store) => store.state.goals,
             builder: (context, goals) {
               return new ListView.builder(
@@ -20,7 +21,7 @@ class GoalsPage extends StatelessWidget {
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
                         height: 50,
-                        child: Center(child: Text('${goals[index]}')),
+                        child: Center(child: Text('${goals[index].name}')),
                     );
                   }
               );

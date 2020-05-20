@@ -5,14 +5,15 @@ import 'package:redux/redux.dart';
 import 'goals_page.dart';
 import 'redux/reducer.dart';
 import 'redux/state.dart';
+import 'model/goal.dart';
 
 void main() {
-  List<String> goals = List<String>();
-  goals.add("Eat icecream");
-  goals.add("Weight 200 pounds");
-  goals.add("Fly");
-  goals.add("Have a lion as a pet");
-  goals.add("Run for 10 feet without shoes");
+  List<Goal> goals = List<Goal>();
+  goals.add(Goal(name:"Eat icecream"));
+  goals.add(Goal(name:"Weight 200 pounds"));
+  goals.add(Goal(name:"Fly"));
+  goals.add(Goal(name:"Have a lion as a pet"));
+  goals.add(Goal(name:"Run for 10 feet without shoes"));
   final store = new Store<AppState>(reducer, initialState: AppState(goals: goals));
   runApp(FlutterReduxApp(
     title: 'My Goals',
