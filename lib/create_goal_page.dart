@@ -6,6 +6,18 @@ import 'redux/state.dart';
 import 'storage/database.dart';
 import 'model/goal.dart';
 
+typedef bool _Check();
+
+class _ButtonActions {
+  VoidCallback addGoal;
+  _Check isDuplicate;
+  _ButtonActions({this.addGoal, this.isDuplicate});
+}
+
+bool isDuplicate(List<Goal> goals, String goalName) {
+  return goals.any((goal) => goal.name == goalName);
+}
+
 class _CreateGoalPageState extends State<CreateGoalPage> {
   final TextEditingController _textController = new TextEditingController();
 
@@ -26,18 +38,39 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
               ),
           ),
       ),
-      floatingActionButton: new StoreConnector<AppState, VoidCallback>(
+      floatingActionButton: new StoreConnector<AppState, _ButtonActions>(
           converter: (store) {
-            return () => {
-              store.dispatch(AddGoal(_textController.text))
-            };
+            return _ButtonActions(
+                addGoal: () => { store.dispatch(AddGoal(_textController.text)) },
+                isDuplicate: () => isDuplicate(store.state.goals, _textController.text)
+            );
           },
-          builder: (context, callback) {
+          builder: (context, buttonActions) {
             return FloatingActionButton.extended(
                 onPressed: () {
-                  DBProvider.db.newGoal(Goal(name:_textController.text));
-                  callback();
-                  Navigator.pop(context);
+                  if (buttonActions.isDuplicate()) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                              title: Text("Error"),
+                              content: Text("You already have a goal with this name"),
+                              actions: [
+                                FlatButton(
+                                    child: Text("OK"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    }
+                                ),
+                              ],
+                          );
+                        }
+                    );
+                  } else {
+                    DBProvider.db.newGoal(Goal(name:_textController.text));
+                    buttonActions.addGoal();
+                    Navigator.pop(context);
+                  }
                 },
                 label: Text('Save'),
                 backgroundColor: Colors.pink,

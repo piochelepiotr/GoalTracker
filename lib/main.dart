@@ -7,7 +7,6 @@ import 'goals_page.dart';
 import 'redux/reducer.dart';
 import 'redux/state.dart';
 import 'model/goal.dart';
-import 'storage/database.dart';
 import 'redux/thunk.dart';
 
 void main() async {
