@@ -3,6 +3,8 @@ import 'package:flutter_redux/flutter_redux.dart';
 
 import 'redux/actions.dart';
 import 'redux/state.dart';
+import 'storage/database.dart';
+import 'model/goal.dart';
 
 class _CreateGoalPageState extends State<CreateGoalPage> {
   final TextEditingController _textController = new TextEditingController();
@@ -26,11 +28,14 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
       ),
       floatingActionButton: new StoreConnector<AppState, VoidCallback>(
           converter: (store) {
-            return () => store.dispatch(AddGoal(_textController.text));
+            return () => {
+              store.dispatch(AddGoal(_textController.text))
+            };
           },
           builder: (context, callback) {
             return FloatingActionButton.extended(
                 onPressed: () {
+                  DBProvider.db.newGoal(Goal(name:_textController.text));
                   callback();
                   Navigator.pop(context);
                 },

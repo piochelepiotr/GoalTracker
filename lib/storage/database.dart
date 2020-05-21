@@ -16,7 +16,6 @@ class DBProvider {
     if (_database != null)
       return _database;
 
-    // if _database is null we instantiate it
     _database = await initDB();
     return _database;
   }
@@ -42,7 +41,13 @@ class DBProvider {
     );
   }
 
-
+  Future<List<Goal>> goals() async {
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('goals');
+    return List.generate(maps.length, (i) {
+      return Goal.fromMap(maps[i]);
+    });
+  }
 }
 
 
