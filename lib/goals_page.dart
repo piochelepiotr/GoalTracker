@@ -48,6 +48,7 @@ class GoalsPage extends StatelessWidget {
                             ),
                         ),
                         onDismissed: (DismissDirection direction) => { goalProps.remove(name) },
+                        direction: DismissDirection.endToStart,
                     );
                   }
               );
