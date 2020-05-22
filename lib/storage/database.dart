@@ -41,6 +41,15 @@ class DBProvider {
     );
   }
 
+  Future<void> deleteGoal(String goalName) async {
+    final db = await database;
+    await db.delete(
+        'goals',
+        where: 'name = ?',
+        whereArgs: [goalName],
+    );
+  }
+
   Future<List<Goal>> goals() async {
     final Database db = await database;
     final List<Map<String, dynamic>> maps = await db.query('goals');

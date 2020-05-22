@@ -5,8 +5,9 @@ import 'create_goal_page.dart';
 import 'redux/state.dart';
 import 'model/goal.dart';
 import 'redux/actions.dart';
+import 'storage/database.dart';
 
-typedef void _Remove(int index);
+typedef void _Remove(String goalName);
 
 class _GoalsProps {
   List<Goal> goals;
@@ -22,19 +23,23 @@ class GoalsPage extends StatelessWidget {
             title: Text('My Goals'),
         ),
         body: new StoreConnector<AppState, _GoalsProps>(
-            converter: (store) => _GoalsProps(goals:store.state.goals, remove: (int index) => { store.dispatch(RemoveGoal(index)) }),
+            converter: (store) => _GoalsProps(goals:store.state.goals, remove: (String goalName) => {
+              store.dispatch(RemoveGoal(goalName)),
+              DBProvider.db.deleteGoal(goalName),
+            }),
             builder: (context, goalProps) {
               return new ListView.builder(
                   itemCount: goalProps.goals.length,
                   itemBuilder: (BuildContext context, int index) {
+                    String name = goalProps.goals[index].name;
                     return Dismissible(
                         child: Card(
                             child: ListTile(
-                                title: Text('${goalProps.goals[index].name}'),
+                                title: Text(name),
                             ),
                             margin: EdgeInsets.symmetric(vertical: 2),
                         ),
-                        key: Key(index.toString()),
+                        key: Key(name),
                         background: Container(
                             color: Colors.red,
                             child: Align(
@@ -42,7 +47,7 @@ class GoalsPage extends StatelessWidget {
                                 child: Icon(Icons.delete),
                             ),
                         ),
-                        onDismissed: (DismissDirection direction) => { goalProps.remove(index) },
+                        onDismissed: (DismissDirection direction) => { goalProps.remove(name) },
                     );
                   }
               );

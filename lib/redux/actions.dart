@@ -11,6 +11,6 @@ class LoadGoals {
 }
 
 class RemoveGoal {
-  final int index;
-  RemoveGoal(this.index);
+  final String goalName;
+  RemoveGoal(this.goalName);
 }

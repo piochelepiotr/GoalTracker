@@ -11,7 +11,7 @@ AppState reducer(AppState prev, dynamic action) {
   } else if (action is LoadGoals) {
     return AppState(goals:action.goals);
   } else if (action is RemoveGoal) {
-    List<Goal> goals = List.from(prev.goals)..removeAt(action.index);
+    List<Goal> goals = List.from(prev.goals)..removeWhere((goal) => goal.name == action.goalName);
     return AppState(goals: goals);
   }
   return prev;
