@@ -18,11 +18,21 @@ class GoalsPage extends StatelessWidget {
               return new ListView.builder(
                   itemCount: goals.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return Card(
-                        child: ListTile(
-                            title: Text('${goals[index].name}'),
+                    return Dismissible(
+                        child: Card(
+                            child: ListTile(
+                                title: Text('${goals[index].name}'),
+                            ),
+                            margin: EdgeInsets.symmetric(vertical: 2),
                         ),
-                        margin: EdgeInsets.symmetric(vertical: 2),
+                        key: Key(index.toString()),
+                        background: Container(
+                            color: Colors.red,
+                            child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Icon(Icons.delete),
+                            ),
+                        ),
                     );
                   }
               );
