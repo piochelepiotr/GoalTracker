@@ -19,9 +19,8 @@ class GoalsPage extends StatelessWidget {
                   padding: const EdgeInsets.all(8),
                   itemCount: goals.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                        height: 50,
-                        child: Center(child: Text('${goals[index].name}')),
+                    return ListTile(
+                        title: Text('${goals[index].name}'),
                     );
                   }
               );
