@@ -9,3 +9,8 @@ class LoadGoals {
   final List<Goal> goals;
   LoadGoals(this.goals);
 }
+
+class RemoveGoal {
+  final int index;
+  RemoveGoal(this.index);
+}

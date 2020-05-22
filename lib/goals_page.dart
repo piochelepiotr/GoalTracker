@@ -4,6 +4,15 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'create_goal_page.dart';
 import 'redux/state.dart';
 import 'model/goal.dart';
+import 'redux/actions.dart';
+
+typedef void _Remove(int index);
+
+class _GoalsProps {
+  List<Goal> goals;
+  _Remove remove;
+  _GoalsProps({this.goals, this.remove});
+}
 
 class GoalsPage extends StatelessWidget {
   @override
@@ -12,16 +21,16 @@ class GoalsPage extends StatelessWidget {
         appBar: AppBar(
             title: Text('My Goals'),
         ),
-        body: new StoreConnector<AppState, List<Goal>>(
-            converter: (store) => store.state.goals,
-            builder: (context, goals) {
+        body: new StoreConnector<AppState, _GoalsProps>(
+            converter: (store) => _GoalsProps(goals:store.state.goals, remove: (int index) => { store.dispatch(RemoveGoal(index)) }),
+            builder: (context, goalProps) {
               return new ListView.builder(
-                  itemCount: goals.length,
+                  itemCount: goalProps.goals.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Dismissible(
                         child: Card(
                             child: ListTile(
-                                title: Text('${goals[index].name}'),
+                                title: Text('${goalProps.goals[index].name}'),
                             ),
                             margin: EdgeInsets.symmetric(vertical: 2),
                         ),
@@ -33,6 +42,7 @@ class GoalsPage extends StatelessWidget {
                                 child: Icon(Icons.delete),
                             ),
                         ),
+                        onDismissed: (DismissDirection direction) => { goalProps.remove(index) },
                     );
                   }
               );
