@@ -16,11 +16,13 @@ class GoalsPage extends StatelessWidget {
             converter: (store) => store.state.goals,
             builder: (context, goals) {
               return new ListView.builder(
-                  padding: const EdgeInsets.all(8),
                   itemCount: goals.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return ListTile(
-                        title: Text('${goals[index].name}'),
+                    return Card(
+                        child: ListTile(
+                            title: Text('${goals[index].name}'),
+                        ),
+                        margin: EdgeInsets.symmetric(vertical: 2),
                     );
                   }
               );
