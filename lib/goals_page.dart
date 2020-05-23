@@ -75,7 +75,7 @@ class GoalsPage extends StatelessWidget {
             MaterialPageRoute(builder: (context) => CreateGoalPage()),
           );
         },
-        label: Icon(Icons.add),
+        label: Text("Add Goal"),
         backgroundColor: Colors.pink,
       ),
     );
