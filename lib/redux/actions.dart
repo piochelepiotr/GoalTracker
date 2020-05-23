@@ -25,3 +25,8 @@ class SelectGoal {
   final int goalID;
   SelectGoal(this.goalID);
 }
+
+class RemoveTask {
+  final Task task;
+  RemoveTask(this.task);
+}

@@ -3,9 +3,12 @@ import 'package:flutter_redux/flutter_redux.dart';
 
 import 'create_task_page.dart';
 import 'redux/state.dart';
+import 'redux/actions.dart';
 import 'model/goal.dart';
+import 'model/task.dart';
+import 'storage/database.dart';
 
-typedef void _Remove(int taskID);
+typedef void _Remove(Task task);
 
 class _GoalProps {
   Goal goal;
@@ -17,9 +20,9 @@ class GoalPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _GoalProps>(
-        converter: (store) => _GoalProps(goal:store.state.goals.firstWhere((goal) => goal.id == store.state.selectedGoalID), remove: (int taskID) => {
-          // store.dispatch(RemoveGoal(goalName)),
-          // DBProvider.db.deleteGoal(goalName),
+        converter: (store) => _GoalProps(goal:store.state.goals.firstWhere((goal) => goal.id == store.state.selectedGoalID), remove: (Task task) => {
+          store.dispatch(RemoveTask(task)),
+          DBProvider.db.deleteTask(task.id),
         }),
         builder: (context, goalProps) {
           return Scaffold(
@@ -45,7 +48,7 @@ class GoalPage extends StatelessWidget {
                                 child: Icon(Icons.delete),
                             ),
                         ),
-                        onDismissed: (DismissDirection direction) => { goalProps.remove(goalProps.goal.tasks[index].id) },
+                        onDismissed: (DismissDirection direction) => { goalProps.remove(goalProps.goal.tasks[index]) },
                         direction: DismissDirection.endToStart,
                     );
                   },

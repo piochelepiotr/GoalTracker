@@ -58,6 +58,15 @@ class DBProvider {
     );
   }
 
+  Future<void> deleteTask(int taskID) async {
+    final db = await database;
+    await db.delete(
+        'tasks',
+        where: 'id = ?',
+        whereArgs: [taskID],
+    );
+  }
+
   Future<List<Goal>> goals() async {
     final Database db = await database;
     final List<Map<String, dynamic>> goalsMaps = await db.query('goals');
