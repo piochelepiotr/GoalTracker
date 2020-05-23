@@ -24,32 +24,35 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
         title: Text('Create task'),
       ),
       body: Center(
-          child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: TextField(
-                  controller: _textController,
-                  decoration: InputDecoration(
-                      hintText: 'Task name',
-                  ),
-              ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: TextField(
+            controller: _textController,
+            decoration: InputDecoration(
+              hintText: 'Task name',
+            ),
           ),
+        ),
       ),
       floatingActionButton: new StoreConnector<AppState, _ButtonActions>(
-          converter: (store) {
-            return _ButtonActions(
-                addTask: () => { store.dispatch(addTask(store.state.selectedGoalID, _textController.text)) },
-            );
-          },
-          builder: (context, buttonActions) {
-            return FloatingActionButton.extended(
-                onPressed: () {
-                  buttonActions.addTask();
-                  Navigator.pop(context);
-                },
-                label: Text('Save'),
-                backgroundColor: Colors.pink,
-            );
-          },
+        converter: (store) {
+          return _ButtonActions(
+            addTask: () => {
+              store.dispatch(
+                  addTask(store.state.selectedGoalID, _textController.text))
+            },
+          );
+        },
+        builder: (context, buttonActions) {
+          return FloatingActionButton.extended(
+            onPressed: () {
+              buttonActions.addTask();
+              Navigator.pop(context);
+            },
+            label: Text('Save'),
+            backgroundColor: Colors.pink,
+          );
+        },
       ),
     );
   }

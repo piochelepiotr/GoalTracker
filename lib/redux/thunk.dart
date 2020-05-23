@@ -15,7 +15,7 @@ ThunkAction<AppState> getGoals = (Store<AppState> store) async {
 ThunkAction<AppState> addGoal(String goalName) {
   return (Store<AppState> store) async {
     int id = await DBProvider.db.newGoal(goalName);
-    Goal goal = Goal(name: goalName, id:id);
+    Goal goal = Goal(name: goalName, id: id);
     store.dispatch(AddGoalDone(goal));
   };
 }
@@ -23,7 +23,7 @@ ThunkAction<AppState> addGoal(String goalName) {
 ThunkAction<AppState> addTask(int goalID, String taskName) {
   return (Store<AppState> store) async {
     int id = await DBProvider.db.addTask(goalID, taskName);
-    Task task = Task(name: taskName, id:id, goalID: goalID);
+    Task task = Task(name: taskName, id: id, goalID: goalID);
     store.dispatch(AddTaskDone(task));
   };
 }

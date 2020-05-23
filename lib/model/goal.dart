@@ -10,12 +10,12 @@ class Goal {
   }
 
   factory Goal.fromMap(Map<String, dynamic> json) => new Goal(
-      id: json["id"],
-      name: json["name"],
-  );
+        id: json["id"],
+        name: json["name"],
+      );
 
   Map<String, dynamic> toMap() => {
-    "id": id,
-    "name": name,
-  };
+        "id": id,
+        "name": name,
+      };
 }

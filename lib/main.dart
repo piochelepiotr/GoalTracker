@@ -11,9 +11,9 @@ import 'redux/thunk.dart';
 
 void main() async {
   final store = new Store<AppState>(
-      reducer,
-      initialState: AppState(goals: List<Goal>()),
-      middleware: [thunkMiddleware],
+    reducer,
+    initialState: AppState(goals: List<Goal>()),
+    middleware: [thunkMiddleware],
   );
   runApp(FlutterReduxApp(
     title: 'My Goals',
@@ -31,20 +31,16 @@ class FlutterReduxApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return new StoreProvider<AppState>(
       store: store,
-      child: new StoreConnector<AppState, VoidCallback>(
-          converter: (store) {
-            return () => {};
-          },
-          builder: (context, callback) {
-            return MaterialApp(
-                title: title,
-                home: GoalsPage(),
-            );
-          },
-          onInit: (store) {
-            store.dispatch(getGoals);
-          }
-      ),
+      child: new StoreConnector<AppState, VoidCallback>(converter: (store) {
+        return () => {};
+      }, builder: (context, callback) {
+        return MaterialApp(
+          title: title,
+          home: GoalsPage(),
+        );
+      }, onInit: (store) {
+        store.dispatch(getGoals);
+      }),
     );
   }
 }

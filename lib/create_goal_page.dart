@@ -27,53 +27,51 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
         title: Text('Create goal'),
       ),
       body: Center(
-          child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: TextField(
-                  controller: _textController,
-                  decoration: InputDecoration(
-                      hintText: 'Goal name',
-                  ),
-              ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: TextField(
+            controller: _textController,
+            decoration: InputDecoration(
+              hintText: 'Goal name',
+            ),
           ),
+        ),
       ),
       floatingActionButton: new StoreConnector<AppState, _ButtonActions>(
-          converter: (store) {
-            return _ButtonActions(
-                addGoal: () => { store.dispatch(addGoal(_textController.text)) },
-                isDuplicate: () => isDuplicate(store.state.goals, _textController.text)
-            );
-          },
-          builder: (context, buttonActions) {
-            return FloatingActionButton.extended(
-                onPressed: () {
-                  if (buttonActions.isDuplicate()) {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                              title: Text("Error"),
-                              content: Text("You already have a goal with this name"),
-                              actions: [
-                                FlatButton(
-                                    child: Text("OK"),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    }
-                                ),
-                              ],
-                          );
-                        }
-                    );
-                  } else {
-                    buttonActions.addGoal();
-                    Navigator.pop(context);
-                  }
-                },
-                label: Text('Save'),
-                backgroundColor: Colors.pink,
-            );
-          },
+        converter: (store) {
+          return _ButtonActions(
+              addGoal: () => {store.dispatch(addGoal(_textController.text))},
+              isDuplicate: () =>
+                  isDuplicate(store.state.goals, _textController.text));
+        },
+        builder: (context, buttonActions) {
+          return FloatingActionButton.extended(
+            onPressed: () {
+              if (buttonActions.isDuplicate()) {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("Error"),
+                        content: Text("You already have a goal with this name"),
+                        actions: [
+                          FlatButton(
+                              child: Text("OK"),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              }),
+                        ],
+                      );
+                    });
+              } else {
+                buttonActions.addGoal();
+                Navigator.pop(context);
+              }
+            },
+            label: Text('Save'),
+            backgroundColor: Colors.pink,
+          );
+        },
       ),
     );
   }
