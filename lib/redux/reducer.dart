@@ -14,6 +14,10 @@ AppState reducer(AppState prev, dynamic action) {
     return prev.copyWith(goals: goals);
   } else if (action is SelectGoal) {
     return prev.copyWith(selectedGoalID: action.goalID);
+  } else if (action is AddTaskDone) {
+    List<Goal> goals = List.from(prev.goals);
+    goals.firstWhere((goal) => goal.id == action.task.goalID).tasks.add(action.task);
+    return prev.copyWith(goals: goals);
   }
   return prev;
 }
