@@ -2,10 +2,14 @@ import '../model/goal.dart';
 
 class AppState {
   List<Goal> goals = List<Goal>();
+  int selectedGoalID = 0;
 
-  AppState({this.goals});
+  AppState({this.goals, this.selectedGoalID});
 
-  AppState.fromAppState(AppState another) {
-    goals = another.goals;
+  AppState copyWith({List<Goal> goals, int selectedGoalID}) {
+    return AppState(
+      goals: goals ?? this.goals,
+      selectedGoalID: selectedGoalID ?? this.selectedGoalID,
+    );
   }
 }

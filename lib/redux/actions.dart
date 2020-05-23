@@ -1,8 +1,14 @@
 import '../model/goal.dart';
+import '../model/task.dart';
 
-class AddGoal {
-  final String goalName;
-  AddGoal(this.goalName);
+class AddGoalDone {
+  final Goal goal;
+  AddGoalDone(this.goal);
+}
+
+class AddTaskDone {
+  final Task task;
+  AddTaskDone(this.task);
 }
 
 class LoadGoals {
@@ -11,6 +17,11 @@ class LoadGoals {
 }
 
 class RemoveGoal {
-  final String goalName;
-  RemoveGoal(this.goalName);
+  final int goalID;
+  RemoveGoal(this.goalID);
+}
+
+class SelectGoal {
+  final int goalID;
+  SelectGoal(this.goalID);
 }

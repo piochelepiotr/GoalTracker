@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 import 'create_goal_page.dart';
+import 'goal_page.dart';
 import 'redux/state.dart';
 import 'model/goal.dart';
 import 'redux/actions.dart';
 import 'storage/database.dart';
 
-typedef void _Remove(String goalName);
+typedef void _Action(int goalID);
 
 class _GoalsProps {
   List<Goal> goals;
-  _Remove remove;
-  _GoalsProps({this.goals, this.remove});
+  _Action remove;
+  _Action select;
+  _GoalsProps({this.goals, this.remove, this.select});
 }
 
 class GoalsPage extends StatelessWidget {
@@ -23,23 +25,36 @@ class GoalsPage extends StatelessWidget {
             title: Text('My Goals'),
         ),
         body: new StoreConnector<AppState, _GoalsProps>(
-            converter: (store) => _GoalsProps(goals:store.state.goals, remove: (String goalName) => {
-              store.dispatch(RemoveGoal(goalName)),
-              DBProvider.db.deleteGoal(goalName),
-            }),
+            converter: (store) => _GoalsProps(goals:store.state.goals,
+              remove: (int goalID) => {
+                store.dispatch(RemoveGoal(goalID)),
+                DBProvider.db.deleteGoal(goalID),
+              },
+              select: (int goalID) => {
+                store.dispatch(SelectGoal(goalID))
+              },
+            ),
             builder: (context, goalProps) {
               return new ListView.builder(
                   itemCount: goalProps.goals.length,
                   itemBuilder: (BuildContext context, int index) {
-                    String name = goalProps.goals[index].name;
+                    Goal goal = goalProps.goals[index];
                     return Dismissible(
                         child: Card(
                             child: ListTile(
-                                title: Text(name),
+                                title: Text(goal.name),
+                                onTap: () => {
+                                  goalProps.select(goal.id),
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => GoalPage()),
+                                  )
+
+                                }
                             ),
                             margin: EdgeInsets.symmetric(vertical: 2),
                         ),
-                        key: Key(name),
+                        key: Key(goal.id.toString()),
                         background: Container(
                             color: Colors.red,
                             child: Align(
@@ -47,10 +62,10 @@ class GoalsPage extends StatelessWidget {
                                 child: Icon(Icons.delete),
                             ),
                         ),
-                        onDismissed: (DismissDirection direction) => { goalProps.remove(name) },
+                        onDismissed: (DismissDirection direction) => { goalProps.remove(goal.id) },
                         direction: DismissDirection.endToStart,
                     );
-                  }
+                  },
               );
             },
         ),

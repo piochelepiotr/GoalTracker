@@ -24,7 +24,9 @@ class DBProvider {
     return await openDatabase(
         join(await getDatabasesPath(), 'my_goals_database.db'),
         onCreate: (db, version) {
+          print("on create");
           return db.execute(
+              //"CREATE TABLE tasks(id INTEGER PRIMARY KEY, name TEXT, goal_id INTEGER)",
               "CREATE TABLE goals(id INTEGER PRIMARY KEY, name TEXT)",
           );
         },
@@ -32,21 +34,21 @@ class DBProvider {
     );
   }
 
-  Future<void> newGoal(Goal goal) async {
+  Future<int> newGoal(String goalName) async {
     final db = await database;
-    await db.insert(
+    return await db.insert(
         'goals',
-        goal.toMap(),
+        {"name": goalName},
         conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  Future<void> deleteGoal(String goalName) async {
+  Future<void> deleteGoal(int goalID) async {
     final db = await database;
     await db.delete(
         'goals',
-        where: 'name = ?',
-        whereArgs: [goalName],
+        where: 'id = ?',
+        whereArgs: [goalID],
     );
   }
 
@@ -56,6 +58,15 @@ class DBProvider {
     return List.generate(maps.length, (i) {
       return Goal.fromMap(maps[i]);
     });
+  }
+
+  Future<int> addTask(int goalID, String taskName) async {
+    final db = await database;
+    return await db.insert(
+        'tasks',
+        {"name": taskName, "goal_id": goalID},
+        conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 }
 
