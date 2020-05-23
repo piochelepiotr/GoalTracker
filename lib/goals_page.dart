@@ -77,7 +77,7 @@ class GoalsPage extends StatelessWidget {
               );
 
             },
-            label: Text('Add Goal'),
+            label: Icon(Icons.add),
             backgroundColor: Colors.pink,
         ),
     );
