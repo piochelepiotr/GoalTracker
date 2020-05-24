@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
-import 'package:redux_thunk/redux_thunk.dart';
+import 'package:redux_persist/redux_persist.dart';
+import 'package:redux_persist_flutter/redux_persist_flutter.dart';
 
 import 'goals_page.dart';
 import 'redux/reducer.dart';
 import 'redux/state.dart';
 import 'model/goal.dart';
-import 'redux/thunk.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final persistor = Persistor<AppState>(
+    storage: FlutterStorage(),
+    serializer: JsonSerializer<AppState>(AppState.fromJson),
+  );
+  final initialState = await persistor.load();
   final store = new Store<AppState>(
     reducer,
-    initialState: AppState(goals: List<Goal>()),
-    middleware: [thunkMiddleware],
+    initialState: initialState ?? AppState(goals: List<Goal>()),
+    middleware: [persistor.createMiddleware()],
   );
   runApp(FlutterReduxApp(
     title: 'My Goals',
@@ -31,16 +37,10 @@ class FlutterReduxApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return new StoreProvider<AppState>(
       store: store,
-      child: new StoreConnector<AppState, VoidCallback>(converter: (store) {
-        return () => {};
-      }, builder: (context, callback) {
-        return MaterialApp(
-          title: title,
-          home: GoalsPage(),
-        );
-      }, onInit: (store) {
-        store.dispatch(getGoals);
-      }),
+      child: MaterialApp(
+        title: title,
+        home: GoalsPage(),
+      ),
     );
   }
 }

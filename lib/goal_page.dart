@@ -6,14 +6,14 @@ import 'redux/state.dart';
 import 'redux/actions.dart';
 import 'model/goal.dart';
 import 'model/task.dart';
-import 'storage/database.dart';
 
-typedef void _Remove(Task task);
+typedef void _Action(Task task);
 
 class _GoalProps {
   Goal goal;
-  _Remove remove;
-  _GoalProps({this.goal, this.remove});
+  _Action remove;
+  _Action cross;
+  _GoalProps({this.goal, this.remove, this.cross});
 }
 
 class GoalPage extends StatelessWidget {
@@ -21,12 +21,15 @@ class GoalPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _GoalProps>(
         converter: (store) => _GoalProps(
-            goal: store.state.goals
-                .firstWhere((goal) => goal.id == store.state.selectedGoalID),
-            remove: (Task task) => {
-                  store.dispatch(RemoveTask(task)),
-                  DBProvider.db.deleteTask(task.id),
-                }),
+              goal: store.state.goals
+                  .firstWhere((goal) => goal.id == store.state.selectedGoalID),
+              remove: (Task task) => {
+                store.dispatch(RemoveTask(task)),
+              },
+              cross: (Task task) => {
+                store.dispatch(CrossTask(task)),
+              },
+            ),
         builder: (context, goalProps) {
           return Scaffold(
             appBar: AppBar(
@@ -39,7 +42,14 @@ class GoalPage extends StatelessWidget {
                 return Dismissible(
                   child: Card(
                     child: ListTile(
-                      title: Text(name),
+                      title: Text(name,
+                          style: goalProps.goal.tasks[index].crossed
+                              ? TextStyle(
+                                  decoration: TextDecoration.lineThrough)
+                              : null),
+                      onTap: () => {
+                        goalProps.cross(goalProps.goal.tasks[index]),
+                      },
                     ),
                     margin: EdgeInsets.symmetric(vertical: 2),
                   ),

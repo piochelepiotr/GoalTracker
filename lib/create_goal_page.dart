@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-import 'redux/thunk.dart';
 import 'redux/state.dart';
+import 'redux/actions.dart';
 import 'model/goal.dart';
 
 typedef bool _Check();
@@ -40,7 +40,7 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
       floatingActionButton: new StoreConnector<AppState, _ButtonActions>(
         converter: (store) {
           return _ButtonActions(
-              addGoal: () => {store.dispatch(addGoal(_textController.text))},
+              addGoal: () => {store.dispatch(AddGoal(_textController.text))},
               isDuplicate: () =>
                   isDuplicate(store.state.goals, _textController.text));
         },

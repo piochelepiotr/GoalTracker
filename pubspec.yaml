@@ -26,6 +26,8 @@ dependencies:
   flutter_redux:
   redux_thunk:
   sqflite:
+  redux_persist:
+  redux_persist_flutter:
 
 
   # The following adds the Cupertino Icons font to your application.

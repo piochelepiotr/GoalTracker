@@ -1,12 +1,20 @@
 class Task {
   final String name;
   final int id;
-  final int goalID;
-  Task({this.name, this.id, this.goalID});
+  bool crossed;
+  Task({this.name, this.id, this.crossed}) {
+    crossed ??= false;
+  }
 
-  factory Task.fromMap(Map<String, dynamic> json) => new Task(
+  factory Task.fromJson(Map<String, dynamic> json) => new Task(
         id: json["id"],
         name: json["name"],
-        goalID: json["goal_id"],
+        crossed: json["crossed"],
       );
+
+  Map<String, dynamic> toMap() => {
+        "id": id,
+        "name": name,
+        "crossed": crossed,
+      };
 }

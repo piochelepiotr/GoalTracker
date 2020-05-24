@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-import 'redux/thunk.dart';
 import 'redux/state.dart';
+import 'redux/actions.dart';
 import 'model/goal.dart';
 
 class _ButtonActions {
@@ -37,10 +37,7 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
       floatingActionButton: new StoreConnector<AppState, _ButtonActions>(
         converter: (store) {
           return _ButtonActions(
-            addTask: () => {
-              store.dispatch(
-                  addTask(store.state.selectedGoalID, _textController.text))
-            },
+            addTask: () => {store.dispatch(AddTask(_textController.text))},
           );
         },
         builder: (context, buttonActions) {

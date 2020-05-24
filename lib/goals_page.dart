@@ -6,7 +6,6 @@ import 'goal_page.dart';
 import 'redux/state.dart';
 import 'model/goal.dart';
 import 'redux/actions.dart';
-import 'storage/database.dart';
 
 typedef void _Action(int goalID);
 
@@ -29,7 +28,6 @@ class GoalsPage extends StatelessWidget {
           goals: store.state.goals,
           remove: (int goalID) => {
             store.dispatch(RemoveGoal(goalID)),
-            DBProvider.db.deleteGoal(goalID),
           },
           select: (int goalID) => {store.dispatch(SelectGoal(goalID))},
         ),
