@@ -16,9 +16,12 @@ class AppState {
   }
 
   static AppState fromJson(dynamic json) {
-    var jsonData = jsonDecode(json);
     List<Goal> goals = List<Goal>();
-    jsonData['goals'].forEach((goalMap) => goals.add(Goal.fromJson(goalMap)));
+    if (json == null) {
+      return AppState(goals: goals);
+    }
+    var jsonData = jsonDecode(json);
+    jsonData['goals']?.forEach((goalMap) => goals.add(Goal.fromJson(goalMap)));
     return AppState(goals: goals);
   }
 
