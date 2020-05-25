@@ -13,9 +13,9 @@ int nextTaskID(List<Task> tasks) {
 
 AppState reducer(AppState prev, dynamic action) {
   if (action is AddGoal) {
+    int id = nextGoalID(prev.goals);
     return prev.copyWith(
-      goals: List.from(prev.goals)
-        ..add(Goal(name: action.goalName, id: nextGoalID(prev.goals))),
+      goals: List.from(prev.goals)..add(action.goal.copyWith(id: id)),
     );
   } else if (action is RemoveGoal) {
     List<Goal> goals = List.from(prev.goals)

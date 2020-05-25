@@ -2,6 +2,36 @@ import 'package:flutter/material.dart';
 
 import 'task.dart';
 
+Color stringToColor(String color) {
+  print("parsing");
+  print(color);
+  var hexColor = color.replaceAll("#", "");
+  if (hexColor.length == 6) {
+    hexColor = "FF" + hexColor;
+  }
+  if (hexColor.length == 8) {
+    print("it worked");
+    return Color(int.parse("0x$hexColor"));
+  }
+}
+
+extension HexColor on Color {
+  /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
+  static Color fromHex(String hexString) {
+    final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
+  }
+
+  /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
+  String toHex({bool leadingHashSign = true}) => '${leadingHashSign ? '#' : ''}'
+      '${alpha.toRadixString(16).padLeft(2, '0')}'
+      '${red.toRadixString(16).padLeft(2, '0')}'
+      '${green.toRadixString(16).padLeft(2, '0')}'
+      '${blue.toRadixString(16).padLeft(2, '0')}';
+}
+
 class Goal {
   final String name;
   final int id;
@@ -22,6 +52,13 @@ class Goal {
     tasks ??= List<Task>();
   }
 
+  double progress() {
+    if (totalWork == 0 || workDone > totalWork) {
+      return 1;
+    }
+    return workDone / totalWork;
+  }
+
   factory Goal.fromJson(Map<String, dynamic> json) {
     List<Task> tasks = List<Task>();
     json['tasks']?.forEach((taskMap) => tasks.add(Task.fromJson(taskMap)));
@@ -29,16 +66,34 @@ class Goal {
       id: json["id"],
       name: json["name"],
       tasks: tasks,
+      workUnit: json["work_unit"],
+      workDone: json["work_done"],
+      totalWork: json["total_work"],
+      color: HexColor.fromHex(json["color"]),
     );
   }
 
-  Map<String, dynamic> toMap() => {
-        "id": id,
-        "name": name,
-        "tasks": tasks.map((task) => task.toMap()).toList(),
-        // "work_unit": workUnit,
-        // "work_done": workDone,
-        // "total_work": totalWork,
-        // "color": color.value,
-      };
+  Map<String, dynamic> toMap() {
+    return {
+      "id": id,
+      "name": name,
+      "tasks": tasks.map((task) => task.toMap()).toList(),
+      "work_unit": workUnit,
+      "work_done": workDone,
+      "total_work": totalWork,
+      "color": color.toHex(),
+    };
+  }
+
+  Goal copyWith({int id}) {
+    return Goal(
+      name: this.name,
+      id: id ?? this.id,
+      workUnit: this.workUnit,
+      totalWork: this.totalWork,
+      workDone: this.workDone,
+      color: this.color,
+      tasks: this.tasks,
+    );
+  }
 }

@@ -155,12 +155,21 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
       floatingActionButton: new StoreConnector<AppState, _ButtonActions>(
         converter: (store) {
           return _ButtonActions(
-              addGoal: () => {
-                    store.dispatch(AddGoal(
-                      goalName: _textController.text,
-                      workUnit: progressUnit,
-                    ))
-                  },
+              addGoal: () {
+                int totalWork = 0;
+                int workDone = 0;
+                try {
+                  totalWork = int.parse(_totalProgressController.text);
+                  workDone = int.parse(_currentProgressController.text);
+                } on FormatException {}
+                store.dispatch(AddGoal(Goal(
+                  name: _textController.text,
+                  workUnit: progressUnit,
+                  totalWork: totalWork,
+                  workDone: workDone,
+                  color: goalColor,
+                )));
+              },
               isDuplicate: () =>
                   isDuplicate(store.state.goals, _textController.text));
         },
