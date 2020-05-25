@@ -4,6 +4,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'redux/state.dart';
 import 'redux/actions.dart';
 import 'model/goal.dart';
+import 'color_picker.dart';
 
 typedef bool _Check();
 
@@ -19,23 +20,72 @@ bool isDuplicate(List<Goal> goals, String goalName) {
 
 class _CreateGoalPageState extends State<CreateGoalPage> {
   final TextEditingController _textController = new TextEditingController();
+  Color goalColor = defaultPickerColor;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Create goal'),
-      ),
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: TextField(
-            controller: _textController,
-            decoration: InputDecoration(
-              hintText: 'Goal name',
+      body: Align(
+        child: Column(
+          children: [
+            Container(
+              decoration: new BoxDecoration(color: goalColor),
+              child: Padding(
+                padding:
+                    EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 20),
+                child: TextField(
+                  style: TextStyle(color: Colors.white),
+                  cursorColor: Colors.white,
+                  controller: _textController,
+                  decoration: InputDecoration(
+                    hintStyle: TextStyle(color: Colors.white54),
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    hintText: 'Goal name',
+                  ),
+                ),
+              ),
             ),
-          ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+              child: Row(
+                children: [
+                  Expanded(child: Text("Unit", style: TextStyle(fontSize: 18))),
+                  Text("\$", style: TextStyle(fontSize: 18)),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: Divider(
+                color: Colors.grey,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+              child: Row(
+                children: [
+                  Expanded(
+                      child: Text("Color", style: TextStyle(fontSize: 18))),
+                  ColorPicker(onColorChange: (Color color) {
+                    setState(() {
+                      goalColor = color;
+                    });
+                  }),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: Divider(
+                color: Colors.grey,
+              ),
+            ),
+          ],
         ),
+        alignment: Alignment.topCenter,
       ),
       floatingActionButton: new StoreConnector<AppState, _ButtonActions>(
         converter: (store) {
