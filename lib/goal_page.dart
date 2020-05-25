@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 import 'create_task_page.dart';
+import 'create_goal_page.dart';
 import 'redux/state.dart';
 import 'redux/actions.dart';
 import 'model/goal.dart';
@@ -13,7 +14,10 @@ class _GoalProps {
   Goal goal;
   _Action remove;
   _Action cross;
-  _GoalProps({this.goal, this.remove, this.cross});
+  VoidCallback incrWork;
+  VoidCallback decrWork;
+  _GoalProps(
+      {this.goal, this.remove, this.cross, this.incrWork, this.decrWork});
 }
 
 class GoalPage extends StatelessWidget {
@@ -29,6 +33,12 @@ class GoalPage extends StatelessWidget {
               cross: (Task task) => {
                 store.dispatch(CrossTask(task)),
               },
+              incrWork: () => {
+                store.dispatch(IncrWork()),
+              },
+              decrWork: () => {
+                store.dispatch(DecrWork()),
+              },
             ),
         builder: (context, goalProps) {
           Color color = goalProps.goal.color;
@@ -42,8 +52,32 @@ class GoalPage extends StatelessWidget {
                     padding: EdgeInsets.only(
                         left: 20, right: 20, top: 50, bottom: 5),
                     child: Column(children: [
-                      Text(goalProps.goal.name,
-                          style: TextStyle(fontSize: 18, color: Colors.white)),
+                      Row(children: [
+                        Text(goalProps.goal.name,
+                            style:
+                                TextStyle(fontSize: 18, color: Colors.white)),
+                        Spacer(),
+                        ClipOval(
+                          child: Material(
+                            color: color, // button color
+                            child: InkWell(
+                              splashColor: Colors.black, // inkwell color
+                              child: SizedBox(
+                                  width: 35,
+                                  height: 35,
+                                  child: Icon(Icons.edit, color: Colors.white)),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          CreateGoalPage(goal: goalProps.goal)),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ]),
                       Padding(padding: EdgeInsets.only(bottom: 20)),
                       Row(children: [
                         Text(
@@ -59,7 +93,9 @@ class GoalPage extends StatelessWidget {
                                   width: 35,
                                   height: 35,
                                   child: Icon(Icons.remove)),
-                              onTap: () {},
+                              onTap: () {
+                                goalProps.decrWork();
+                              },
                             ),
                           ),
                         ),
@@ -73,7 +109,9 @@ class GoalPage extends StatelessWidget {
                                   width: 35,
                                   height: 35,
                                   child: Icon(Icons.add)),
-                              onTap: () {},
+                              onTap: () {
+                                goalProps.incrWork();
+                              },
                             ),
                           ),
                         ),

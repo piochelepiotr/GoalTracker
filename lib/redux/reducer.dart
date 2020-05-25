@@ -13,9 +13,28 @@ int nextTaskID(List<Task> tasks) {
 
 AppState reducer(AppState prev, dynamic action) {
   if (action is AddGoal) {
-    int id = nextGoalID(prev.goals);
+    List<Goal> goals = List<Goal>();
+    bool newGoal = true;
+    prev.goals.forEach((goal) {
+      if (goal.id == action.goal.id) {
+        newGoal = false;
+        goals.add(goal.copyWith(
+          name: action.goal.name,
+          workUnit: action.goal.workUnit,
+          workDone: action.goal.workDone,
+          totalWork: action.goal.totalWork,
+          color: action.goal.color,
+        ));
+      } else {
+        goals.add(goal);
+      }
+    });
+    if (newGoal) {
+      int id = nextGoalID(prev.goals);
+      goals.add(action.goal.copyWith(id: id));
+    }
     return prev.copyWith(
-      goals: List.from(prev.goals)..add(action.goal.copyWith(id: id)),
+      goals: List.from(goals),
     );
   } else if (action is RemoveGoal) {
     List<Goal> goals = List.from(prev.goals)
@@ -40,6 +59,26 @@ AppState reducer(AppState prev, dynamic action) {
         .tasks
         .firstWhere((task) => task.id == action.task.id);
     task.crossed = !task.crossed;
+  } else if (action is IncrWork) {
+    List<Goal> goals = prev.goals.map((goal) {
+      if (goal.id == prev.selectedGoalID) {
+        if (goal.workDone < goal.totalWork) {
+          return goal.copyWith(workDone: goal.workDone + 1);
+        }
+      }
+      return goal;
+    }).toList();
+    return prev.copyWith(goals: goals);
+  } else if (action is DecrWork) {
+    List<Goal> goals = prev.goals.map((goal) {
+      if (goal.id == prev.selectedGoalID) {
+        if (goal.workDone > 0) {
+          return goal.copyWith(workDone: goal.workDone - 1);
+        }
+      }
+      return goal;
+    }).toList();
+    return prev.copyWith(goals: goals);
   }
   return prev;
 }

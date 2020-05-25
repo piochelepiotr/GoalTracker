@@ -59,6 +59,18 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
   String progressUnit = defaultPickerUnit;
 
   @override
+  void initState() {
+    if (widget.goal != null) {
+      _textController.text = widget.goal.name;
+      goalColor = widget.goal.color;
+      progressUnit = widget.goal.workUnit;
+      _totalProgressController.text = widget.goal.totalWork.toString();
+      _currentProgressController.text = widget.goal.workDone.toString();
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Align(
@@ -86,20 +98,24 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
             ),
             _Line(
               name: "Unit",
-              child: UnitPicker(onUnitChange: (String unit) {
-                setState(() {
-                  progressUnit = unit;
-                });
-              }),
+              child: UnitPicker(
+                  defaultUnit: progressUnit,
+                  onUnitChange: (String unit) {
+                    setState(() {
+                      progressUnit = unit;
+                    });
+                  }),
             ),
             _Divider(),
             _Line(
               name: "Color",
-              child: ColorPicker(onColorChange: (Color color) {
-                setState(() {
-                  goalColor = color;
-                });
-              }),
+              child: ColorPicker(
+                  defaultColor: goalColor,
+                  onColorChange: (Color color) {
+                    setState(() {
+                      goalColor = color;
+                    });
+                  }),
             ),
             _Divider(),
             _Line(
@@ -152,6 +168,10 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
         ),
         alignment: Alignment.topCenter,
       ),
+      // bottomNavigationBar: BottomAppBar(
+      //     color: Colors.white,
+      //     child: Text("hello"),
+      // ),
       floatingActionButton: new StoreConnector<AppState, _ButtonActions>(
         converter: (store) {
           return _ButtonActions(
@@ -168,9 +188,11 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
                   totalWork: totalWork,
                   workDone: workDone,
                   color: goalColor,
+                  id: widget.goal != null ? widget.goal.id : null,
                 )));
               },
               isDuplicate: () =>
+                  widget.goal == null &&
                   isDuplicate(store.state.goals, _textController.text));
         },
         builder: (context, buttonActions) {
@@ -207,6 +229,8 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
 }
 
 class CreateGoalPage extends StatefulWidget {
+  final Goal goal;
+  CreateGoalPage({this.goal});
   @override
   _CreateGoalPageState createState() => _CreateGoalPageState();
 }

@@ -7,8 +7,9 @@ typedef void UnitChange(String unit);
 
 class UnitPicker extends StatefulWidget {
   final UnitChange onUnitChange;
+  final String defaultUnit;
 
-  UnitPicker({this.onUnitChange});
+  UnitPicker({this.onUnitChange, this.defaultUnit});
 
   @override
   _UnitPicker createState() => _UnitPicker();
@@ -17,6 +18,15 @@ class UnitPicker extends StatefulWidget {
 class _UnitPicker extends State<UnitPicker> {
   String selectedUnit = defaultPickerUnit;
   String acceptedUnit = defaultPickerUnit;
+
+  @override
+  void initState() {
+    if (widget.defaultUnit != null) {
+      selectedUnit = widget.defaultUnit;
+      acceptedUnit = widget.defaultUnit;
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

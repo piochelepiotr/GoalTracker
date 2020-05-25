@@ -7,8 +7,9 @@ typedef void ColorChange(Color color);
 
 class ColorPicker extends StatefulWidget {
   final ColorChange onColorChange;
+  final Color defaultColor;
 
-  ColorPicker({this.onColorChange});
+  ColorPicker({this.onColorChange, this.defaultColor});
 
   @override
   _ColorPicker createState() => _ColorPicker();
@@ -17,6 +18,16 @@ class ColorPicker extends StatefulWidget {
 class _ColorPicker extends State<ColorPicker> {
   Color selectedColor = defaultPickerColor;
   Color acceptedColor = defaultPickerColor;
+
+  @override
+  void initState() {
+    if (widget.defaultColor != null) {
+      selectedColor = widget.defaultColor;
+      acceptedColor = widget.defaultColor;
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

@@ -85,14 +85,20 @@ class Goal {
     };
   }
 
-  Goal copyWith({int id}) {
+  Goal copyWith(
+      {int id,
+      String name,
+      String workUnit,
+      int totalWork,
+      int workDone,
+      Color color}) {
     return Goal(
-      name: this.name,
+      name: name ?? this.name,
       id: id ?? this.id,
-      workUnit: this.workUnit,
-      totalWork: this.totalWork,
-      workDone: this.workDone,
-      color: this.color,
+      workUnit: workUnit ?? this.workUnit,
+      totalWork: totalWork ?? this.totalWork,
+      workDone: workDone ?? this.workDone,
+      color: color ?? this.color,
       tasks: this.tasks,
     );
   }

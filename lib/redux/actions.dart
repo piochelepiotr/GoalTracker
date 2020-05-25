@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import '../model/goal.dart';
 import '../model/task.dart';
 
+class IncrWork {}
+
+class DecrWork {}
+
 class AddGoal {
   final Goal goal;
   AddGoal(this.goal);
