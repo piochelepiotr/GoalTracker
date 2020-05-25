@@ -5,6 +5,7 @@ import 'redux/state.dart';
 import 'redux/actions.dart';
 import 'model/goal.dart';
 import 'color_picker.dart';
+import 'unit_picker.dart';
 
 typedef bool _Check();
 
@@ -18,9 +19,44 @@ bool isDuplicate(List<Goal> goals, String goalName) {
   return goals.any((goal) => goal.name == goalName);
 }
 
+class _Line extends StatelessWidget {
+  final Widget child;
+  final String name;
+  _Line({this.child, this.name});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      child: Row(children: [
+        Expanded(child: Text(name, style: TextStyle(fontSize: 18))),
+        child,
+      ]),
+    );
+  }
+}
+
+class _Divider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      child: Divider(
+        height: 0,
+        color: Colors.grey,
+      ),
+    );
+  }
+}
+
 class _CreateGoalPageState extends State<CreateGoalPage> {
   final TextEditingController _textController = new TextEditingController();
+  final TextEditingController _totalProgressController =
+      new TextEditingController();
+  final TextEditingController _currentProgressController =
+      new TextEditingController();
   Color goalColor = defaultPickerColor;
+  String progressUnit = defaultPickerUnit;
 
   @override
   Widget build(BuildContext context) {
@@ -48,41 +84,70 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-              child: Row(
-                children: [
-                  Expanded(child: Text("Unit", style: TextStyle(fontSize: 18))),
-                  Text("\$", style: TextStyle(fontSize: 18)),
-                ],
-              ),
+            _Line(
+              name: "Unit",
+              child: UnitPicker(onUnitChange: (String unit) {
+                setState(() {
+                  progressUnit = unit;
+                });
+              }),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Divider(
-                color: Colors.grey,
-              ),
+            _Divider(),
+            _Line(
+              name: "Color",
+              child: ColorPicker(onColorChange: (Color color) {
+                setState(() {
+                  goalColor = color;
+                });
+              }),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-              child: Row(
-                children: [
-                  Expanded(
-                      child: Text("Color", style: TextStyle(fontSize: 18))),
-                  ColorPicker(onColorChange: (Color color) {
-                    setState(() {
-                      goalColor = color;
-                    });
-                  }),
-                ],
-              ),
+            _Divider(),
+            _Line(
+              name: "Total work required",
+              child: Expanded(
+                  child: Row(children: [
+                Expanded(
+                    child: TextField(
+                  keyboardType: TextInputType.number,
+                  textAlign: TextAlign.end,
+                  cursorColor: Colors.black,
+                  controller: _totalProgressController,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(0),
+                    isDense: true,
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                  ),
+                )),
+                Text(progressUnit),
+              ])),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: Divider(
-                color: Colors.grey,
-              ),
+            _Divider(),
+            _Line(
+              name: "Work already done",
+              child: Expanded(
+                  child: Row(children: [
+                Expanded(
+                    child: TextField(
+                  keyboardType: TextInputType.number,
+                  textAlign: TextAlign.end,
+                  cursorColor: Colors.black,
+                  controller: _currentProgressController,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(0),
+                    isDense: true,
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                  ),
+                )),
+                Text(progressUnit),
+              ])),
             ),
+            _Divider(),
           ],
         ),
         alignment: Alignment.topCenter,
@@ -90,7 +155,12 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
       floatingActionButton: new StoreConnector<AppState, _ButtonActions>(
         converter: (store) {
           return _ButtonActions(
-              addGoal: () => {store.dispatch(AddGoal(_textController.text))},
+              addGoal: () => {
+                    store.dispatch(AddGoal(
+                      goalName: _textController.text,
+                      workUnit: progressUnit,
+                    ))
+                  },
               isDuplicate: () =>
                   isDuplicate(store.state.goals, _textController.text));
         },

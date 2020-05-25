@@ -1,9 +1,20 @@
+import 'package:flutter/material.dart';
+
 import '../model/goal.dart';
 import '../model/task.dart';
 
 class AddGoal {
   final String goalName;
-  AddGoal(this.goalName);
+  final String workUnit;
+  final int totalWork;
+  final int workDone;
+  final Color color;
+  AddGoal(
+      {this.goalName,
+      this.workUnit,
+      this.totalWork,
+      this.workDone,
+      this.color});
 }
 
 class AddTask {
