@@ -7,8 +7,10 @@ import 'redux/state.dart';
 import 'redux/actions.dart';
 import 'model/goal.dart';
 import 'model/task.dart';
+import 'bottom_bar.dart';
 
 typedef void _Action(Task task);
+typedef void _SetWork(int workDone);
 
 class _GoalProps {
   Goal goal;
@@ -16,8 +18,14 @@ class _GoalProps {
   _Action cross;
   VoidCallback incrWork;
   VoidCallback decrWork;
+  _SetWork setWork;
   _GoalProps(
-      {this.goal, this.remove, this.cross, this.incrWork, this.decrWork});
+      {this.goal,
+      this.remove,
+      this.cross,
+      this.incrWork,
+      this.decrWork,
+      this.setWork});
 }
 
 class GoalPage extends StatelessWidget {
@@ -38,6 +46,9 @@ class GoalPage extends StatelessWidget {
               },
               decrWork: () => {
                 store.dispatch(DecrWork()),
+              },
+              setWork: (int workDone) => {
+                store.dispatch(SetWork(workDone)),
               },
             ),
         builder: (context, goalProps) {
@@ -80,8 +91,7 @@ class GoalPage extends StatelessWidget {
                       ]),
                       Padding(padding: EdgeInsets.only(bottom: 20)),
                       Row(children: [
-                        Text(
-                            "${goalProps.goal.workDone} / ${goalProps.goal.totalWork} ${goalProps.goal.workUnit} done",
+                        Text(goalProps.goal.workString(),
                             style: TextStyle(color: Colors.grey)),
                         Spacer(),
                         ClipOval(
@@ -99,7 +109,30 @@ class GoalPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Padding(padding: EdgeInsets.only(right: 10)),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 0),
+                            child: TextField(
+                              controller: TextEditingController()
+                                ..text = goalProps.goal.workDone.toString(),
+                              onChanged: (String value) {
+                                try {
+                                  int workDone = int.parse(value);
+                                  goalProps.setWork(workDone);
+                                } on FormatException {}
+                              },
+                              style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.center,
+                              cursorColor: Colors.white,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        ),
                         ClipOval(
                           child: Material(
                             color: Colors.white, // button color
@@ -128,50 +161,91 @@ class GoalPage extends StatelessWidget {
                       255 - color.green,
                       255 - color.blue)),
                   backgroundColor: goalProps.goal.color),
-              Expanded(
+              Padding(padding: EdgeInsets.only(top: 10)),
+              Row(children: [
+                Padding(padding: EdgeInsets.only(left: 10)),
+                Text("Actions", style: TextStyle(fontSize: 19)),
+                Padding(padding: EdgeInsets.only(left: 5)),
+                ClipOval(
+                  child: Material(
+                    color: Colors.grey, // button color
+                    child: InkWell(
+                      splashColor: Colors.white, // inkwell color
+                      child: SizedBox(
+                          width: 35,
+                          height: 35,
+                          child: Icon(Icons.add, color: Colors.white)),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CreateTaskPage()),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                Spacer(),
+                Text(goalProps.goal.tasksDone(),
+                    style: TextStyle(fontSize: 14, color: Colors.grey)),
+                Padding(padding: EdgeInsets.only(left: 10)),
+              ]),
+              Padding(padding: EdgeInsets.only(top: 5)),
+              MediaQuery.removePadding(
+                  context: context,
+                  removeTop: true,
                   child: ListView.builder(
-                itemCount: goalProps.goal.tasks.length,
-                itemBuilder: (BuildContext context, int index) {
-                  String name = goalProps.goal.tasks[index].name;
-                  return Dismissible(
-                    child: Card(
-                      child: ListTile(
-                        title: Text(name,
-                            style: goalProps.goal.tasks[index].crossed
-                                ? TextStyle(
-                                    decoration: TextDecoration.lineThrough)
-                                : null),
-                        onTap: () => {
-                          goalProps.cross(goalProps.goal.tasks[index]),
-                        },
-                      ),
-                      margin: EdgeInsets.symmetric(vertical: 2),
-                    ),
-                    key: Key(name),
-                    background: Container(
-                      color: Colors.red,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Icon(Icons.delete),
-                      ),
-                    ),
-                    onDismissed: (DismissDirection direction) =>
-                        {goalProps.remove(goalProps.goal.tasks[index])},
-                    direction: DismissDirection.endToStart,
-                  );
-                },
-              ))
+                    shrinkWrap: true,
+                    itemCount: goalProps.goal.tasks.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      String name = goalProps.goal.tasks[index].name;
+                      return Dismissible(
+                        child: Card(
+                          child: CheckboxListTile(
+                            value: goalProps.goal.tasks[index].crossed,
+                            title: Text(name,
+                                style: goalProps.goal.tasks[index].crossed
+                                    ? TextStyle(
+                                        decoration: TextDecoration.lineThrough)
+                                    : null),
+                            onChanged: (bool value) => {
+                              goalProps.cross(goalProps.goal.tasks[index]),
+                            },
+                          ),
+                          margin: EdgeInsets.only(bottom: 4),
+                        ),
+                        key: Key(name),
+                        background: Container(
+                          color: Colors.red,
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Icon(Icons.delete),
+                          ),
+                        ),
+                        onDismissed: (DismissDirection direction) =>
+                            {goalProps.remove(goalProps.goal.tasks[index])},
+                        direction: DismissDirection.endToStart,
+                      );
+                    },
+                  )),
+              Padding(padding: EdgeInsets.only(top: 5)),
+              Row(children: [
+                Padding(padding: EdgeInsets.only(left: 10)),
+                Text("Habits", style: TextStyle(fontSize: 19)),
+                Spacer(),
+              ]),
+              Spacer(),
+              BottomBar(
+                buttons: [
+                  Button(
+                    label: "Home",
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
             ]),
-            floatingActionButton: FloatingActionButton.extended(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CreateTaskPage()),
-                );
-              },
-              label: Text('Add Task'),
-              backgroundColor: Colors.pink,
-            ),
           );
         });
   }

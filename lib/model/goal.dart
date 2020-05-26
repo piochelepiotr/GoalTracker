@@ -59,6 +59,20 @@ class Goal {
     return workDone / totalWork;
   }
 
+  String workString() {
+    return "$workDone / $totalWork $workUnit done";
+  }
+
+  String tasksDone() {
+    int done = 0;
+    tasks.forEach((task) {
+      if (task.crossed) {
+        done++;
+      }
+    });
+    return "$done / ${tasks.length} actions done";
+  }
+
   factory Goal.fromJson(Map<String, dynamic> json) {
     List<Task> tasks = List<Task>();
     json['tasks']?.forEach((taskMap) => tasks.add(Task.fromJson(taskMap)));

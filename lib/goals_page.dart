@@ -6,6 +6,7 @@ import 'goal_page.dart';
 import 'redux/state.dart';
 import 'model/goal.dart';
 import 'redux/actions.dart';
+import 'quote.dart';
 
 typedef void _Action(int goalID);
 
@@ -20,9 +21,6 @@ class GoalsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('My Goals'),
-      ),
       body: new StoreConnector<AppState, _GoalsProps>(
         converter: (store) => _GoalsProps(
           goals: store.state.goals,
@@ -32,38 +30,47 @@ class GoalsPage extends StatelessWidget {
           select: (int goalID) => {store.dispatch(SelectGoal(goalID))},
         ),
         builder: (context, goalProps) {
-          return new ListView.builder(
-            itemCount: goalProps.goals.length,
-            itemBuilder: (BuildContext context, int index) {
-              Goal goal = goalProps.goals[index];
-              return Dismissible(
-                child: Card(
-                  child: ListTile(
-                      title: Text(goal.name),
-                      onTap: () => {
-                            goalProps.select(goal.id),
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => GoalPage()),
-                            )
-                          }),
-                  margin: EdgeInsets.symmetric(vertical: 2),
-                ),
-                key: Key(goal.id.toString()),
-                background: Container(
-                  color: Colors.red,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Icon(Icons.delete),
-                  ),
-                ),
-                onDismissed: (DismissDirection direction) =>
-                    {goalProps.remove(goal.id)},
-                direction: DismissDirection.endToStart,
-              );
-            },
-          );
+          return Column(children: [
+            Quote(),
+            MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: goalProps.goals.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    Goal goal = goalProps.goals[index];
+                    return Dismissible(
+                      child: Card(
+                        child: ListTile(
+                            title: Text(goal.name,
+                                style: TextStyle(color: goal.color)),
+                            subtitle: Text(goal.workString()),
+                            onTap: () => {
+                                  goalProps.select(goal.id),
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => GoalPage()),
+                                  )
+                                }),
+                        margin: EdgeInsets.symmetric(vertical: 2),
+                      ),
+                      key: Key(goal.id.toString()),
+                      background: Container(
+                        color: Colors.red,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Icon(Icons.delete),
+                        ),
+                      ),
+                      onDismissed: (DismissDirection direction) =>
+                          {goalProps.remove(goal.id)},
+                      direction: DismissDirection.endToStart,
+                    );
+                  },
+                ))
+          ]);
         },
       ),
       floatingActionButton: FloatingActionButton.extended(

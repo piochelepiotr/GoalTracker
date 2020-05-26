@@ -7,6 +7,11 @@ class IncrWork {}
 
 class DecrWork {}
 
+class SetWork {
+  final int workDone;
+  SetWork(this.workDone);
+}
+
 class AddGoal {
   final Goal goal;
   AddGoal(this.goal);

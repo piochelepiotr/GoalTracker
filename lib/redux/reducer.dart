@@ -79,6 +79,14 @@ AppState reducer(AppState prev, dynamic action) {
       return goal;
     }).toList();
     return prev.copyWith(goals: goals);
+  } else if (action is SetWork) {
+    List<Goal> goals = prev.goals.map((goal) {
+      if (goal.id == prev.selectedGoalID) {
+        return goal.copyWith(workDone: action.workDone);
+      }
+      return goal;
+    }).toList();
+    return prev.copyWith(goals: goals);
   }
   return prev;
 }

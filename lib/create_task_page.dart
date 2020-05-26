@@ -4,14 +4,13 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'redux/state.dart';
 import 'redux/actions.dart';
 import 'model/goal.dart';
+import 'editable_title.dart';
+import 'bottom_bar.dart';
 
-class _ButtonActions {
+class _AddTaskProps {
   VoidCallback addTask;
-  _ButtonActions({this.addTask});
-}
-
-bool isDuplicate(List<Goal> goals, String goalName) {
-  return goals.any((goal) => goal.name == goalName);
+  final Goal goal;
+  _AddTaskProps({this.addTask, this.goal});
 }
 
 class _CreateTaskPageState extends State<CreateTaskPage> {
@@ -20,35 +19,36 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Create task'),
-      ),
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: TextField(
-            controller: _textController,
-            decoration: InputDecoration(
-              hintText: 'Task name',
-            ),
-          ),
-        ),
-      ),
-      floatingActionButton: new StoreConnector<AppState, _ButtonActions>(
+      body: StoreConnector<AppState, _AddTaskProps>(
         converter: (store) {
-          return _ButtonActions(
+          return _AddTaskProps(
             addTask: () => {store.dispatch(AddTask(_textController.text))},
+            goal: store.state.goals
+                .firstWhere((goal) => goal.id == store.state.selectedGoalID),
           );
         },
-        builder: (context, buttonActions) {
-          return FloatingActionButton.extended(
-            onPressed: () {
-              buttonActions.addTask();
-              Navigator.pop(context);
-            },
-            label: Text('Save'),
-            backgroundColor: Colors.pink,
-          );
+        builder: (context, props) {
+          return Column(children: [
+            EditableTitle(
+              textController: _textController,
+              color: props.goal.color,
+              hint: "Task Name",
+            ),
+            Spacer(),
+            BottomBar(buttons: [
+              Button(
+                  label: "Cancel",
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
+              Button(
+                  label: "Save",
+                  onPressed: () {
+                    props.addTask();
+                    Navigator.pop(context);
+                  })
+            ]),
+          ]);
         },
       ),
     );

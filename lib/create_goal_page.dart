@@ -6,6 +6,8 @@ import 'redux/actions.dart';
 import 'model/goal.dart';
 import 'color_picker.dart';
 import 'unit_picker.dart';
+import 'bottom_bar.dart';
+import 'editable_title.dart';
 
 typedef bool _Check();
 
@@ -76,25 +78,10 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
       body: Align(
         child: Column(
           children: [
-            Container(
-              decoration: new BoxDecoration(color: goalColor),
-              child: Padding(
-                padding:
-                    EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 20),
-                child: TextField(
-                  style: TextStyle(color: Colors.white),
-                  cursorColor: Colors.white,
-                  controller: _textController,
-                  decoration: InputDecoration(
-                    hintStyle: TextStyle(color: Colors.white54),
-                    border: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                    hintText: 'Goal name',
-                  ),
-                ),
-              ),
+            EditableTitle(
+              textController: _textController,
+              color: goalColor,
+              hint: 'Goal name',
             ),
             _Line(
               name: "Unit",
@@ -164,66 +151,67 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
               ])),
             ),
             _Divider(),
+            Spacer(),
+            StoreConnector<AppState, _ButtonActions>(converter: (store) {
+              return _ButtonActions(
+                  addGoal: () {
+                    int totalWork = 0;
+                    int workDone = 0;
+                    try {
+                      totalWork = int.parse(_totalProgressController.text);
+                      workDone = int.parse(_currentProgressController.text);
+                    } on FormatException {}
+                    store.dispatch(AddGoal(Goal(
+                      name: _textController.text,
+                      workUnit: progressUnit,
+                      totalWork: totalWork,
+                      workDone: workDone,
+                      color: goalColor,
+                      id: widget.goal != null ? widget.goal.id : null,
+                    )));
+                  },
+                  isDuplicate: () =>
+                      widget.goal == null &&
+                      isDuplicate(store.state.goals, _textController.text));
+            }, builder: (context, buttonActions) {
+              return BottomBar(buttons: [
+                Button(
+                    label: "Cancel",
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    }),
+                Button(
+                    label: "Save",
+                    onPressed: () {
+                      if (buttonActions.isDuplicate()) {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Error"),
+                                content: Text(
+                                    "You already have a goal with this name"),
+                                actions: [
+                                  FlatButton(
+                                      child: Text("OK"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      }),
+                                ],
+                              );
+                            });
+                      } else {
+                        buttonActions.addGoal();
+                        Navigator.pop(context);
+                      }
+                    })
+              ]);
+            }),
           ],
         ),
         alignment: Alignment.topCenter,
       ),
-      // bottomNavigationBar: BottomAppBar(
-      //     color: Colors.white,
-      //     child: Text("hello"),
-      // ),
-      floatingActionButton: new StoreConnector<AppState, _ButtonActions>(
-        converter: (store) {
-          return _ButtonActions(
-              addGoal: () {
-                int totalWork = 0;
-                int workDone = 0;
-                try {
-                  totalWork = int.parse(_totalProgressController.text);
-                  workDone = int.parse(_currentProgressController.text);
-                } on FormatException {}
-                store.dispatch(AddGoal(Goal(
-                  name: _textController.text,
-                  workUnit: progressUnit,
-                  totalWork: totalWork,
-                  workDone: workDone,
-                  color: goalColor,
-                  id: widget.goal != null ? widget.goal.id : null,
-                )));
-              },
-              isDuplicate: () =>
-                  widget.goal == null &&
-                  isDuplicate(store.state.goals, _textController.text));
-        },
-        builder: (context, buttonActions) {
-          return FloatingActionButton.extended(
-            onPressed: () {
-              if (buttonActions.isDuplicate()) {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text("Error"),
-                        content: Text("You already have a goal with this name"),
-                        actions: [
-                          FlatButton(
-                              child: Text("OK"),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              }),
-                        ],
-                      );
-                    });
-              } else {
-                buttonActions.addGoal();
-                Navigator.pop(context);
-              }
-            },
-            label: Text('Save'),
-            backgroundColor: Colors.pink,
-          );
-        },
-      ),
+      // resizeToAvoidBottomInset: true,
     );
   }
 }
