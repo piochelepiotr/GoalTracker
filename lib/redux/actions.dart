@@ -18,8 +18,15 @@ class AddGoal {
 }
 
 class AddTask {
-  final String taskName;
-  AddTask(this.taskName);
+  final Task task;
+  AddTask(this.task);
+}
+
+class AddHabit {
+  final String name;
+  final String frequency;
+  final int times;
+  AddHabit(this.name, this.frequency, this.times);
 }
 
 class LoadGoals {

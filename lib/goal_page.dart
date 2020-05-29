@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 import 'create_task_page.dart';
+import 'add_habit_page.dart';
 import 'create_goal_page.dart';
 import 'redux/state.dart';
 import 'redux/actions.dart';
@@ -15,6 +16,7 @@ typedef void _SetWork(int workDone);
 class _GoalProps {
   Goal goal;
   _Action remove;
+  _Action editTask;
   _Action cross;
   VoidCallback incrWork;
   VoidCallback decrWork;
@@ -25,10 +27,13 @@ class _GoalProps {
       this.cross,
       this.incrWork,
       this.decrWork,
-      this.setWork});
+      this.setWork,
+      this.editTask});
 }
 
-class GoalPage extends StatelessWidget {
+class _GoalPage extends State<GoalPage> {
+  Task focusedAction;
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _GoalProps>(
@@ -50,203 +55,316 @@ class GoalPage extends StatelessWidget {
               setWork: (int workDone) => {
                 store.dispatch(SetWork(workDone)),
               },
+              editTask: (Task task) => {
+                store.dispatch(AddTask(task)),
+              },
             ),
         builder: (context, goalProps) {
           Color color = goalProps.goal.color;
+          List<Task> actions = goalProps.goal.actions();
+          List<Task> habits = goalProps.goal.habits();
+          Map<int, TextEditingController> actionControllers = Map.fromIterable(
+            actions,
+            key: (action) => action.id,
+            value: (action) => TextEditingController(text: action.name),
+          );
           return Scaffold(
             body: Column(children: [
-              Row(children: [
-                Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(color: goalProps.goal.color),
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        left: 20, right: 20, top: 50, bottom: 5),
-                    child: Column(children: [
-                      Row(children: [
-                        Text(goalProps.goal.name,
-                            style:
-                                TextStyle(fontSize: 18, color: Colors.white)),
-                        Spacer(),
-                        ClipOval(
-                          child: Material(
-                            color: color, // button color
-                            child: InkWell(
-                              splashColor: Colors.black, // inkwell color
-                              child: SizedBox(
-                                  width: 35,
-                                  height: 35,
-                                  child: Icon(Icons.edit, color: Colors.white)),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          CreateGoalPage(goal: goalProps.goal)),
-                                );
-                              },
+              Expanded(
+                  child: MediaQuery.removePadding(
+                      context: context,
+                      removeTop: true,
+                      child: ListView(children: [
+                        Row(children: [
+                          Expanded(
+                              child: Container(
+                            decoration:
+                                BoxDecoration(color: goalProps.goal.color),
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  left: 20, right: 20, top: 50, bottom: 5),
+                              child: Column(children: [
+                                Row(children: [
+                                  Text(goalProps.goal.name,
+                                      style: TextStyle(
+                                          fontSize: 18, color: Colors.white)),
+                                  Spacer(),
+                                  ClipOval(
+                                    child: Material(
+                                      color: color, // button color
+                                      child: InkWell(
+                                        splashColor:
+                                            Colors.black, // inkwell color
+                                        child: SizedBox(
+                                            width: 35,
+                                            height: 35,
+                                            child: Icon(Icons.edit,
+                                                color: Colors.white)),
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    CreateGoalPage(
+                                                        goal: goalProps.goal)),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ]),
+                                Padding(padding: EdgeInsets.only(bottom: 20)),
+                                Row(children: [
+                                  Text(goalProps.goal.workString(),
+                                      style: TextStyle(color: Colors.grey)),
+                                  Spacer(),
+                                  ClipOval(
+                                    child: Material(
+                                      color: Colors.white, // button color
+                                      child: InkWell(
+                                        splashColor:
+                                            Colors.black, // inkwell color
+                                        child: SizedBox(
+                                            width: 35,
+                                            height: 35,
+                                            child: Icon(Icons.remove)),
+                                        onTap: () {
+                                          goalProps.decrWork();
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 0),
+                                      child: TextField(
+                                        controller: TextEditingController()
+                                          ..text = goalProps.goal.workDone
+                                              .toString(),
+                                        onChanged: (String value) {
+                                          try {
+                                            int workDone = int.parse(value);
+                                            goalProps.setWork(workDone);
+                                          } on FormatException {}
+                                        },
+                                        style: TextStyle(color: Colors.white),
+                                        textAlign: TextAlign.center,
+                                        cursorColor: Colors.white,
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          enabledBorder: InputBorder.none,
+                                          errorBorder: InputBorder.none,
+                                          disabledBorder: InputBorder.none,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  ClipOval(
+                                    child: Material(
+                                      color: Colors.white, // button color
+                                      child: InkWell(
+                                        splashColor:
+                                            Colors.black, // inkwell color
+                                        child: SizedBox(
+                                            width: 35,
+                                            height: 35,
+                                            child: Icon(Icons.add)),
+                                        onTap: () {
+                                          goalProps.incrWork();
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ]),
+                              ]),
                             ),
-                          ),
-                        ),
-                      ]),
-                      Padding(padding: EdgeInsets.only(bottom: 20)),
-                      Row(children: [
-                        Text(goalProps.goal.workString(),
-                            style: TextStyle(color: Colors.grey)),
-                        Spacer(),
-                        ClipOval(
-                          child: Material(
-                            color: Colors.white, // button color
-                            child: InkWell(
-                              splashColor: Colors.black, // inkwell color
-                              child: SizedBox(
-                                  width: 35,
-                                  height: 35,
-                                  child: Icon(Icons.remove)),
-                              onTap: () {
-                                goalProps.decrWork();
-                              },
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 0),
-                            child: TextField(
-                              controller: TextEditingController()
-                                ..text = goalProps.goal.workDone.toString(),
-                              onChanged: (String value) {
-                                try {
-                                  int workDone = int.parse(value);
-                                  goalProps.setWork(workDone);
-                                } on FormatException {}
-                              },
-                              style: TextStyle(color: Colors.white),
-                              textAlign: TextAlign.center,
-                              cursorColor: Colors.white,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                enabledBorder: InputBorder.none,
-                                errorBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
+                          ))
+                        ]),
+                        LinearProgressIndicator(
+                            value: goalProps.goal.progress(),
+                            valueColor: new AlwaysStoppedAnimation<Color>(
+                                Color.fromARGB(255, 255 - color.red,
+                                    255 - color.green, 255 - color.blue)),
+                            backgroundColor: goalProps.goal.color),
+                        Padding(padding: EdgeInsets.only(top: 10)),
+                        Row(children: [
+                          Padding(padding: EdgeInsets.only(left: 10)),
+                          Text("Actions", style: TextStyle(fontSize: 19)),
+                          Padding(padding: EdgeInsets.only(left: 5)),
+                          ClipOval(
+                            child: Material(
+                              color: Colors.grey, // button color
+                              child: InkWell(
+                                splashColor: Colors.white, // inkwell color
+                                child: SizedBox(
+                                    width: 35,
+                                    height: 35,
+                                    child:
+                                        Icon(Icons.add, color: Colors.white)),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CreateTaskPage()),
+                                  );
+                                },
                               ),
                             ),
                           ),
+                          Spacer(),
+                          Text(goalProps.goal.tasksDone(),
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.grey)),
+                          Padding(padding: EdgeInsets.only(left: 10)),
+                        ]),
+                        Padding(padding: EdgeInsets.only(top: 5)),
+                        Padding(
+                          padding: EdgeInsets.only(right: 10, left: 10),
+                          child: Column(
+                            children: actions
+                                .map(
+                                  (action) => Row(children: [
+                                    Checkbox(
+                                        value: action.crossed,
+                                        onChanged: (value) {
+                                          goalProps.cross(action);
+                                        }),
+                                    Expanded(
+                                        child: FocusScope(
+                                            child: Focus(
+                                                onFocusChange: (focus) {
+                                                  if (focus) {
+                                                    setState(() {
+                                                      focusedAction = action;
+                                                    });
+                                                  }
+                                                },
+                                                child: TextField(
+                                                  controller: actionControllers[
+                                                      action.id],
+                                                  cursorColor: Colors.black,
+                                                  decoration: InputDecoration(
+                                                    contentPadding:
+                                                        EdgeInsets.all(0),
+                                                    isDense: true,
+                                                    border: InputBorder.none,
+                                                    enabledBorder:
+                                                        InputBorder.none,
+                                                    errorBorder:
+                                                        InputBorder.none,
+                                                    disabledBorder:
+                                                        InputBorder.none,
+                                                  ),
+                                                )))),
+                                  ]),
+                                )
+                                .toList(),
+                          ),
                         ),
-                        ClipOval(
-                          child: Material(
-                            color: Colors.white, // button color
-                            child: InkWell(
-                              splashColor: Colors.black, // inkwell color
-                              child: SizedBox(
-                                  width: 35,
-                                  height: 35,
-                                  child: Icon(Icons.add)),
-                              onTap: () {
-                                goalProps.incrWork();
-                              },
+                        Padding(padding: EdgeInsets.only(top: 5)),
+                        Row(children: [
+                          Padding(padding: EdgeInsets.only(left: 10)),
+                          Text("Habits", style: TextStyle(fontSize: 19)),
+                          Padding(padding: EdgeInsets.only(left: 5)),
+                          ClipOval(
+                            child: Material(
+                              color: Colors.grey, // button color
+                              child: InkWell(
+                                splashColor: Colors.white, // inkwell color
+                                child: SizedBox(
+                                    width: 35,
+                                    height: 35,
+                                    child:
+                                        Icon(Icons.add, color: Colors.white)),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AddHabitPage()),
+                                  );
+                                },
+                              ),
                             ),
                           ),
+                          Spacer(),
+                        ]),
+                        Padding(
+                          padding: EdgeInsets.only(right: 10, left: 10),
+                          child: Column(
+                            children: habits
+                                .map(
+                                  (habit) => Row(children: [
+                                    Checkbox(
+                                        value: habit.crossed,
+                                        onChanged: (value) {
+                                          goalProps.cross(habit);
+                                        }),
+                                    Expanded(
+                                        child: TextField(
+                                      controller: TextEditingController(
+                                          text: habit.name),
+                                      cursorColor: Colors.black,
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.all(0),
+                                        isDense: true,
+                                        border: InputBorder.none,
+                                        enabledBorder: InputBorder.none,
+                                        errorBorder: InputBorder.none,
+                                        disabledBorder: InputBorder.none,
+                                      ),
+                                    )),
+                                  ]),
+                                )
+                                .toList(),
+                          ),
                         ),
-                      ]),
-                    ]),
-                  ),
-                ))
-              ]),
-              LinearProgressIndicator(
-                  value: goalProps.goal.progress(),
-                  valueColor: new AlwaysStoppedAnimation<Color>(Color.fromARGB(
-                      255,
-                      255 - color.red,
-                      255 - color.green,
-                      255 - color.blue)),
-                  backgroundColor: goalProps.goal.color),
-              Padding(padding: EdgeInsets.only(top: 10)),
-              Row(children: [
-                Padding(padding: EdgeInsets.only(left: 10)),
-                Text("Actions", style: TextStyle(fontSize: 19)),
-                Padding(padding: EdgeInsets.only(left: 5)),
-                ClipOval(
-                  child: Material(
-                    color: Colors.grey, // button color
-                    child: InkWell(
-                      splashColor: Colors.white, // inkwell color
-                      child: SizedBox(
-                          width: 35,
-                          height: 35,
-                          child: Icon(Icons.add, color: Colors.white)),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CreateTaskPage()),
-                        );
-                      },
+                      ]))),
+              focusedAction != null
+                  ? BottomBar(
+                      buttons: [
+                        Button(
+                          label: "Cancel",
+                          onPressed: () {
+                            actionControllers[focusedAction.id].text =
+                                "DEADBEEF";
+                            setState(() {
+                              focusedAction = null;
+                            });
+                          },
+                        ),
+                        Button(
+                          label: "Save",
+                          onPressed: () {
+                            setState(() {
+                              goalProps.editTask(focusedAction.copyWith(
+                                  name: actionControllers[focusedAction.id]
+                                      .text));
+                              focusedAction = null;
+                            });
+                          },
+                        ),
+                      ],
+                    )
+                  : BottomBar(
+                      buttons: [
+                        Button(
+                          label: "Home",
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-                Spacer(),
-                Text(goalProps.goal.tasksDone(),
-                    style: TextStyle(fontSize: 14, color: Colors.grey)),
-                Padding(padding: EdgeInsets.only(left: 10)),
-              ]),
-              Padding(padding: EdgeInsets.only(top: 5)),
-              MediaQuery.removePadding(
-                  context: context,
-                  removeTop: true,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: goalProps.goal.tasks.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      String name = goalProps.goal.tasks[index].name;
-                      return Dismissible(
-                        child: Card(
-                          child: CheckboxListTile(
-                            value: goalProps.goal.tasks[index].crossed,
-                            title: Text(name,
-                                style: goalProps.goal.tasks[index].crossed
-                                    ? TextStyle(
-                                        decoration: TextDecoration.lineThrough)
-                                    : null),
-                            onChanged: (bool value) => {
-                              goalProps.cross(goalProps.goal.tasks[index]),
-                            },
-                          ),
-                          margin: EdgeInsets.only(bottom: 4),
-                        ),
-                        key: Key(name),
-                        background: Container(
-                          color: Colors.red,
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Icon(Icons.delete),
-                          ),
-                        ),
-                        onDismissed: (DismissDirection direction) =>
-                            {goalProps.remove(goalProps.goal.tasks[index])},
-                        direction: DismissDirection.endToStart,
-                      );
-                    },
-                  )),
-              Padding(padding: EdgeInsets.only(top: 5)),
-              Row(children: [
-                Padding(padding: EdgeInsets.only(left: 10)),
-                Text("Habits", style: TextStyle(fontSize: 19)),
-                Spacer(),
-              ]),
-              Spacer(),
-              BottomBar(
-                buttons: [
-                  Button(
-                    label: "Home",
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              ),
             ]),
           );
         });
   }
+}
+
+class GoalPage extends StatefulWidget {
+  GoalPage();
+
+  @override
+  _GoalPage createState() => _GoalPage();
 }

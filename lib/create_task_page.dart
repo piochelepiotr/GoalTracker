@@ -4,6 +4,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'redux/state.dart';
 import 'redux/actions.dart';
 import 'model/goal.dart';
+import 'model/task.dart';
 import 'editable_title.dart';
 import 'bottom_bar.dart';
 
@@ -22,7 +23,8 @@ class _CreateTaskPageState extends State<CreateTaskPage> {
       body: StoreConnector<AppState, _AddTaskProps>(
         converter: (store) {
           return _AddTaskProps(
-            addTask: () => {store.dispatch(AddTask(_textController.text))},
+            addTask: () =>
+                {store.dispatch(AddTask(Task(name: _textController.text)))},
             goal: store.state.goals
                 .firstWhere((goal) => goal.id == store.state.selectedGoalID),
           );

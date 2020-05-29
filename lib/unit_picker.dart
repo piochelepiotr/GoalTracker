@@ -1,31 +1,27 @@
 import 'package:flutter/material.dart';
 
-const String defaultPickerUnit = "Hours";
-List<String> units = ["Hours", "Minutes", "Months", "\$"];
+typedef void ValueChange(String value);
 
-typedef void UnitChange(String unit);
+class ChipPicker extends StatefulWidget {
+  final ValueChange onChange;
+  final String defaultValue;
+  final List<String> values;
 
-class UnitPicker extends StatefulWidget {
-  final UnitChange onUnitChange;
-  final String defaultUnit;
-
-  UnitPicker({this.onUnitChange, this.defaultUnit});
+  ChipPicker({this.onChange, this.defaultValue, this.values});
 
   @override
-  _UnitPicker createState() => _UnitPicker();
+  _ChipPicker createState() => _ChipPicker();
 }
 
-class _UnitPicker extends State<UnitPicker> {
-  String selectedUnit = defaultPickerUnit;
-  String acceptedUnit = defaultPickerUnit;
+class _ChipPicker extends State<ChipPicker> {
+  String selectedValue;
+  String acceptedValue;
 
   @override
   void initState() {
-    if (widget.defaultUnit != null) {
-      selectedUnit = widget.defaultUnit;
-      acceptedUnit = widget.defaultUnit;
-    }
     super.initState();
+    selectedValue = widget.defaultValue;
+    acceptedValue = widget.defaultValue;
   }
 
   @override
@@ -39,15 +35,15 @@ class _UnitPicker extends State<UnitPicker> {
               return AlertDialog(
                 contentPadding: const EdgeInsets.all(6.0),
                 content: Wrap(
-                    children: units
+                    children: widget.values
                         .map((item) => Container(
                               padding: const EdgeInsets.all(2.0),
                               child: ChoiceChip(
                                 label: Text(item),
-                                selected: item == selectedUnit,
+                                selected: item == selectedValue,
                                 onSelected: (selected) {
                                   setState(() {
-                                    selectedUnit = item;
+                                    selectedValue = item;
                                   });
                                 },
                               ),
@@ -62,10 +58,10 @@ class _UnitPicker extends State<UnitPicker> {
                     child: Text('Update'),
                     onPressed: () {
                       setState(() {
-                        acceptedUnit = selectedUnit;
+                        acceptedValue = selectedValue;
                       });
                       Navigator.of(context).pop();
-                      widget.onUnitChange(acceptedUnit);
+                      widget.onChange(acceptedValue);
                     },
                   ),
                 ],
@@ -74,7 +70,7 @@ class _UnitPicker extends State<UnitPicker> {
           },
         );
       },
-      child: Text(selectedUnit, style: TextStyle(fontSize: 18)),
+      child: Text(selectedValue, style: TextStyle(fontSize: 18)),
     );
   }
 }

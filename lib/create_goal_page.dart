@@ -8,6 +8,10 @@ import 'color_picker.dart';
 import 'unit_picker.dart';
 import 'bottom_bar.dart';
 import 'editable_title.dart';
+import 'form_line.dart';
+import 'form_divider.dart';
+
+List<String> units = ["Hours", "Minutes", "Months", "\$"];
 
 typedef bool _Check();
 
@@ -21,36 +25,6 @@ bool isDuplicate(List<Goal> goals, String goalName) {
   return goals.any((goal) => goal.name == goalName);
 }
 
-class _Line extends StatelessWidget {
-  final Widget child;
-  final String name;
-  _Line({this.child, this.name});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      child: Row(children: [
-        Expanded(child: Text(name, style: TextStyle(fontSize: 18))),
-        child,
-      ]),
-    );
-  }
-}
-
-class _Divider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15),
-      child: Divider(
-        height: 0,
-        color: Colors.grey,
-      ),
-    );
-  }
-}
-
 class _CreateGoalPageState extends State<CreateGoalPage> {
   final TextEditingController _textController = new TextEditingController();
   final TextEditingController _totalProgressController =
@@ -58,7 +32,7 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
   final TextEditingController _currentProgressController =
       new TextEditingController();
   Color goalColor = defaultPickerColor;
-  String progressUnit = defaultPickerUnit;
+  String progressUnit = units[0];
 
   @override
   void initState() {
@@ -83,18 +57,19 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
               color: goalColor,
               hint: 'Goal name',
             ),
-            _Line(
+            FormLine(
               name: "Unit",
-              child: UnitPicker(
-                  defaultUnit: progressUnit,
-                  onUnitChange: (String unit) {
+              child: ChipPicker(
+                  values: units,
+                  defaultValue: progressUnit,
+                  onChange: (String unit) {
                     setState(() {
                       progressUnit = unit;
                     });
                   }),
             ),
-            _Divider(),
-            _Line(
+            FormDivider(),
+            FormLine(
               name: "Color",
               child: ColorPicker(
                   defaultColor: goalColor,
@@ -104,8 +79,8 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
                     });
                   }),
             ),
-            _Divider(),
-            _Line(
+            FormDivider(),
+            FormLine(
               name: "Total work required",
               child: Expanded(
                   child: Row(children: [
@@ -127,8 +102,8 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
                 Text(progressUnit),
               ])),
             ),
-            _Divider(),
-            _Line(
+            FormDivider(),
+            FormLine(
               name: "Work already done",
               child: Expanded(
                   child: Row(children: [
@@ -150,7 +125,7 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
                 Text(progressUnit),
               ])),
             ),
-            _Divider(),
+            FormDivider(),
             Spacer(),
             StoreConnector<AppState, _ButtonActions>(converter: (store) {
               return _ButtonActions(

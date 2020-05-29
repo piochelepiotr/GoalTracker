@@ -43,10 +43,29 @@ AppState reducer(AppState prev, dynamic action) {
   } else if (action is SelectGoal) {
     return prev.copyWith(selectedGoalID: action.goalID);
   } else if (action is AddTask) {
-    List<Goal> goals = List.from(prev.goals);
-    List<Task> tasks =
-        goals.firstWhere((goal) => goal.id == prev.selectedGoalID).tasks;
-    tasks.add(Task(name: action.taskName, id: nextTaskID(tasks)));
+    List<Goal> goals = prev.goals.map((goal) {
+      if (goal.id == prev.selectedGoalID) {
+        bool newTask = true;
+        List<Task> tasks = List<Task>();
+        goal.tasks.forEach((task) {
+          if (task.id == action.task.id) {
+            newTask = false;
+            tasks.add(task.copyWith(
+              name: action.task.name,
+            ));
+          } else {
+            tasks.add(task);
+          }
+        });
+        if (newTask) {
+          int id = nextTaskID(tasks);
+          tasks.add(action.task.copyWith(id: id));
+        }
+        return goal.copyWith(tasks: tasks);
+      } else {
+        return goal;
+      }
+    }).toList();
     return prev.copyWith(goals: goals);
   } else if (action is RemoveTask) {
     List<Goal> goals = List.from(prev.goals);
@@ -86,6 +105,17 @@ AppState reducer(AppState prev, dynamic action) {
       }
       return goal;
     }).toList();
+    return prev.copyWith(goals: goals);
+  } else if (action is AddHabit) {
+    List<Goal> goals = List.from(prev.goals);
+    List<Task> tasks =
+        goals.firstWhere((goal) => goal.id == prev.selectedGoalID).tasks;
+    tasks.add(Task(
+        name: action.name,
+        habit: true,
+        frequency: action.frequency,
+        times: action.times,
+        id: nextTaskID(tasks)));
     return prev.copyWith(goals: goals);
   }
   return prev;

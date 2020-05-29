@@ -105,7 +105,8 @@ class Goal {
       String workUnit,
       int totalWork,
       int workDone,
-      Color color}) {
+      Color color,
+      List<Task> tasks}) {
     return Goal(
       name: name ?? this.name,
       id: id ?? this.id,
@@ -113,7 +114,23 @@ class Goal {
       totalWork: totalWork ?? this.totalWork,
       workDone: workDone ?? this.workDone,
       color: color ?? this.color,
-      tasks: this.tasks,
+      tasks: tasks ?? this.tasks,
     );
+  }
+
+  List<Task> actions() {
+    List<Task> actions = List<Task>();
+    tasks.forEach((task) => {
+          if (task.habit == null || !task.habit) {actions.add(task)}
+        });
+    return actions;
+  }
+
+  List<Task> habits() {
+    List<Task> habits = List<Task>();
+    tasks.forEach((task) => {
+          if (task.habit != null && task.habit == true) {habits.add(task)}
+        });
+    return habits;
   }
 }
