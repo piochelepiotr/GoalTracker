@@ -63,6 +63,7 @@ class _GoalPage extends State<GoalPage> {
           Color color = goalProps.goal.color;
           List<Task> actions = goalProps.goal.actions();
           List<Task> habits = goalProps.goal.habits();
+          TextEditingController newActionController = TextEditingController();
           Map<int, TextEditingController> actionControllers = Map.fromIterable(
             actions,
             key: (action) => action.id,
@@ -191,27 +192,6 @@ class _GoalPage extends State<GoalPage> {
                         Row(children: [
                           Padding(padding: EdgeInsets.only(left: 10)),
                           Text("Actions", style: TextStyle(fontSize: 19)),
-                          Padding(padding: EdgeInsets.only(left: 5)),
-                          ClipOval(
-                            child: Material(
-                              color: Colors.grey, // button color
-                              child: InkWell(
-                                splashColor: Colors.white, // inkwell color
-                                child: SizedBox(
-                                    width: 35,
-                                    height: 35,
-                                    child:
-                                        Icon(Icons.add, color: Colors.white)),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => CreateTaskPage()),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
                           Spacer(),
                           Text(goalProps.goal.tasksDone(),
                               style:
@@ -225,11 +205,15 @@ class _GoalPage extends State<GoalPage> {
                             children: actions
                                 .map(
                                   (action) => Row(children: [
-                                    Checkbox(
-                                        value: action.crossed,
-                                        onChanged: (value) {
-                                          goalProps.cross(action);
-                                        }),
+                                    SizedBox(
+                                        height: 24,
+                                        width: 24,
+                                        child: Checkbox(
+                                            value: action.crossed,
+                                            onChanged: (value) {
+                                              goalProps.cross(action);
+                                            })),
+                                    Padding(padding: EdgeInsets.only(left: 10)),
                                     Expanded(
                                         child: FocusScope(
                                             child: Focus(
@@ -241,6 +225,14 @@ class _GoalPage extends State<GoalPage> {
                                                   }
                                                 },
                                                 child: TextField(
+                                                  onSubmitted: (String value) {
+                                                    goalProps.editTask(
+                                                        focusedAction.copyWith(
+                                                            name: value));
+                                                    setState(() {
+                                                      focusedAction = null;
+                                                    });
+                                                  },
                                                   controller: actionControllers[
                                                       action.id],
                                                   cursorColor: Colors.black,
@@ -257,9 +249,63 @@ class _GoalPage extends State<GoalPage> {
                                                         InputBorder.none,
                                                   ),
                                                 )))),
+                                    (focusedAction != null &&
+                                            focusedAction.id == action.id)
+                                        ? IconButton(
+                                            icon: Icon(Icons.clear,
+                                                color: Colors.grey),
+                                            onPressed: () {
+                                              goalProps.remove(action);
+                                            })
+                                        : Container(),
                                   ]),
                                 )
-                                .toList(),
+                                .toList()
+                                  ..add(
+                                    Row(children: [
+                                      Icon(Icons.add, color: Colors.grey),
+                                      Padding(
+                                          padding: EdgeInsets.only(left: 10)),
+                                      Expanded(
+                                          child: FocusScope(
+                                              child: Focus(
+                                                  onFocusChange: (focus) {
+                                                    if (focus) {
+                                                      setState(() {
+                                                        focusedAction = Task();
+                                                      });
+                                                    }
+                                                  },
+                                                  child: TextField(
+                                                    onSubmitted:
+                                                        (String value) {
+                                                      goalProps.editTask(
+                                                          focusedAction
+                                                              .copyWith(
+                                                                  name: value));
+                                                      setState(() {
+                                                        focusedAction = null;
+                                                      });
+                                                    },
+                                                    controller:
+                                                        newActionController,
+                                                    cursorColor: Colors.black,
+                                                    decoration: InputDecoration(
+                                                      hintText: "Add Action",
+                                                      contentPadding:
+                                                          EdgeInsets.all(0),
+                                                      isDense: true,
+                                                      border: InputBorder.none,
+                                                      enabledBorder:
+                                                          InputBorder.none,
+                                                      errorBorder:
+                                                          InputBorder.none,
+                                                      disabledBorder:
+                                                          InputBorder.none,
+                                                    ),
+                                                  )))),
+                                    ]),
+                                  ),
                           ),
                         ),
                         Padding(padding: EdgeInsets.only(top: 5)),
@@ -292,32 +338,31 @@ class _GoalPage extends State<GoalPage> {
                         Padding(
                           padding: EdgeInsets.only(right: 10, left: 10),
                           child: Column(
-                            children: habits
-                                .map(
-                                  (habit) => Row(children: [
-                                    Checkbox(
-                                        value: habit.crossed,
-                                        onChanged: (value) {
-                                          goalProps.cross(habit);
-                                        }),
-                                    Expanded(
-                                        child: TextField(
-                                      controller: TextEditingController(
-                                          text: habit.name),
-                                      cursorColor: Colors.black,
-                                      decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.all(0),
-                                        isDense: true,
-                                        border: InputBorder.none,
-                                        enabledBorder: InputBorder.none,
-                                        errorBorder: InputBorder.none,
-                                        disabledBorder: InputBorder.none,
-                                      ),
-                                    )),
-                                  ]),
-                                )
-                                .toList(),
-                          ),
+                              children: habits
+                                  .map(
+                                    (habit) => Row(children: [
+                                      Checkbox(
+                                          value: habit.crossed,
+                                          onChanged: (value) {
+                                            goalProps.cross(habit);
+                                          }),
+                                      Expanded(
+                                          child: TextField(
+                                        controller: TextEditingController(
+                                            text: habit.name),
+                                        cursorColor: Colors.black,
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.all(0),
+                                          isDense: true,
+                                          border: InputBorder.none,
+                                          enabledBorder: InputBorder.none,
+                                          errorBorder: InputBorder.none,
+                                          disabledBorder: InputBorder.none,
+                                        ),
+                                      )),
+                                    ]),
+                                  )
+                                  .toList()),
                         ),
                       ]))),
               focusedAction != null
@@ -331,17 +376,26 @@ class _GoalPage extends State<GoalPage> {
                             setState(() {
                               focusedAction = null;
                             });
+                            FocusScope.of(context)
+                                .requestFocus(new FocusNode());
                           },
                         ),
                         Button(
                           label: "Save",
                           onPressed: () {
+                            String name;
+                            if (focusedAction.id == null) {
+                              name = newActionController.text;
+                            } else {
+                              name = actionControllers[focusedAction.id].text;
+                            }
+                            goalProps
+                                .editTask(focusedAction.copyWith(name: name));
                             setState(() {
-                              goalProps.editTask(focusedAction.copyWith(
-                                  name: actionControllers[focusedAction.id]
-                                      .text));
                               focusedAction = null;
                             });
+                            FocusScope.of(context)
+                                .requestFocus(new FocusNode());
                           },
                         ),
                       ],
