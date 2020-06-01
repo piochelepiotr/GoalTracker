@@ -53,3 +53,13 @@ class CrossTask {
   final Task task;
   CrossTask(this.task);
 }
+
+class FocusAction {
+  final int index;
+  FocusAction(this.index);
+}
+
+class FocusHabit {
+  final int index;
+  FocusHabit(this.index);
+}

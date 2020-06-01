@@ -1,9 +1,12 @@
+import 'package:flutter/material.dart';
+
 class Task {
   final String name;
   final int id;
   final bool habit;
   final String frequency;
   final int times;
+  final TextEditingController controller;
   bool crossed;
   Task(
       {this.name,
@@ -11,7 +14,8 @@ class Task {
       this.crossed,
       this.habit,
       this.frequency,
-      this.times}) {
+      this.times,
+      this.controller}) {
     crossed ??= false;
   }
 
@@ -22,6 +26,7 @@ class Task {
         habit: json["habit"],
         frequency: json["frequency"],
         times: json["times"],
+        controller: TextEditingController(text: json["name"]),
       );
 
   Map<String, dynamic> toMap() => {
@@ -47,6 +52,7 @@ class Task {
       frequency: frequency ?? this.frequency,
       times: times ?? this.times,
       crossed: crossed ?? this.crossed,
+      controller: this.controller,
     );
   }
 }

@@ -4,37 +4,36 @@ import 'redux/state.dart';
 import 'redux/actions.dart';
 import 'model/goal.dart';
 import 'model/task.dart';
+import 'add_habit_page.dart';
 
 typedef void _Action(Task task);
 typedef void _Focus(int index);
 
 class _Props {
   Goal goal;
-  int focusedAction;
+  int focusedHabit;
   _Action remove;
   _Action editTask;
   _Action cross;
-  _Focus focusAction;
+  _Focus focusHabit;
 
   _Props(
       {this.goal,
       this.remove,
       this.cross,
       this.editTask,
-      this.focusAction,
-      this.focusedAction});
+      this.focusHabit,
+      this.focusedHabit});
 }
 
-class ActionsList extends StatefulWidget {
-  ActionsList();
+class HabitsList extends StatefulWidget {
+  HabitsList();
 
   @override
-  _ActionsList createState() => _ActionsList();
+  _HabitsList createState() => _HabitsList();
 }
 
-class _ActionsList extends State<ActionsList> {
-  final TextEditingController newActionController = TextEditingController();
-  // final FocusNode newActionFocus = FocusNode();
+class _HabitsList extends State<HabitsList> {
   @override
   void initState() {
     super.initState();
@@ -42,7 +41,6 @@ class _ActionsList extends State<ActionsList> {
 
   @override
   Widget build(BuildContext context) {
-    print("building");
     return StoreConnector<AppState, _Props>(
       converter: (store) => _Props(
         goal: store.state.goals
@@ -56,21 +54,18 @@ class _ActionsList extends State<ActionsList> {
         editTask: (Task task) => {
           store.dispatch(AddTask(task)),
         },
-        focusAction: (int index) => {
-          store.dispatch(FocusAction(index)),
+        focusHabit: (int index) => {
+          store.dispatch(FocusHabit(index)),
         },
-        focusedAction: store.state.focusedAction,
+        focusedHabit: store.state.focusedHabit,
       ),
       builder: (context, props) {
-        List<Task> actions = props.goal.actions();
+        List<Task> habits = props.goal.habits();
         return Column(children: [
           Row(children: [
             Padding(padding: EdgeInsets.only(left: 10)),
-            Text("Actions", style: TextStyle(fontSize: 19)),
+            Text("Habits", style: TextStyle(fontSize: 19)),
             Spacer(),
-            Text(props.goal.tasksDone(),
-                style: TextStyle(fontSize: 14, color: Colors.grey)),
-            Padding(padding: EdgeInsets.only(left: 10)),
           ]),
           Padding(padding: EdgeInsets.only(top: 5)),
           Padding(
@@ -78,28 +73,27 @@ class _ActionsList extends State<ActionsList> {
             child: Column(
               children: () {
                 List<Widget> elements = List<Widget>();
-                actions.asMap().forEach(
-                      (index, action) => elements.add(Row(children: [
+                habits.asMap().forEach(
+                      (index, habit) => elements.add(Row(children: [
                         SizedBox(
                             height: 30,
                             width: 24,
                             child: Checkbox(
-                                value: action.crossed,
+                                value: habit.crossed,
                                 onChanged: (value) {
-                                  props.cross(action);
+                                  props.cross(habit);
                                 })),
                         Padding(padding: EdgeInsets.only(left: 10)),
                         Expanded(
-                            child: TextField(
+                            child: TextFormField(
                           onTap: () {
-                            props.focusAction(index);
+                            props.focusHabit(index);
                           },
-                          onSubmitted: (String value) {
-                            // props.focusAction(null);
-                            props.focusAction(null);
-                            props.editTask(action.copyWith(name: value));
+                          onFieldSubmitted: (String value) {
+                            props.focusHabit(null);
+                            props.editTask(habit.copyWith(name: value));
                           },
-                          controller: action.controller,
+                          initialValue: habit.name,
                           cursorColor: Colors.black,
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.all(0),
@@ -116,10 +110,8 @@ class _ActionsList extends State<ActionsList> {
                             child: IconButton(
                                 icon: Icon(Icons.clear, color: Colors.grey),
                                 onPressed: () {
-                                  print("removing action");
-                                  print(action.name);
-                                  props.focusAction(null);
-                                  props.remove(action);
+                                  props.focusHabit(null);
+                                  props.remove(habit);
                                 })),
                       ])),
                     );
@@ -127,33 +119,19 @@ class _ActionsList extends State<ActionsList> {
                   Row(children: [
                     Icon(Icons.add, color: Colors.grey),
                     Padding(padding: EdgeInsets.only(left: 10)),
-                    Expanded(
-                        child: TextField(
-                      onTap: () {
-                        props.focusAction(-1);
-                      },
-                      controller: newActionController,
-                      // focusNode: newActionFocus,
-                      autofocus: props.focusedAction == -1,
-                      // onEditingComplete: () {},
-                      onSubmitted: (String value) {
-                        // props.focusAction(-1);
-                        props.editTask(Task(
-                            name: value,
-                            controller: TextEditingController(text: value)));
-                        newActionController.clear();
-                      },
-                      cursorColor: Colors.black,
-                      decoration: InputDecoration(
-                        hintText: "Add Action",
-                        contentPadding: EdgeInsets.all(0),
-                        isDense: true,
-                        border: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                      ),
-                    )),
+                    GestureDetector(
+                        onTap: () {
+                          props.focusHabit(null);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddHabitPage()),
+                          );
+                        },
+                        child: Text(
+                          "Add Habit",
+                          style: TextStyle(color: Colors.grey, fontSize: 16),
+                        )),
                   ]),
                 );
                 return elements;

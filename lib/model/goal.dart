@@ -65,12 +65,13 @@ class Goal {
 
   String tasksDone() {
     int done = 0;
-    tasks.forEach((task) {
+    List<Task> actionsList = actions();
+    actionsList.forEach((task) {
       if (task.crossed) {
         done++;
       }
     });
-    return "$done / ${tasks.length} actions done";
+    return "$done / ${actionsList.length} actions done";
   }
 
   factory Goal.fromJson(Map<String, dynamic> json) {

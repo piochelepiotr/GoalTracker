@@ -68,9 +68,20 @@ AppState reducer(AppState prev, dynamic action) {
     }).toList();
     return prev.copyWith(goals: goals);
   } else if (action is RemoveTask) {
-    List<Goal> goals = List.from(prev.goals);
-    goals.firstWhere((goal) => goal.id == prev.selectedGoalID).tasks
-      ..removeWhere((task) => task.id == action.task.id);
+    print("removing task");
+    print("task text");
+    print(action.task.name);
+    print(action.task.id);
+    List<Goal> goals = prev.goals.map((goal) {
+      if (goal.id == prev.selectedGoalID) {
+        List<Task> tasks = List.from(goal.tasks)
+          ..removeWhere((task) => task.id == action.task.id);
+        return goal.copyWith(tasks: tasks);
+      } else {
+        return goal;
+      }
+    }).toList();
+    return prev.copyWith(goals: goals);
   } else if (action is CrossTask) {
     List<Goal> goals = List.from(prev.goals);
     Task task = goals
@@ -117,6 +128,10 @@ AppState reducer(AppState prev, dynamic action) {
         times: action.times,
         id: nextTaskID(tasks)));
     return prev.copyWith(goals: goals);
+  } else if (action is FocusAction) {
+    return prev.updateFocus(action.index, null);
+  } else if (action is FocusHabit) {
+    return prev.updateFocus(null, action.index);
   }
   return prev;
 }
