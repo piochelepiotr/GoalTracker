@@ -27,8 +27,7 @@ class GoalPageHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _Props>(
       converter: (store) => _Props(
-        goal: store.state.goals
-            .firstWhere((goal) => goal.id == store.state.selectedGoalID),
+        goal: store.state.activeGoal(),
         incrWork: () => {
           store.dispatch(IncrWork()),
         },

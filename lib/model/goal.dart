@@ -2,19 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'task.dart';
 
-Color stringToColor(String color) {
-  print("parsing");
-  print(color);
-  var hexColor = color.replaceAll("#", "");
-  if (hexColor.length == 6) {
-    hexColor = "FF" + hexColor;
-  }
-  if (hexColor.length == 8) {
-    print("it worked");
-    return Color(int.parse("0x$hexColor"));
-  }
-}
-
 extension HexColor on Color {
   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
   static Color fromHex(String hexString) {

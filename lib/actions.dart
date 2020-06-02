@@ -15,14 +15,17 @@ class _Props {
   _Action editTask;
   _Action cross;
   _Focus focusAction;
+  Color goalColor;
 
-  _Props(
-      {this.goal,
-      this.remove,
-      this.cross,
-      this.editTask,
-      this.focusAction,
-      this.focusedAction});
+  _Props({
+    this.goal,
+    this.remove,
+    this.cross,
+    this.editTask,
+    this.focusAction,
+    this.focusedAction,
+    this.goalColor,
+  });
 }
 
 class ActionsList extends StatefulWidget {
@@ -42,7 +45,6 @@ class _ActionsList extends State<ActionsList> {
 
   @override
   Widget build(BuildContext context) {
-    print("building");
     return StoreConnector<AppState, _Props>(
       converter: (store) => _Props(
         goal: store.state.goals
@@ -60,6 +62,7 @@ class _ActionsList extends State<ActionsList> {
           store.dispatch(FocusAction(index)),
         },
         focusedAction: store.state.focusedAction,
+        goalColor: store.state.activeGoal().color,
       ),
       builder: (context, props) {
         List<Task> actions = props.goal.actions();
@@ -79,49 +82,66 @@ class _ActionsList extends State<ActionsList> {
               children: () {
                 List<Widget> elements = List<Widget>();
                 actions.asMap().forEach(
-                      (index, action) => elements.add(Row(children: [
-                        SizedBox(
-                            height: 30,
-                            width: 24,
-                            child: Checkbox(
-                                value: action.crossed,
-                                onChanged: (value) {
-                                  props.cross(action);
-                                })),
-                        Padding(padding: EdgeInsets.only(left: 10)),
-                        Expanded(
-                            child: TextField(
-                          onTap: () {
-                            props.focusAction(index);
-                          },
-                          onSubmitted: (String value) {
-                            // props.focusAction(null);
-                            props.focusAction(null);
-                            props.editTask(action.copyWith(name: value));
-                          },
-                          controller: action.controller,
-                          cursorColor: Colors.black,
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(0),
-                            isDense: true,
-                            border: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                          ),
-                        )),
-                        SizedBox(
-                            height: 24,
-                            width: 24,
-                            child: IconButton(
-                                icon: Icon(Icons.clear, color: Colors.grey),
-                                onPressed: () {
-                                  print("removing action");
-                                  print(action.name);
-                                  props.focusAction(null);
-                                  props.remove(action);
-                                })),
-                      ])),
+                      (index, action) => elements.add(Padding(
+                          padding: EdgeInsets.symmetric(vertical: 4),
+                          child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                    height: 24,
+                                    width: 24,
+                                    child: Checkbox(
+                                        activeColor: props.goalColor,
+                                        value: action.crossed,
+                                        onChanged: (value) {
+                                          props.cross(action);
+                                        })),
+                                Padding(padding: EdgeInsets.only(left: 10)),
+                                action.crossed
+                                    ? Expanded(
+                                        child: Padding(
+                                            padding: EdgeInsets.only(top: 2),
+                                            child: Text(action.name,
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 16,
+                                                    decoration: TextDecoration
+                                                        .lineThrough))))
+                                    : Expanded(
+                                        child: Padding(
+                                            padding: EdgeInsets.only(top: 2),
+                                            child: TextField(
+                                              keyboardType: TextInputType.text,
+                                              maxLines: null,
+                                              onTap: () {
+                                                props.focusAction(index);
+                                              },
+                                              onSubmitted: (String value) {
+                                                props.focusAction(null);
+                                                props.editTask(action.copyWith(
+                                                    name: value));
+                                              },
+                                              controller: action.controller,
+                                              cursorColor: Colors.black,
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    EdgeInsets.all(0),
+                                                isDense: true,
+                                                border: InputBorder.none,
+                                                enabledBorder: InputBorder.none,
+                                                errorBorder: InputBorder.none,
+                                                disabledBorder:
+                                                    InputBorder.none,
+                                              ),
+                                            ))),
+                                GestureDetector(
+                                  onTap: () {
+                                    props.focusAction(null);
+                                    props.remove(action);
+                                  },
+                                  child: Icon(Icons.clear, color: Colors.grey),
+                                ),
+                              ]))),
                     );
                 elements.add(
                   Row(children: [
@@ -133,11 +153,8 @@ class _ActionsList extends State<ActionsList> {
                         props.focusAction(-1);
                       },
                       controller: newActionController,
-                      // focusNode: newActionFocus,
                       autofocus: props.focusedAction == -1,
-                      // onEditingComplete: () {},
                       onSubmitted: (String value) {
-                        // props.focusAction(-1);
                         props.editTask(Task(
                             name: value,
                             controller: TextEditingController(text: value)));

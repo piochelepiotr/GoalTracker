@@ -30,6 +30,10 @@ class AppState {
     );
   }
 
+  Goal activeGoal() {
+    return goals.firstWhere((goal) => goal.id == selectedGoalID);
+  }
+
   static AppState fromJson(dynamic json) {
     List<Goal> goals = List<Goal>();
     if (json == null) {

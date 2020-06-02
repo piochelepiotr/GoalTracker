@@ -85,15 +85,15 @@ class _HabitsList extends State<HabitsList> {
                                 })),
                         Padding(padding: EdgeInsets.only(left: 10)),
                         Expanded(
-                            child: TextFormField(
+                            child: TextField(
                           onTap: () {
                             props.focusHabit(index);
                           },
-                          onFieldSubmitted: (String value) {
+                          onSubmitted: (String value) {
                             props.focusHabit(null);
                             props.editTask(habit.copyWith(name: value));
                           },
-                          initialValue: habit.name,
+                          controller: habit.controller,
                           cursorColor: Colors.black,
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.all(0),
@@ -110,6 +110,8 @@ class _HabitsList extends State<HabitsList> {
                             child: IconButton(
                                 icon: Icon(Icons.clear, color: Colors.grey),
                                 onPressed: () {
+                                  FocusScope.of(context)
+                                      .requestFocus(new FocusNode());
                                   props.focusHabit(null);
                                   props.remove(habit);
                                 })),
@@ -121,6 +123,7 @@ class _HabitsList extends State<HabitsList> {
                     Padding(padding: EdgeInsets.only(left: 10)),
                     GestureDetector(
                         onTap: () {
+                          FocusScope.of(context).requestFocus(new FocusNode());
                           props.focusHabit(null);
                           Navigator.push(
                             context,

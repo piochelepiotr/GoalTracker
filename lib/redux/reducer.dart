@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'actions.dart';
 import 'state.dart';
 import '../model/goal.dart';
@@ -68,10 +69,6 @@ AppState reducer(AppState prev, dynamic action) {
     }).toList();
     return prev.copyWith(goals: goals);
   } else if (action is RemoveTask) {
-    print("removing task");
-    print("task text");
-    print(action.task.name);
-    print(action.task.id);
     List<Goal> goals = prev.goals.map((goal) {
       if (goal.id == prev.selectedGoalID) {
         List<Task> tasks = List.from(goal.tasks)
@@ -122,6 +119,7 @@ AppState reducer(AppState prev, dynamic action) {
     List<Task> tasks =
         goals.firstWhere((goal) => goal.id == prev.selectedGoalID).tasks;
     tasks.add(Task(
+        controller: TextEditingController(text: action.name),
         name: action.name,
         habit: true,
         frequency: action.frequency,
