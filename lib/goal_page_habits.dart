@@ -5,6 +5,7 @@ import 'redux/actions.dart';
 import 'model/goal.dart';
 import 'model/task.dart';
 import 'add_habit_page.dart';
+import 'text_edit.dart';
 
 typedef void _Action(Task task);
 typedef void _Focus(int index);
@@ -74,48 +75,40 @@ class _HabitsList extends State<HabitsList> {
               children: () {
                 List<Widget> elements = List<Widget>();
                 habits.asMap().forEach(
-                      (index, habit) => elements.add(Row(children: [
-                        SizedBox(
-                            height: 30,
-                            width: 24,
-                            child: Checkbox(
-                                value: habit.crossed,
-                                onChanged: (value) {
-                                  props.cross(habit);
-                                })),
-                        Padding(padding: EdgeInsets.only(left: 10)),
-                        Expanded(
-                            child: TextField(
-                          onTap: () {
-                            props.focusHabit(index);
-                          },
-                          onSubmitted: (String value) {
-                            props.focusHabit(null);
-                            props.editTask(habit.copyWith(name: value));
-                          },
-                          controller: habit.controller,
-                          cursorColor: Colors.black,
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(0),
-                            isDense: true,
-                            border: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                          ),
-                        )),
-                        SizedBox(
-                            height: 24,
-                            width: 24,
-                            child: IconButton(
-                                icon: Icon(Icons.clear, color: Colors.grey),
-                                onPressed: () {
-                                  FocusScope.of(context)
-                                      .requestFocus(new FocusNode());
-                                  props.focusHabit(null);
-                                  props.remove(habit);
-                                })),
-                      ])),
+                      (index, habit) => elements.add(Padding(
+                          padding: EdgeInsets.symmetric(vertical: 4),
+                          child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                    height: 24,
+                                    width: 24,
+                                    child: Checkbox(
+                                        value: habit.crossed,
+                                        onChanged: (value) {
+                                          props.cross(habit);
+                                        })),
+                                Padding(padding: EdgeInsets.only(left: 10)),
+                                TextEdit(
+                                  onFocus: () {
+                                    props.focusHabit(index);
+                                  },
+                                  onSubmitted: (String value) {
+                                    props.focusHabit(null);
+                                    props.editTask(habit.copyWith(name: value));
+                                  },
+                                  controller: habit.controller,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    FocusScope.of(context)
+                                        .requestFocus(new FocusNode());
+                                    props.focusHabit(null);
+                                    props.remove(habit);
+                                  },
+                                  child: Icon(Icons.clear, color: Colors.grey),
+                                ),
+                              ]))),
                     );
                 elements.add(
                   Row(children: [

@@ -4,6 +4,7 @@ import 'redux/state.dart';
 import 'redux/actions.dart';
 import 'model/goal.dart';
 import 'model/task.dart';
+import 'text_edit.dart';
 
 typedef void _Action(Task task);
 typedef void _Focus(int index);
@@ -107,33 +108,17 @@ class _ActionsList extends State<ActionsList> {
                                                     fontSize: 16,
                                                     decoration: TextDecoration
                                                         .lineThrough))))
-                                    : Expanded(
-                                        child: Padding(
-                                            padding: EdgeInsets.only(top: 2),
-                                            child: TextField(
-                                              keyboardType: TextInputType.text,
-                                              maxLines: null,
-                                              onTap: () {
-                                                props.focusAction(index);
-                                              },
-                                              onSubmitted: (String value) {
-                                                props.focusAction(null);
-                                                props.editTask(action.copyWith(
-                                                    name: value));
-                                              },
-                                              controller: action.controller,
-                                              cursorColor: Colors.black,
-                                              decoration: InputDecoration(
-                                                contentPadding:
-                                                    EdgeInsets.all(0),
-                                                isDense: true,
-                                                border: InputBorder.none,
-                                                enabledBorder: InputBorder.none,
-                                                errorBorder: InputBorder.none,
-                                                disabledBorder:
-                                                    InputBorder.none,
-                                              ),
-                                            ))),
+                                    : TextEdit(
+                                        onFocus: () {
+                                          props.focusAction(index);
+                                        },
+                                        onSubmitted: (String value) {
+                                          props.focusAction(null);
+                                          props.editTask(
+                                              action.copyWith(name: value));
+                                        },
+                                        controller: action.controller,
+                                      ),
                                 GestureDetector(
                                   onTap: () {
                                     props.focusAction(null);
@@ -144,33 +129,22 @@ class _ActionsList extends State<ActionsList> {
                               ]))),
                     );
                 elements.add(
-                  Row(children: [
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Icon(Icons.add, color: Colors.grey),
                     Padding(padding: EdgeInsets.only(left: 10)),
-                    Expanded(
-                        child: TextField(
-                      onTap: () {
+                    TextEdit(
+                      hint: 'Add Action',
+                      onFocus: () {
                         props.focusAction(-1);
                       },
-                      controller: newActionController,
-                      autofocus: props.focusedAction == -1,
                       onSubmitted: (String value) {
                         props.editTask(Task(
                             name: value,
                             controller: TextEditingController(text: value)));
                         newActionController.clear();
                       },
-                      cursorColor: Colors.black,
-                      decoration: InputDecoration(
-                        hintText: "Add Action",
-                        contentPadding: EdgeInsets.all(0),
-                        isDense: true,
-                        border: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                      ),
-                    )),
+                      controller: newActionController,
+                    ),
                   ]),
                 );
                 return elements;
