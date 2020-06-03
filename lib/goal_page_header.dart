@@ -5,7 +5,6 @@ import 'create_goal_page.dart';
 import 'redux/state.dart';
 import 'redux/actions.dart';
 import 'model/goal.dart';
-import 'model/task.dart';
 
 typedef void _SetWork(int workDone);
 
@@ -40,8 +39,6 @@ class GoalPageHeader extends StatelessWidget {
       ),
       builder: (context, props) {
         Color color = props.goal.color;
-        List<Task> actions = props.goal.actions();
-        List<Task> habits = props.goal.habits();
         return Column(children: [
           Row(children: [
             Expanded(

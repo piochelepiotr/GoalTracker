@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'task.dart';
+import 'habit.dart';
 
 extension HexColor on Color {
   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
@@ -27,16 +28,19 @@ class Goal {
   final int workDone;
   final Color color;
   List<Task> tasks;
+  List<Habit> habits;
 
   Goal(
       {this.name,
       this.id,
       this.tasks,
+      this.habits,
       this.workUnit,
       this.totalWork,
       this.workDone,
       this.color}) {
     tasks ??= List<Task>();
+    habits ??= List<Habit>();
   }
 
   double progress() {
@@ -52,22 +56,26 @@ class Goal {
 
   String tasksDone() {
     int done = 0;
-    List<Task> actionsList = actions();
-    actionsList.forEach((task) {
+    tasks.forEach((task) {
       if (task.crossed) {
         done++;
       }
     });
-    return "$done / ${actionsList.length} actions done";
+    return "$done / ${tasks.length} actions done";
   }
 
   factory Goal.fromJson(Map<String, dynamic> json) {
     List<Task> tasks = List<Task>();
-    json['tasks']?.forEach((taskMap) => tasks.add(Task.fromJson(taskMap)));
+    json['actions']
+        ?.forEach((actionMap) => tasks.add(Task.fromJson(actionMap)));
+
+    List<Habit> habits = List<Habit>();
+    json['habits']?.forEach((habitMap) => habits.add(Habit.fromJson(habitMap)));
     return Goal(
       id: json["id"],
       name: json["name"],
       tasks: tasks,
+      habits: habits,
       workUnit: json["work_unit"],
       workDone: json["work_done"],
       totalWork: json["total_work"],
@@ -79,7 +87,8 @@ class Goal {
     return {
       "id": id,
       "name": name,
-      "tasks": tasks.map((task) => task.toMap()).toList(),
+      "actions": tasks.map((task) => task.toMap()).toList(),
+      "habits": habits.map((habit) => habit.toMap()).toList(),
       "work_unit": workUnit,
       "work_done": workDone,
       "total_work": totalWork,
@@ -94,6 +103,7 @@ class Goal {
       int totalWork,
       int workDone,
       Color color,
+      List<Habit> habits,
       List<Task> tasks}) {
     return Goal(
       name: name ?? this.name,
@@ -103,22 +113,7 @@ class Goal {
       workDone: workDone ?? this.workDone,
       color: color ?? this.color,
       tasks: tasks ?? this.tasks,
+      habits: habits ?? this.habits,
     );
-  }
-
-  List<Task> actions() {
-    List<Task> actions = List<Task>();
-    tasks.forEach((task) => {
-          if (task.habit == null || !task.habit) {actions.add(task)}
-        });
-    return actions;
-  }
-
-  List<Task> habits() {
-    List<Task> habits = List<Task>();
-    tasks.forEach((task) => {
-          if (task.habit != null && task.habit == true) {habits.add(task)}
-        });
-    return habits;
   }
 }

@@ -25,7 +25,7 @@ class GoalsPage extends StatelessWidget {
         converter: (store) => _GoalsProps(
           goals: store.state.goals,
           remove: (int goalID) => {
-            store.dispatch(RemoveGoal(goalID)),
+            store.dispatch(DeleteGoal(goalID)),
           },
           select: (int goalID) => {store.dispatch(SelectGoal(goalID))},
         ),

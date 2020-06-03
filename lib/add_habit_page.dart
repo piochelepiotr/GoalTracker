@@ -4,6 +4,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'redux/state.dart';
 import 'redux/actions.dart';
 import 'model/goal.dart';
+import 'model/habit.dart';
 import 'editable_title.dart';
 import 'bottom_bar.dart';
 import 'form_line.dart';
@@ -39,8 +40,10 @@ class _AddHabitPage extends State<AddHabitPage> {
             addHabit: () {
               try {
                 int times = int.parse(_timesController.text);
-                store
-                    .dispatch(AddHabit(_textController.text, frequence, times));
+                store.dispatch(AddHabit(Habit(
+                    name: _textController.text,
+                    frequency: frequence,
+                    times: times)));
               } on FormatException {}
             },
             goal: store.state.goals

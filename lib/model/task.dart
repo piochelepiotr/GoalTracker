@@ -3,19 +3,9 @@ import 'package:flutter/material.dart';
 class Task {
   final String name;
   final int id;
-  final bool habit;
-  final String frequency;
-  final int times;
   final TextEditingController controller;
   bool crossed;
-  Task(
-      {this.name,
-      this.id,
-      this.crossed,
-      this.habit,
-      this.frequency,
-      this.times,
-      this.controller}) {
+  Task({this.name, this.id, this.crossed, this.controller}) {
     crossed ??= false;
   }
 
@@ -23,9 +13,6 @@ class Task {
         id: json["id"],
         name: json["name"],
         crossed: json["crossed"],
-        habit: json["habit"],
-        frequency: json["frequency"],
-        times: json["times"],
         controller: TextEditingController(text: json["name"]),
       );
 
@@ -33,9 +20,6 @@ class Task {
         "id": id,
         "name": name,
         "crossed": crossed,
-        "habit": habit != null ? habit : false,
-        "frequency": frequency != null ? frequency : "Day",
-        "times": times != null ? times : 1,
       };
 
   copyWith(
@@ -48,9 +32,6 @@ class Task {
     return Task(
       name: name ?? this.name,
       id: id ?? this.id,
-      habit: habit ?? this.habit,
-      frequency: frequency ?? this.frequency,
-      times: times ?? this.times,
       crossed: crossed ?? this.crossed,
       controller: this.controller,
     );

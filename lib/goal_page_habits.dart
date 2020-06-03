@@ -3,26 +3,24 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'redux/state.dart';
 import 'redux/actions.dart';
 import 'model/goal.dart';
-import 'model/task.dart';
+import 'model/habit.dart';
 import 'add_habit_page.dart';
 import 'text_edit.dart';
 
-typedef void _Action(Task task);
+typedef void _Action(Habit habit);
 typedef void _Focus(int index);
 
 class _Props {
   Goal goal;
   int focusedHabit;
   _Action remove;
-  _Action editTask;
-  _Action cross;
+  _Action editHabit;
   _Focus focusHabit;
 
   _Props(
       {this.goal,
       this.remove,
-      this.cross,
-      this.editTask,
+      this.editHabit,
       this.focusHabit,
       this.focusedHabit});
 }
@@ -46,14 +44,11 @@ class _HabitsList extends State<HabitsList> {
       converter: (store) => _Props(
         goal: store.state.goals
             .firstWhere((goal) => goal.id == store.state.selectedGoalID),
-        remove: (Task task) => {
-          store.dispatch(RemoveTask(task)),
+        remove: (Habit habit) => {
+          store.dispatch(DeleteHabit(habit)),
         },
-        cross: (Task task) => {
-          store.dispatch(CrossTask(task)),
-        },
-        editTask: (Task task) => {
-          store.dispatch(AddTask(task)),
+        editHabit: (Habit habit) => {
+          store.dispatch(EditHabit(habit)),
         },
         focusHabit: (int index) => {
           store.dispatch(FocusHabit(index)),
@@ -61,7 +56,7 @@ class _HabitsList extends State<HabitsList> {
         focusedHabit: store.state.focusedHabit,
       ),
       builder: (context, props) {
-        List<Task> habits = props.goal.habits();
+        List<Habit> habits = props.goal.habits;
         return Column(children: [
           Row(children: [
             Padding(padding: EdgeInsets.only(left: 10)),
@@ -84,10 +79,7 @@ class _HabitsList extends State<HabitsList> {
                                     height: 24,
                                     width: 24,
                                     child: Checkbox(
-                                        value: habit.crossed,
-                                        onChanged: (value) {
-                                          props.cross(habit);
-                                        })),
+                                        value: false, onChanged: (value) {})),
                                 Padding(padding: EdgeInsets.only(left: 10)),
                                 TextEdit(
                                   onFocus: () {
@@ -95,7 +87,8 @@ class _HabitsList extends State<HabitsList> {
                                   },
                                   onSubmitted: (String value) {
                                     props.focusHabit(null);
-                                    props.editTask(habit.copyWith(name: value));
+                                    props
+                                        .editHabit(habit.copyWith(name: value));
                                   },
                                   controller: habit.controller,
                                 ),

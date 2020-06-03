@@ -51,10 +51,10 @@ class _ActionsList extends State<ActionsList> {
         goal: store.state.goals
             .firstWhere((goal) => goal.id == store.state.selectedGoalID),
         remove: (Task task) => {
-          store.dispatch(RemoveTask(task)),
+          store.dispatch(DeleteAction(task)),
         },
         cross: (Task task) => {
-          store.dispatch(CrossTask(task)),
+          store.dispatch(CrossAction(task)),
         },
         editTask: (Task task) => {
           store.dispatch(AddTask(task)),
@@ -66,7 +66,7 @@ class _ActionsList extends State<ActionsList> {
         goalColor: store.state.activeGoal().color,
       ),
       builder: (context, props) {
-        List<Task> actions = props.goal.actions();
+        List<Task> actions = props.goal.tasks;
         return Column(children: [
           Row(children: [
             Padding(padding: EdgeInsets.only(left: 10)),

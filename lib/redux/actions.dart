@@ -1,18 +1,33 @@
-import 'package:flutter/material.dart';
-
 import '../model/goal.dart';
 import '../model/task.dart';
+import '../model/habit.dart';
 
 class IncrWork {}
 
 class DecrWork {}
+
+abstract class GoalsAction {}
+
+abstract class GoalAction extends GoalsAction {}
+
+abstract class HabitsAction extends GoalAction {}
+
+abstract class HabitAction extends HabitsAction {
+  Habit getHabit();
+}
+
+abstract class ActionsAction extends GoalAction {}
+
+abstract class ActionAction extends ActionsAction {
+  Task getAction();
+}
 
 class SetWork {
   final int workDone;
   SetWork(this.workDone);
 }
 
-class AddGoal {
+class AddGoal extends GoalsAction {
   final Goal goal;
   AddGoal(this.goal);
 }
@@ -23,20 +38,22 @@ class AddTask {
 }
 
 class AddHabit {
-  final String name;
-  final String frequency;
-  final int times;
-  AddHabit(this.name, this.frequency, this.times);
+  final Habit habit;
+  AddHabit(this.habit);
 }
 
-class LoadGoals {
-  final List<Goal> goals;
-  LoadGoals(this.goals);
+class EditHabit extends HabitAction {
+  final Habit habit;
+  Habit getHabit() {
+    return habit;
+  }
+
+  EditHabit(this.habit);
 }
 
-class RemoveGoal {
+class DeleteGoal {
   final int goalID;
-  RemoveGoal(this.goalID);
+  DeleteGoal(this.goalID);
 }
 
 class SelectGoal {
@@ -44,14 +61,23 @@ class SelectGoal {
   SelectGoal(this.goalID);
 }
 
-class RemoveTask {
+class DeleteAction {
   final Task task;
-  RemoveTask(this.task);
+  DeleteAction(this.task);
 }
 
-class CrossTask {
+class DeleteHabit {
+  final Habit habit;
+  DeleteHabit(this.habit);
+}
+
+class CrossAction extends ActionAction {
   final Task task;
-  CrossTask(this.task);
+  Task getAction() {
+    return task;
+  }
+
+  CrossAction(this.task);
 }
 
 class FocusAction {
