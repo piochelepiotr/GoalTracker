@@ -6,23 +6,22 @@ import 'model/goal.dart';
 import 'model/task.dart';
 import 'text_edit.dart';
 
-typedef void _Action(Task task);
-typedef void _Focus(int index);
-
 class _Props {
   Goal goal;
   int focusedAction;
-  _Action remove;
-  _Action editTask;
-  _Action cross;
-  _Focus focusAction;
+  Function(Task) remove;
+  Function(Task) editAction;
+  Function(Task) addAction;
+  Function(Task) cross;
+  Function(int) focusAction;
   Color goalColor;
 
   _Props({
     this.goal,
     this.remove,
     this.cross,
-    this.editTask,
+    this.editAction,
+    this.addAction,
     this.focusAction,
     this.focusedAction,
     this.goalColor,
@@ -56,7 +55,10 @@ class _ActionsList extends State<ActionsList> {
         cross: (Task task) => {
           store.dispatch(CrossAction(task)),
         },
-        editTask: (Task task) => {
+        editAction: (Task task) => {
+          store.dispatch(EditAction(task)),
+        },
+        addAction: (Task task) => {
           store.dispatch(AddTask(task)),
         },
         focusAction: (int index) => {
@@ -114,7 +116,7 @@ class _ActionsList extends State<ActionsList> {
                                         },
                                         onSubmitted: (String value) {
                                           props.focusAction(null);
-                                          props.editTask(
+                                          props.editAction(
                                               action.copyWith(name: value));
                                         },
                                         controller: action.controller,
@@ -138,9 +140,7 @@ class _ActionsList extends State<ActionsList> {
                         props.focusAction(-1);
                       },
                       onSubmitted: (String value) {
-                        props.editTask(Task(
-                            name: value,
-                            controller: TextEditingController(text: value)));
+                        props.addAction(Task(name: value));
                         newActionController.clear();
                       },
                       controller: newActionController,

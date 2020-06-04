@@ -36,13 +36,14 @@ class Habit {
     int id,
     String frequency,
     int times,
+    TextEditingController controller,
   }) {
     return Habit(
       name: name ?? this.name,
       id: id ?? this.id,
       frequency: frequency ?? this.frequency,
       times: times ?? this.times,
-      controller: this.controller,
+      controller: controller ?? this.controller,
     );
   }
 }

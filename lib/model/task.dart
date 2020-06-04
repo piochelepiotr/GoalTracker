@@ -28,12 +28,13 @@ class Task {
       bool habit,
       String frequency,
       int times,
+      TextEditingController controller,
       bool crossed}) {
     return Task(
       name: name ?? this.name,
       id: id ?? this.id,
       crossed: crossed ?? this.crossed,
-      controller: this.controller,
+      controller: controller ?? this.controller,
     );
   }
 }

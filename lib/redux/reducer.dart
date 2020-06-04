@@ -26,43 +26,7 @@ AppState reducer(AppState prev, dynamic action) {
   if (action is SelectGoal) {
     return prev.copyWith(selectedGoalID: action.goalID);
   }
-  if (action is AddTask) {
-    List<Goal> goals = prev.goals.map((goal) {
-      if (goal.id == prev.selectedGoalID) {
-        bool newTask = true;
-        List<Task> tasks = List<Task>();
-        goal.tasks.forEach((task) {
-          if (task.id == action.task.id) {
-            newTask = false;
-            tasks.add(task.copyWith(
-              name: action.task.name,
-            ));
-          } else {
-            tasks.add(task);
-          }
-        });
-        if (newTask) {
-          int id = nextTaskID(tasks);
-          tasks.add(action.task.copyWith(id: id));
-        }
-        return goal.copyWith(tasks: tasks);
-      } else {
-        return goal;
-      }
-    }).toList();
-    return prev.copyWith(goals: goals);
-  } else if (action is DeleteAction) {
-    List<Goal> goals = prev.goals.map((goal) {
-      if (goal.id == prev.selectedGoalID) {
-        List<Task> tasks = List.from(goal.tasks)
-          ..removeWhere((task) => task.id == action.task.id);
-        return goal.copyWith(tasks: tasks);
-      } else {
-        return goal;
-      }
-    }).toList();
-    return prev.copyWith(goals: goals);
-  } else if (action is IncrWork) {
+  if (action is IncrWork) {
     List<Goal> goals = prev.goals.map((goal) {
       if (goal.id == prev.selectedGoalID) {
         if (goal.workDone < goal.totalWork) {
@@ -89,17 +53,6 @@ AppState reducer(AppState prev, dynamic action) {
       }
       return goal;
     }).toList();
-    return prev.copyWith(goals: goals);
-  } else if (action is AddHabit) {
-    List<Goal> goals = List.from(prev.goals);
-    List<Habit> habits =
-        goals.firstWhere((goal) => goal.id == prev.selectedGoalID).habits;
-    habits.add(Habit(
-        controller: TextEditingController(text: action.habit.name),
-        name: action.habit.name,
-        frequency: action.habit.frequency,
-        times: action.habit.times,
-        id: nextHabitID(habits)));
     return prev.copyWith(goals: goals);
   } else if (action is FocusAction) {
     return prev.updateFocus(action.index, null);
@@ -167,6 +120,15 @@ Goal goalReducer(Goal prev, dynamic action) {
 }
 
 List<Habit> habitsReducer(List<Habit> prev, dynamic action) {
+  if (action is AddHabit) {
+    return List.from(prev)
+      ..add(action.habit.copyWith(
+          controller: TextEditingController(text: action.habit.name),
+          id: nextHabitID(prev)));
+  }
+  if (action is DeleteHabit) {
+    return List.from(prev)..removeWhere((habit) => habit.id == action.habit.id);
+  }
   if (action is HabitAction) {
     return prev
         .map((habit) => habit.id == action.getHabit().id
@@ -187,6 +149,16 @@ Habit habitReducer(Habit prev, dynamic action) {
 }
 
 List<Task> actionsReducer(List<Task> prev, dynamic action) {
+  if (action is AddTask) {
+    return List.from(prev)
+      ..add(action.task.copyWith(
+          controller: TextEditingController(text: action.task.name),
+          id: nextTaskID(prev)));
+  }
+  if (action is DeleteAction) {
+    return List.from(prev)
+      ..removeWhere((prevAction) => prevAction.id == action.task.id);
+  }
   if (action is ActionAction) {
     return prev
         .map((prevAction) => prevAction.id == action.getAction().id
@@ -199,6 +171,9 @@ List<Task> actionsReducer(List<Task> prev, dynamic action) {
 }
 
 Task actionReducer(Task prev, dynamic action) {
+  if (action is EditAction) {
+    return action.action;
+  }
   if (action is CrossAction) {
     return prev.copyWith(
       crossed: !prev.crossed,

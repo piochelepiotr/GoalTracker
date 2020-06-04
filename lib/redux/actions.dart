@@ -32,12 +32,21 @@ class AddGoal extends GoalsAction {
   AddGoal(this.goal);
 }
 
-class AddTask {
+class AddTask extends ActionsAction {
   final Task task;
   AddTask(this.task);
 }
 
-class AddHabit {
+class EditAction extends ActionAction {
+  final Task action;
+  Task getAction() {
+    return action;
+  }
+
+  EditAction(this.action);
+}
+
+class AddHabit extends HabitsAction {
   final Habit habit;
   AddHabit(this.habit);
 }
@@ -61,23 +70,23 @@ class SelectGoal {
   SelectGoal(this.goalID);
 }
 
-class DeleteAction {
+class DeleteAction extends ActionsAction {
   final Task task;
   DeleteAction(this.task);
 }
 
-class DeleteHabit {
+class DeleteHabit extends HabitsAction {
   final Habit habit;
   DeleteHabit(this.habit);
 }
 
 class CrossAction extends ActionAction {
-  final Task task;
+  final Task action;
   Task getAction() {
-    return task;
+    return action;
   }
 
-  CrossAction(this.task);
+  CrossAction(this.action);
 }
 
 class FocusAction {
