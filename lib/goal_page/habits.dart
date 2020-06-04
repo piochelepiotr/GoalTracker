@@ -7,6 +7,8 @@ import '../model/habit.dart';
 import '../add_habit_page.dart';
 import 'text_edit.dart';
 
+enum WhyFarther { harder, smarter, selfStarter, tradingCharter }
+
 class _Props {
   Goal goal;
   int focusedHabit;
@@ -61,79 +63,69 @@ class _HabitsList extends State<HabitsList> {
             Spacer(),
           ]),
           Padding(padding: EdgeInsets.only(top: 5)),
-          Padding(
-            padding: EdgeInsets.only(right: 10, left: 10),
-            child: Column(
-              children: () {
-                List<Widget> elements = List<Widget>();
-                habits.asMap().forEach(
-                      (index, habit) => elements.add(Padding(
-                          padding: EdgeInsets.symmetric(vertical: 4),
-                          child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                    height: 24,
-                                    width: 24,
-                                    child: Checkbox(
-                                        value: false, onChanged: (value) {})),
-                                Padding(padding: EdgeInsets.only(left: 10)),
-                                TextEdit(
-                                  onFocus: () {
-                                    props.focusHabit(index);
-                                  },
-                                  onSubmitted: (String value) {
-                                    props.focusHabit(null);
-                                    props
-                                        .editHabit(habit.copyWith(name: value));
-                                  },
-                                  controller: habit.controller,
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              AddHabitPage(habit: habit)),
-                                    );
-                                  },
-                                  child: Icon(Icons.edit, color: Colors.grey),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    FocusScope.of(context)
-                                        .requestFocus(new FocusNode());
-                                    props.focusHabit(null);
-                                    props.remove(habit);
-                                  },
-                                  child: Icon(Icons.clear, color: Colors.grey),
-                                ),
-                              ]))),
-                    );
-                elements.add(
-                  Row(children: [
-                    Icon(Icons.add, color: Colors.grey),
-                    Padding(padding: EdgeInsets.only(left: 10)),
-                    GestureDetector(
-                        onTap: () {
-                          FocusScope.of(context).requestFocus(new FocusNode());
-                          props.focusHabit(null);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AddHabitPage()),
-                          );
+          Column(
+            children: () {
+              List<Widget> elements = List<Widget>();
+              habits.asMap().forEach((index, habit) => elements.add(Card(
+                    child: ListTile(
+                      title: Text(habit.name,
+                          style: TextStyle(color: props.goal.color)),
+                      subtitle: Text(habit.workRemaining()),
+                      trailing: PopupMenuButton<String>(
+                        icon: Icon(Icons.more_vert),
+                        onSelected: (String selected) {
+                          if (selected == "delete") {
+                            FocusScope.of(context)
+                                .requestFocus(new FocusNode());
+                            props.focusHabit(null);
+                            props.remove(habit);
+                          } else if (selected == "edit") {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      AddHabitPage(habit: habit)),
+                            );
+                          }
                         },
-                        child: Text(
-                          "Add Habit",
-                          style: TextStyle(color: Colors.grey, fontSize: 16),
-                        )),
-                  ]),
-                );
-                return elements;
-              }(),
-            ),
+                        itemBuilder: (BuildContext context) =>
+                            <PopupMenuEntry<String>>[
+                          const PopupMenuItem<String>(
+                            value: "edit",
+                            child: Text('Edit'),
+                          ),
+                          const PopupMenuItem<String>(
+                            value: "delete",
+                            child: Text('Delete'),
+                          ),
+                        ],
+                      ),
+                    ),
+                    margin: EdgeInsets.symmetric(vertical: 2),
+                  )));
+              elements.add(
+                Row(children: [
+                  Padding(padding: EdgeInsets.only(left: 10)),
+                  Icon(Icons.add, color: Colors.grey),
+                  Padding(padding: EdgeInsets.only(left: 10)),
+                  GestureDetector(
+                      onTap: () {
+                        FocusScope.of(context).requestFocus(new FocusNode());
+                        props.focusHabit(null);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddHabitPage()),
+                        );
+                      },
+                      child: Text(
+                        "Add Habit",
+                        style: TextStyle(color: Colors.grey, fontSize: 16),
+                      )),
+                ]),
+              );
+              return elements;
+            }(),
           ),
         ]);
       },

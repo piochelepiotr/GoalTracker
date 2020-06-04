@@ -1,5 +1,24 @@
 import 'package:flutter/material.dart';
 
+String formatDuration(Duration d) {
+  if (d < Duration(hours: 1)) {
+    return d.inMinutes.toString() + " minutes";
+  }
+  if (d < Duration(days: 1)) {
+    return d.inHours.toString() + " hours";
+  }
+  if (d < Duration(days: 7)) {
+    return d.inDays.toString() + " days";
+  }
+  if (d < Duration(days: 30)) {
+    return (d.inDays ~/ 7).toString() + " weeks";
+  }
+  if (d < Duration(days: 365)) {
+    return (d.inDays ~/ 30).toString() + " months";
+  }
+  return " a lot of time";
+}
+
 class HabitResult {
   DateTime start;
   Duration length;
@@ -7,6 +26,7 @@ class HabitResult {
   int achieved;
   HabitResult({this.start, this.length, this.objective, this.achieved}) {
     start ??= DateTime.now();
+    achieved ??= 0;
   }
 
   factory HabitResult.fromJson(Map<String, dynamic> json) => new HabitResult(
@@ -50,6 +70,14 @@ class Habit {
     if (habitHistory.length == 0) {
       habitHistory.add(HabitResult(length: frequency, objective: times));
     }
+  }
+
+  String workRemaining() {
+    HabitResult current = habitHistory.last;
+    String timeLeft =
+        formatDuration(current.start.add(frequency).difference(DateTime.now()));
+    int repetitionsLeft = times - current.achieved;
+    return "$repetitionsLeft left to do in $timeLeft";
   }
 
   factory Habit.fromJson(Map<String, dynamic> json) {
