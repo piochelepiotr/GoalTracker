@@ -3,16 +3,16 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'redux/state.dart';
 import 'redux/actions.dart';
 import 'model/goal.dart';
-import 'model/task.dart';
+import 'model/action.dart';
 import 'text_edit.dart';
 
 class _Props {
   Goal goal;
   int focusedAction;
-  Function(Task) remove;
-  Function(Task) editAction;
-  Function(Task) addAction;
-  Function(Task) cross;
+  Function(ActionModel) remove;
+  Function(ActionModel) editAction;
+  Function(ActionModel) addAction;
+  Function(ActionModel) cross;
   Function(int) focusAction;
   Color goalColor;
 
@@ -49,16 +49,16 @@ class _ActionsList extends State<ActionsList> {
       converter: (store) => _Props(
         goal: store.state.goals
             .firstWhere((goal) => goal.id == store.state.selectedGoalID),
-        remove: (Task task) => {
+        remove: (ActionModel task) => {
           store.dispatch(DeleteAction(task)),
         },
-        cross: (Task task) => {
+        cross: (ActionModel task) => {
           store.dispatch(CrossAction(task)),
         },
-        editAction: (Task task) => {
+        editAction: (ActionModel task) => {
           store.dispatch(EditAction(task)),
         },
-        addAction: (Task task) => {
+        addAction: (ActionModel task) => {
           store.dispatch(AddTask(task)),
         },
         focusAction: (int index) => {
@@ -68,7 +68,7 @@ class _ActionsList extends State<ActionsList> {
         goalColor: store.state.activeGoal().color,
       ),
       builder: (context, props) {
-        List<Task> actions = props.goal.tasks;
+        List<ActionModel> actions = props.goal.actions;
         return Column(children: [
           Row(children: [
             Padding(padding: EdgeInsets.only(left: 10)),
@@ -140,7 +140,7 @@ class _ActionsList extends State<ActionsList> {
                         props.focusAction(-1);
                       },
                       onSubmitted: (String value) {
-                        props.addAction(Task(name: value));
+                        props.addAction(ActionModel(name: value));
                         newActionController.clear();
                       },
                       controller: newActionController,

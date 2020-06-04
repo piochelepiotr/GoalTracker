@@ -1,5 +1,5 @@
 import '../model/goal.dart';
-import '../model/task.dart';
+import '../model/action.dart';
 import '../model/habit.dart';
 
 class IncrWork {}
@@ -19,7 +19,7 @@ abstract class HabitAction extends HabitsAction {
 abstract class ActionsAction extends GoalAction {}
 
 abstract class ActionAction extends ActionsAction {
-  Task getAction();
+  ActionModel getAction();
 }
 
 class SetWork {
@@ -33,13 +33,13 @@ class AddGoal extends GoalsAction {
 }
 
 class AddTask extends ActionsAction {
-  final Task task;
+  final ActionModel task;
   AddTask(this.task);
 }
 
 class EditAction extends ActionAction {
-  final Task action;
-  Task getAction() {
+  final ActionModel action;
+  ActionModel getAction() {
     return action;
   }
 
@@ -71,7 +71,7 @@ class SelectGoal {
 }
 
 class DeleteAction extends ActionsAction {
-  final Task task;
+  final ActionModel task;
   DeleteAction(this.task);
 }
 
@@ -81,8 +81,8 @@ class DeleteHabit extends HabitsAction {
 }
 
 class CrossAction extends ActionAction {
-  final Task action;
-  Task getAction() {
+  final ActionModel action;
+  ActionModel getAction() {
     return action;
   }
 

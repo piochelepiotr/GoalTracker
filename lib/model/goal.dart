@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'task.dart';
+import 'action.dart';
 import 'habit.dart';
 
 extension HexColor on Color {
@@ -27,19 +27,19 @@ class Goal {
   final int totalWork;
   final int workDone;
   final Color color;
-  List<Task> tasks;
+  List<ActionModel> actions;
   List<Habit> habits;
 
   Goal(
       {this.name,
       this.id,
-      this.tasks,
+      this.actions,
       this.habits,
       this.workUnit,
       this.totalWork,
       this.workDone,
       this.color}) {
-    tasks ??= List<Task>();
+    actions ??= List<ActionModel>();
     habits ??= List<Habit>();
   }
 
@@ -56,25 +56,25 @@ class Goal {
 
   String tasksDone() {
     int done = 0;
-    tasks.forEach((task) {
+    actions.forEach((task) {
       if (task.crossed) {
         done++;
       }
     });
-    return "$done / ${tasks.length} actions done";
+    return "$done / ${actions.length} actions done";
   }
 
   factory Goal.fromJson(Map<String, dynamic> json) {
-    List<Task> tasks = List<Task>();
+    List<ActionModel> tasks = List<ActionModel>();
     json['actions']
-        ?.forEach((actionMap) => tasks.add(Task.fromJson(actionMap)));
+        ?.forEach((actionMap) => tasks.add(ActionModel.fromJson(actionMap)));
 
     List<Habit> habits = List<Habit>();
     json['habits']?.forEach((habitMap) => habits.add(Habit.fromJson(habitMap)));
     return Goal(
       id: json["id"],
       name: json["name"],
-      tasks: tasks,
+      actions: tasks,
       habits: habits,
       workUnit: json["work_unit"],
       workDone: json["work_done"],
@@ -87,7 +87,7 @@ class Goal {
     return {
       "id": id,
       "name": name,
-      "actions": tasks.map((task) => task.toMap()).toList(),
+      "actions": actions.map((task) => task.toMap()).toList(),
       "habits": habits.map((habit) => habit.toMap()).toList(),
       "work_unit": workUnit,
       "work_done": workDone,
@@ -104,7 +104,7 @@ class Goal {
       int workDone,
       Color color,
       List<Habit> habits,
-      List<Task> tasks}) {
+      List<ActionModel> tasks}) {
     return Goal(
       name: name ?? this.name,
       id: id ?? this.id,
@@ -112,7 +112,7 @@ class Goal {
       totalWork: totalWork ?? this.totalWork,
       workDone: workDone ?? this.workDone,
       color: color ?? this.color,
-      tasks: tasks ?? this.tasks,
+      actions: tasks ?? this.actions,
       habits: habits ?? this.habits,
     );
   }

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class Task {
+class ActionModel {
   final String name;
   final int id;
   final TextEditingController controller;
   bool crossed;
-  Task({this.name, this.id, this.crossed, this.controller}) {
+  ActionModel({this.name, this.id, this.crossed, this.controller}) {
     crossed ??= false;
   }
 
-  factory Task.fromJson(Map<String, dynamic> json) => new Task(
+  factory ActionModel.fromJson(Map<String, dynamic> json) => new ActionModel(
         id: json["id"],
         name: json["name"],
         crossed: json["crossed"],
@@ -30,7 +30,7 @@ class Task {
       int times,
       TextEditingController controller,
       bool crossed}) {
-    return Task(
+    return ActionModel(
       name: name ?? this.name,
       id: id ?? this.id,
       crossed: crossed ?? this.crossed,

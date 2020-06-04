@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'actions.dart';
 import 'state.dart';
 import '../model/goal.dart';
-import '../model/task.dart';
+import '../model/action.dart';
 import '../model/habit.dart';
 
 int nextGoalID(List<Goal> goals) {
   return goals.fold(0, (m, goal) => goal.id > m ? goal.id : m) + 1;
 }
 
-int nextTaskID(List<Task> tasks) {
+int nextTaskID(List<ActionModel> tasks) {
   return tasks.fold(0, (m, task) => task.id > m ? task.id : m) + 1;
 }
 
@@ -112,7 +112,7 @@ Goal goalReducer(Goal prev, dynamic action) {
   }
   if (action is ActionsAction) {
     return prev.copyWith(
-      tasks: actionsReducer(prev.tasks, action),
+      tasks: actionsReducer(prev.actions, action),
     );
   }
   print("unrecognized action type");
@@ -148,7 +148,7 @@ Habit habitReducer(Habit prev, dynamic action) {
   return prev;
 }
 
-List<Task> actionsReducer(List<Task> prev, dynamic action) {
+List<ActionModel> actionsReducer(List<ActionModel> prev, dynamic action) {
   if (action is AddTask) {
     return List.from(prev)
       ..add(action.task.copyWith(
@@ -170,7 +170,7 @@ List<Task> actionsReducer(List<Task> prev, dynamic action) {
   return prev;
 }
 
-Task actionReducer(Task prev, dynamic action) {
+ActionModel actionReducer(ActionModel prev, dynamic action) {
   if (action is EditAction) {
     return action.action;
   }
