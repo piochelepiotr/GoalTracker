@@ -13,19 +13,17 @@ import 'components/form_divider.dart';
 
 List<String> units = ["Hours", "Minutes", "Months", "\$"];
 
-typedef bool _Check();
-
-class _ButtonActions {
+class _Props {
   VoidCallback addGoal;
-  _Check isDuplicate;
-  _ButtonActions({this.addGoal, this.isDuplicate});
+  bool Function() isDuplicate;
+  _Props({this.addGoal, this.isDuplicate});
 }
 
 bool isDuplicate(List<Goal> goals, String goalName) {
   return goals.any((goal) => goal.name == goalName);
 }
 
-class _CreateGoalPageState extends State<CreateGoalPage> {
+class _State extends State<AddGoalPage> {
   final TextEditingController _textController = new TextEditingController();
   final TextEditingController _totalProgressController =
       new TextEditingController();
@@ -127,8 +125,8 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
             ),
             FormDivider(),
             Spacer(),
-            StoreConnector<AppState, _ButtonActions>(converter: (store) {
-              return _ButtonActions(
+            StoreConnector<AppState, _Props>(converter: (store) {
+              return _Props(
                   addGoal: () {
                     int totalWork = 0;
                     int workDone = 0;
@@ -191,9 +189,9 @@ class _CreateGoalPageState extends State<CreateGoalPage> {
   }
 }
 
-class CreateGoalPage extends StatefulWidget {
+class AddGoalPage extends StatefulWidget {
   final Goal goal;
-  CreateGoalPage({this.goal});
+  AddGoalPage({this.goal});
   @override
-  _CreateGoalPageState createState() => _CreateGoalPageState();
+  _State createState() => _State();
 }

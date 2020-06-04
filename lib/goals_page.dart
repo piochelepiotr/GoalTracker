@@ -77,7 +77,7 @@ class GoalsPage extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => CreateGoalPage()),
+            MaterialPageRoute(builder: (context) => AddGoalPage()),
           );
         },
         label: Text("Add Goal"),

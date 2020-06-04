@@ -13,10 +13,10 @@ import 'components/unit_picker.dart';
 
 List<String> frequences = ["Day", "Week", "Month", "Year"];
 
-class _AddHabitProps {
+class _Props {
   VoidCallback addHabit;
   final Goal goal;
-  _AddHabitProps({this.addHabit, this.goal});
+  _Props({this.addHabit, this.goal});
 }
 
 class _AddHabitPage extends State<AddHabitPage> {
@@ -34,9 +34,9 @@ class _AddHabitPage extends State<AddHabitPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StoreConnector<AppState, _AddHabitProps>(
+      body: StoreConnector<AppState, _Props>(
         converter: (store) {
-          return _AddHabitProps(
+          return _Props(
             addHabit: () {
               try {
                 int times = int.parse(_timesController.text);

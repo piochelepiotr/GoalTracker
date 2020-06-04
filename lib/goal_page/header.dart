@@ -66,7 +66,7 @@ class GoalPageHeader extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      CreateGoalPage(goal: props.goal)),
+                                      AddGoalPage(goal: props.goal)),
                             );
                           },
                         ),
