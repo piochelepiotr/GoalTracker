@@ -7,15 +7,12 @@ import '../model/habit.dart';
 import '../add_habit_page.dart';
 import 'text_edit.dart';
 
-typedef void _Action(Habit habit);
-typedef void _Focus(int index);
-
 class _Props {
   Goal goal;
   int focusedHabit;
-  _Action remove;
-  _Action editHabit;
-  _Focus focusHabit;
+  Function(Habit) remove;
+  Function(Habit) editHabit;
+  Function(int) focusHabit;
 
   _Props(
       {this.goal,
@@ -91,6 +88,17 @@ class _HabitsList extends State<HabitsList> {
                                         .editHabit(habit.copyWith(name: value));
                                   },
                                   controller: habit.controller,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              AddHabitPage(habit: habit)),
+                                    );
+                                  },
+                                  child: Icon(Icons.edit, color: Colors.grey),
                                 ),
                                 GestureDetector(
                                   onTap: () {

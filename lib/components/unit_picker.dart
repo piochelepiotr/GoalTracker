@@ -4,10 +4,10 @@ typedef void ValueChange(String value);
 
 class ChipPicker extends StatefulWidget {
   final ValueChange onChange;
-  final String defaultValue;
+  final String value;
   final List<String> values;
 
-  ChipPicker({this.onChange, this.defaultValue, this.values});
+  ChipPicker({this.onChange, this.value, this.values});
 
   @override
   _ChipPicker createState() => _ChipPicker();
@@ -15,13 +15,11 @@ class ChipPicker extends StatefulWidget {
 
 class _ChipPicker extends State<ChipPicker> {
   String selectedValue;
-  String acceptedValue;
 
   @override
   void initState() {
     super.initState();
-    selectedValue = widget.defaultValue;
-    acceptedValue = widget.defaultValue;
+    selectedValue = widget.value;
   }
 
   @override
@@ -57,11 +55,8 @@ class _ChipPicker extends State<ChipPicker> {
                   FlatButton(
                     child: Text('Update'),
                     onPressed: () {
-                      setState(() {
-                        acceptedValue = selectedValue;
-                      });
                       Navigator.of(context).pop();
-                      widget.onChange(acceptedValue);
+                      widget.onChange(selectedValue);
                     },
                   ),
                 ],

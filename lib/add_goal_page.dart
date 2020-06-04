@@ -59,7 +59,7 @@ class _State extends State<AddGoalPage> {
               name: "Unit",
               child: ChipPicker(
                   values: units,
-                  defaultValue: progressUnit,
+                  value: progressUnit,
                   onChange: (String unit) {
                     setState(() {
                       progressUnit = unit;

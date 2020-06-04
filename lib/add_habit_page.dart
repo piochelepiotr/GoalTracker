@@ -11,24 +11,44 @@ import 'components/form_line.dart';
 import 'components/form_divider.dart';
 import 'components/unit_picker.dart';
 
-List<String> frequences = ["Day", "Week", "Month", "Year"];
+class _Frequency {
+  final String repr;
+  final Duration period;
+  _Frequency({this.repr, this.period});
+}
+
+List<_Frequency> frequences = [
+  _Frequency(repr: "Day", period: Duration(days: 1)),
+  _Frequency(repr: "Week", period: Duration(days: 7)),
+  _Frequency(repr: "Month", period: Duration(days: 30)),
+  _Frequency(repr: "Year", period: Duration(days: 365))
+];
 
 class _Props {
   VoidCallback addHabit;
+  Function(Habit) editHabit;
   final Goal goal;
-  _Props({this.addHabit, this.goal});
+  _Props({this.addHabit, this.editHabit, this.goal});
 }
 
 class _AddHabitPage extends State<AddHabitPage> {
   final TextEditingController _textController = new TextEditingController();
-  final TextEditingController _timesController = new TextEditingController()
-    ..text = '1';
+  final TextEditingController _timesController = new TextEditingController();
   String frequence;
 
   @override
   void initState() {
-    frequence = frequences[0];
     super.initState();
+    if (widget.habit != null) {
+      _textController.text = widget.habit.name;
+      _timesController.text = widget.habit.times.toString();
+      frequence = frequences
+          .firstWhere((freq) => freq.period == widget.habit.frequency)
+          .repr;
+    } else {
+      frequence = frequences[0].repr;
+      _timesController.text = '1';
+    }
   }
 
   @override
@@ -42,9 +62,14 @@ class _AddHabitPage extends State<AddHabitPage> {
                 int times = int.parse(_timesController.text);
                 store.dispatch(AddHabit(Habit(
                     name: _textController.text,
-                    frequency: frequence,
+                    frequency: frequences
+                        .firstWhere((freq) => freq.repr == frequence)
+                        .period,
                     times: times)));
               } on FormatException {}
+            },
+            editHabit: (habit) {
+              store.dispatch(EditHabit(habit));
             },
             goal: store.state.goals
                 .firstWhere((goal) => goal.id == store.state.selectedGoalID),
@@ -60,8 +85,8 @@ class _AddHabitPage extends State<AddHabitPage> {
             FormLine(
               name: "Every",
               child: ChipPicker(
-                  values: frequences,
-                  defaultValue: frequence,
+                  values: frequences.map((period) => period.repr).toList(),
+                  value: frequence,
                   onChange: (String f) {
                     setState(() {
                       frequence = f;
@@ -101,7 +126,19 @@ class _AddHabitPage extends State<AddHabitPage> {
               Button(
                   label: "Save",
                   onPressed: () {
-                    props.addHabit();
+                    if (widget.habit != null) {
+                      try {
+                        int times = int.parse(_timesController.text);
+                        props.editHabit(widget.habit.copyWith(
+                            name: _textController.text,
+                            frequency: frequences
+                                .firstWhere((freq) => freq.repr == frequence)
+                                .period,
+                            times: times));
+                      } on FormatException {}
+                    } else {
+                      props.addHabit();
+                    }
                     Navigator.pop(context);
                   })
             ]),
@@ -113,6 +150,8 @@ class _AddHabitPage extends State<AddHabitPage> {
 }
 
 class AddHabitPage extends StatefulWidget {
+  final Habit habit;
+  AddHabitPage({this.habit});
   @override
   _AddHabitPage createState() => _AddHabitPage();
 }

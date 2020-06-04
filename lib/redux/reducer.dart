@@ -142,6 +142,7 @@ List<Habit> habitsReducer(List<Habit> prev, dynamic action) {
 
 Habit habitReducer(Habit prev, dynamic action) {
   if (action is EditHabit) {
+    print("editing habit");
     return action.habit;
   }
   print("unrecognized action type");
