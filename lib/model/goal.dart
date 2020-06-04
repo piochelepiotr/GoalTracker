@@ -54,10 +54,10 @@ class Goal {
     return "$workDone / $totalWork $workUnit done";
   }
 
-  String tasksDone() {
+  String actionsDone() {
     int done = 0;
-    actions.forEach((task) {
-      if (task.crossed) {
+    actions.forEach((action) {
+      if (action.crossed) {
         done++;
       }
     });
@@ -65,16 +65,16 @@ class Goal {
   }
 
   factory Goal.fromJson(Map<String, dynamic> json) {
-    List<ActionModel> tasks = List<ActionModel>();
+    List<ActionModel> actions = List<ActionModel>();
     json['actions']
-        ?.forEach((actionMap) => tasks.add(ActionModel.fromJson(actionMap)));
+        ?.forEach((actionMap) => actions.add(ActionModel.fromJson(actionMap)));
 
     List<Habit> habits = List<Habit>();
     json['habits']?.forEach((habitMap) => habits.add(Habit.fromJson(habitMap)));
     return Goal(
       id: json["id"],
       name: json["name"],
-      actions: tasks,
+      actions: actions,
       habits: habits,
       workUnit: json["work_unit"],
       workDone: json["work_done"],
@@ -87,7 +87,7 @@ class Goal {
     return {
       "id": id,
       "name": name,
-      "actions": actions.map((task) => task.toMap()).toList(),
+      "actions": actions.map((action) => action.toMap()).toList(),
       "habits": habits.map((habit) => habit.toMap()).toList(),
       "work_unit": workUnit,
       "work_done": workDone,
@@ -104,7 +104,7 @@ class Goal {
       int workDone,
       Color color,
       List<Habit> habits,
-      List<ActionModel> tasks}) {
+      List<ActionModel> actions}) {
     return Goal(
       name: name ?? this.name,
       id: id ?? this.id,
@@ -112,7 +112,7 @@ class Goal {
       totalWork: totalWork ?? this.totalWork,
       workDone: workDone ?? this.workDone,
       color: color ?? this.color,
-      actions: tasks ?? this.actions,
+      actions: actions ?? this.actions,
       habits: habits ?? this.habits,
     );
   }

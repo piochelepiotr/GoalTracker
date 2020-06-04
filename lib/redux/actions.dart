@@ -32,9 +32,9 @@ class AddGoal extends GoalsAction {
   AddGoal(this.goal);
 }
 
-class AddTask extends ActionsAction {
-  final ActionModel task;
-  AddTask(this.task);
+class AddAction extends ActionsAction {
+  final ActionModel action;
+  AddAction(this.action);
 }
 
 class EditAction extends ActionAction {
@@ -71,8 +71,8 @@ class SelectGoal {
 }
 
 class DeleteAction extends ActionsAction {
-  final ActionModel task;
-  DeleteAction(this.task);
+  final ActionModel action;
+  DeleteAction(this.action);
 }
 
 class DeleteHabit extends HabitsAction {

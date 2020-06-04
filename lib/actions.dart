@@ -49,17 +49,17 @@ class _ActionsList extends State<ActionsList> {
       converter: (store) => _Props(
         goal: store.state.goals
             .firstWhere((goal) => goal.id == store.state.selectedGoalID),
-        remove: (ActionModel task) => {
-          store.dispatch(DeleteAction(task)),
+        remove: (ActionModel action) => {
+          store.dispatch(DeleteAction(action)),
         },
-        cross: (ActionModel task) => {
-          store.dispatch(CrossAction(task)),
+        cross: (ActionModel action) => {
+          store.dispatch(CrossAction(action)),
         },
-        editAction: (ActionModel task) => {
-          store.dispatch(EditAction(task)),
+        editAction: (ActionModel action) => {
+          store.dispatch(EditAction(action)),
         },
-        addAction: (ActionModel task) => {
-          store.dispatch(AddTask(task)),
+        addAction: (ActionModel action) => {
+          store.dispatch(AddAction(action)),
         },
         focusAction: (int index) => {
           store.dispatch(FocusAction(index)),
@@ -74,7 +74,7 @@ class _ActionsList extends State<ActionsList> {
             Padding(padding: EdgeInsets.only(left: 10)),
             Text("Actions", style: TextStyle(fontSize: 19)),
             Spacer(),
-            Text(props.goal.tasksDone(),
+            Text(props.goal.actionsDone(),
                 style: TextStyle(fontSize: 14, color: Colors.grey)),
             Padding(padding: EdgeInsets.only(left: 10)),
           ]),

@@ -9,8 +9,8 @@ int nextGoalID(List<Goal> goals) {
   return goals.fold(0, (m, goal) => goal.id > m ? goal.id : m) + 1;
 }
 
-int nextTaskID(List<ActionModel> tasks) {
-  return tasks.fold(0, (m, task) => task.id > m ? task.id : m) + 1;
+int nextActionID(List<ActionModel> actions) {
+  return actions.fold(0, (m, action) => action.id > m ? action.id : m) + 1;
 }
 
 int nextHabitID(List<Habit> habits) {
@@ -112,7 +112,7 @@ Goal goalReducer(Goal prev, dynamic action) {
   }
   if (action is ActionsAction) {
     return prev.copyWith(
-      tasks: actionsReducer(prev.actions, action),
+      actions: actionsReducer(prev.actions, action),
     );
   }
   print("unrecognized action type");
@@ -149,15 +149,15 @@ Habit habitReducer(Habit prev, dynamic action) {
 }
 
 List<ActionModel> actionsReducer(List<ActionModel> prev, dynamic action) {
-  if (action is AddTask) {
+  if (action is AddAction) {
     return List.from(prev)
-      ..add(action.task.copyWith(
-          controller: TextEditingController(text: action.task.name),
-          id: nextTaskID(prev)));
+      ..add(action.action.copyWith(
+          controller: TextEditingController(text: action.action.name),
+          id: nextActionID(prev)));
   }
   if (action is DeleteAction) {
     return List.from(prev)
-      ..removeWhere((prevAction) => prevAction.id == action.task.id);
+      ..removeWhere((prevAction) => prevAction.id == action.action.id);
   }
   if (action is ActionAction) {
     return prev
