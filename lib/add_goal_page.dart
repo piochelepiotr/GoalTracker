@@ -4,12 +4,12 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'redux/state.dart';
 import 'redux/actions.dart';
 import 'model/goal.dart';
-import 'color_picker.dart';
-import 'unit_picker.dart';
-import 'bottom_bar.dart';
-import 'editable_title.dart';
-import 'form_line.dart';
-import 'form_divider.dart';
+import 'components/color_picker.dart';
+import 'components/unit_picker.dart';
+import 'components/bottom_bar.dart';
+import 'components/editable_title.dart';
+import 'components/form_line.dart';
+import 'components/form_divider.dart';
 
 List<String> units = ["Hours", "Minutes", "Months", "\$"];
 

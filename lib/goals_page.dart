@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-import 'create_goal_page.dart';
-import 'goal_page.dart';
+import 'add_goal_page.dart';
+import 'goal_page/goal_page.dart';
 import 'redux/state.dart';
 import 'model/goal.dart';
 import 'redux/actions.dart';

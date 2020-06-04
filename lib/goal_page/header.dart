@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-import 'create_goal_page.dart';
-import 'redux/state.dart';
-import 'redux/actions.dart';
-import 'model/goal.dart';
+import '../add_goal_page.dart';
+import '../redux/state.dart';
+import '../redux/actions.dart';
+import '../model/goal.dart';
 
 typedef void _SetWork(int workDone);
 

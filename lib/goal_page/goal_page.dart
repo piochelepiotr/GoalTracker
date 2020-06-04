@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-import 'redux/state.dart';
-import 'redux/actions.dart';
-import 'bottom_bar.dart';
+import '../redux/state.dart';
+import '../redux/actions.dart';
+import '../components/bottom_bar.dart';
 import 'actions.dart';
-import 'goal_page_habits.dart';
-import 'goal_page_header.dart';
+import 'habits.dart';
+import 'header.dart';
 
 typedef void _Focus(int index);
 

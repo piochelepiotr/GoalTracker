@@ -5,11 +5,11 @@ import 'redux/state.dart';
 import 'redux/actions.dart';
 import 'model/goal.dart';
 import 'model/habit.dart';
-import 'editable_title.dart';
-import 'bottom_bar.dart';
-import 'form_line.dart';
-import 'form_divider.dart';
-import 'unit_picker.dart';
+import 'components/editable_title.dart';
+import 'components/bottom_bar.dart';
+import 'components/form_line.dart';
+import 'components/form_divider.dart';
+import 'components/unit_picker.dart';
 
 List<String> frequences = ["Day", "Week", "Month", "Year"];
 

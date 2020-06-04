@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'redux/state.dart';
-import 'redux/actions.dart';
-import 'model/goal.dart';
-import 'model/habit.dart';
-import 'add_habit_page.dart';
+import '../redux/state.dart';
+import '../redux/actions.dart';
+import '../model/goal.dart';
+import '../model/habit.dart';
+import '../add_habit_page.dart';
 import 'text_edit.dart';
 
 typedef void _Action(Habit habit);
