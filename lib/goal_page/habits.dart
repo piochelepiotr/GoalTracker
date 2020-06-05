@@ -5,23 +5,17 @@ import '../redux/actions.dart';
 import '../model/goal.dart';
 import '../model/habit.dart';
 import '../add_habit_page.dart';
-import 'text_edit.dart';
-
-enum WhyFarther { harder, smarter, selfStarter, tradingCharter }
 
 class _Props {
   Goal goal;
-  int focusedHabit;
   Function(Habit) remove;
   Function(Habit) editHabit;
-  Function(int) focusHabit;
 
-  _Props(
-      {this.goal,
-      this.remove,
-      this.editHabit,
-      this.focusHabit,
-      this.focusedHabit});
+  _Props({
+    this.goal,
+    this.remove,
+    this.editHabit,
+  });
 }
 
 class HabitsList extends StatefulWidget {
@@ -49,10 +43,6 @@ class _HabitsList extends State<HabitsList> {
         editHabit: (Habit habit) => {
           store.dispatch(EditHabit(habit)),
         },
-        focusHabit: (int index) => {
-          store.dispatch(FocusHabit(index)),
-        },
-        focusedHabit: store.state.focusedHabit,
       ),
       builder: (context, props) {
         List<Habit> habits = props.goal.habits;
@@ -64,9 +54,12 @@ class _HabitsList extends State<HabitsList> {
           ]),
           Padding(padding: EdgeInsets.only(top: 5)),
           Column(
+            // onReorder: (oldIndex, newIndex) {
+            // },
             children: () {
               List<Widget> elements = List<Widget>();
               habits.asMap().forEach((index, habit) => elements.add(Card(
+                    key: Key(habit.id.toString()),
                     child: ListTile(
                       title: Text(habit.name,
                           style: TextStyle(color: props.goal.color)),
@@ -75,9 +68,6 @@ class _HabitsList extends State<HabitsList> {
                         icon: Icon(Icons.more_vert),
                         onSelected: (String selected) {
                           if (selected == "delete") {
-                            FocusScope.of(context)
-                                .requestFocus(new FocusNode());
-                            props.focusHabit(null);
                             props.remove(habit);
                           } else if (selected == "edit") {
                             Navigator.push(
@@ -103,30 +93,26 @@ class _HabitsList extends State<HabitsList> {
                     ),
                     margin: EdgeInsets.symmetric(vertical: 2),
                   )));
-              elements.add(
-                Row(children: [
-                  Padding(padding: EdgeInsets.only(left: 10)),
-                  Icon(Icons.add, color: Colors.grey),
-                  Padding(padding: EdgeInsets.only(left: 10)),
-                  GestureDetector(
-                      onTap: () {
-                        FocusScope.of(context).requestFocus(new FocusNode());
-                        props.focusHabit(null);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddHabitPage()),
-                        );
-                      },
-                      child: Text(
-                        "Add Habit",
-                        style: TextStyle(color: Colors.grey, fontSize: 16),
-                      )),
-                ]),
-              );
               return elements;
             }(),
           ),
+          Row(children: [
+            Padding(padding: EdgeInsets.only(left: 10)),
+            Icon(Icons.add, color: Colors.grey),
+            Padding(padding: EdgeInsets.only(left: 10)),
+            GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).requestFocus(new FocusNode());
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddHabitPage()),
+                  );
+                },
+                child: Text(
+                  "Add Habit",
+                  style: TextStyle(color: Colors.grey, fontSize: 16),
+                )),
+          ]),
         ]);
       },
     );

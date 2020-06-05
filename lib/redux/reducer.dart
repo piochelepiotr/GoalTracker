@@ -56,8 +56,6 @@ AppState reducer(AppState prev, dynamic action) {
     return prev.copyWith(goals: goals);
   } else if (action is FocusAction) {
     return prev.updateFocus(action.index, null);
-  } else if (action is FocusHabit) {
-    return prev.updateFocus(null, action.index);
   }
   if (action is GoalsAction) {
     return prev.copyWith(
@@ -83,6 +81,17 @@ List<Goal> goalsReducer(List<Goal> prev, dynamic action, int selectedGoalID) {
       int id = nextGoalID(prev);
       goals.add(action.goal.copyWith(id: id));
     }
+    return goals;
+  }
+  if (action is ReOrderGoals) {
+    int oldIndex = action.oldIndex;
+    List<Goal> goals = List.from(prev);
+    Goal goal = goals[oldIndex];
+    goals.insert(action.newIndex, goal);
+    if (action.newIndex < oldIndex) {
+      oldIndex++;
+    }
+    goals.removeAt(oldIndex);
     return goals;
   }
   if (action is GoalAction) {
@@ -129,6 +138,17 @@ List<Habit> habitsReducer(List<Habit> prev, dynamic action) {
   if (action is DeleteHabit) {
     return List.from(prev)..removeWhere((habit) => habit.id == action.habit.id);
   }
+  if (action is ReOrderHabits) {
+    int oldIndex = action.oldIndex;
+    List<Habit> habits = List.from(prev);
+    Habit habit = habits[oldIndex];
+    habits.insert(action.newIndex, habit);
+    if (action.newIndex < oldIndex) {
+      oldIndex++;
+    }
+    habits.removeAt(oldIndex);
+    return habits;
+  }
   if (action is HabitAction) {
     return prev
         .map((habit) => habit.id == action.getHabit().id
@@ -159,6 +179,16 @@ List<ActionModel> actionsReducer(List<ActionModel> prev, dynamic action) {
   if (action is DeleteAction) {
     return List.from(prev)
       ..removeWhere((prevAction) => prevAction.id == action.action.id);
+  }
+  if (action is ReOrderActions) {
+    int oldIndex = action.oldIndex;
+    List<ActionModel> actions = List.from(prev);
+    actions.insert(action.newIndex, actions[oldIndex]);
+    if (action.newIndex < oldIndex) {
+      oldIndex++;
+    }
+    actions.removeAt(oldIndex);
+    return actions;
   }
   if (action is ActionAction) {
     return prev

@@ -8,68 +8,70 @@ import 'model/goal.dart';
 import 'redux/actions.dart';
 import 'quote.dart';
 
-typedef void _Action(int goalID);
-
-class _GoalsProps {
+class _Props {
   List<Goal> goals;
-  _Action remove;
-  _Action select;
-  _GoalsProps({this.goals, this.remove, this.select});
+  Function(int) remove;
+  Function(int) select;
+  Function(int oldIndex, int newIndex) reOrder;
+  _Props({this.goals, this.remove, this.select, this.reOrder});
 }
 
 class GoalsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: new StoreConnector<AppState, _GoalsProps>(
-        converter: (store) => _GoalsProps(
+      body: new StoreConnector<AppState, _Props>(
+        converter: (store) => _Props(
           goals: store.state.goals,
           remove: (int goalID) => {
             store.dispatch(DeleteGoal(goalID)),
           },
+          reOrder: (int oldIndex, int newIndex) => {
+            store.dispatch(ReOrderGoals(oldIndex, newIndex)),
+          },
           select: (int goalID) => {store.dispatch(SelectGoal(goalID))},
         ),
-        builder: (context, goalProps) {
+        builder: (context, props) {
           return Column(children: [
             Quote(),
-            MediaQuery.removePadding(
-                context: context,
-                removeTop: true,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: goalProps.goals.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    Goal goal = goalProps.goals[index];
-                    return Dismissible(
-                      child: Card(
-                        child: ListTile(
-                            title: Text(goal.name,
-                                style: TextStyle(color: goal.color)),
-                            subtitle: Text(goal.workString()),
-                            onTap: () => {
-                                  goalProps.select(goal.id),
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => GoalPage()),
-                                  )
-                                }),
-                        margin: EdgeInsets.symmetric(vertical: 2),
+            Expanded(
+                child: ReorderableListView(
+              onReorder: (oldIndex, newIndex) {
+                print("reorder $oldIndex -> $newIndex");
+                props.reOrder(oldIndex, newIndex);
+              },
+              children: [
+                for (final goal in props.goals)
+                  Dismissible(
+                    child: Card(
+                      margin: EdgeInsets.symmetric(vertical: 2),
+                      child: ListTile(
+                        title: Text(goal.name,
+                            style: TextStyle(color: goal.color)),
+                        subtitle: Text(goal.workString()),
+                        onTap: () => {
+                          props.select(goal.id),
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => GoalPage()),
+                          )
+                        },
                       ),
-                      key: Key(goal.id.toString()),
-                      background: Container(
-                        color: Colors.red,
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Icon(Icons.delete),
-                        ),
+                    ),
+                    key: Key(goal.id.toString()),
+                    background: Container(
+                      color: Colors.red,
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Icon(Icons.delete),
                       ),
-                      onDismissed: (DismissDirection direction) =>
-                          {goalProps.remove(goal.id)},
-                      direction: DismissDirection.endToStart,
-                    );
-                  },
-                ))
+                    ),
+                    onDismissed: (DismissDirection direction) =>
+                        {props.remove(goal.id)},
+                    direction: DismissDirection.endToStart,
+                  )
+              ],
+            ))
           ]);
         },
       ),

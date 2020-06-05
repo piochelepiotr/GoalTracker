@@ -94,7 +94,20 @@ class FocusAction {
   FocusAction(this.index);
 }
 
-class FocusHabit {
-  final int index;
-  FocusHabit(this.index);
+class ReOrderHabits extends HabitsAction {
+  final int oldIndex;
+  final int newIndex;
+  ReOrderHabits(this.oldIndex, this.newIndex);
+}
+
+class ReOrderActions extends ActionsAction {
+  final int oldIndex;
+  final int newIndex;
+  ReOrderActions(this.oldIndex, this.newIndex);
+}
+
+class ReOrderGoals extends GoalsAction {
+  final int oldIndex;
+  final int newIndex;
+  ReOrderGoals(this.oldIndex, this.newIndex);
 }

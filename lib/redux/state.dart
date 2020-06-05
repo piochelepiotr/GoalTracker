@@ -6,17 +6,14 @@ class AppState {
   List<Goal> goals = List<Goal>();
   int selectedGoalID = 0;
   int focusedAction;
-  int focusedHabit;
 
-  AppState(
-      {this.goals, this.selectedGoalID, this.focusedAction, this.focusedHabit});
+  AppState({this.goals, this.selectedGoalID, this.focusedAction});
 
   AppState copyWith({List<Goal> goals, int selectedGoalID}) {
     return AppState(
       goals: goals ?? this.goals,
       selectedGoalID: selectedGoalID ?? this.selectedGoalID,
       focusedAction: this.focusedAction,
-      focusedHabit: this.focusedHabit,
     );
   }
 
@@ -26,7 +23,6 @@ class AppState {
       goals: this.goals,
       selectedGoalID: this.selectedGoalID,
       focusedAction: focusedAction,
-      focusedHabit: focusedHabit,
     );
   }
 

@@ -42,8 +42,7 @@ class _GoalPage extends State<GoalPage> {
                 ]))),
         StoreConnector<AppState, _Props>(
           converter: (store) => _Props(
-            focused: store.state.focusedAction != null ||
-                store.state.focusedHabit != null,
+            focused: store.state.focusedAction != null,
             focusAction: (int index) => {
               store.dispatch(FocusAction(index)),
             },
