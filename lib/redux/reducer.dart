@@ -159,8 +159,21 @@ List<Habit> habitsReducer(List<Habit> prev, dynamic action) {
 
 Habit habitReducer(Habit prev, dynamic action) {
   if (action is EditHabit) {
-    print("editing habit");
     return action.habit;
+  }
+  if (action is IncrHabitAchieved) {
+    int achieved = prev.achieved;
+    if (prev.achieved < prev.objective) {
+      achieved++;
+    }
+    return prev.copyWith(achieved: achieved);
+  }
+  if (action is DecrHabitAchieved) {
+    int achieved = prev.achieved;
+    if (prev.achieved > 0) {
+      achieved--;
+    }
+    return prev.copyWith(achieved: achieved);
   }
   print("unrecognized action type");
   return prev;

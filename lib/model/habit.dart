@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
-
 String formatDuration(Duration d) {
+  if (d < Duration(minutes: 1)) {
+    return d.inSeconds.toString() + " seconds";
+  }
   if (d < Duration(hours: 1)) {
     return d.inMinutes.toString() + " minutes";
   }
@@ -31,14 +32,14 @@ class HabitResult {
 
   factory HabitResult.fromJson(Map<String, dynamic> json) => new HabitResult(
         start: DateTime.fromMicrosecondsSinceEpoch(json["start"]),
-        length: Duration(minutes: json["period"]),
+        length: Duration(seconds: json["period"]),
         achieved: json["achieved"],
         objective: json["objective"],
       );
 
   Map<String, dynamic> toJson() => {
         "start": start.microsecondsSinceEpoch,
-        "period": length.inMinutes,
+        "period": length.inSeconds,
         "achieved": achieved,
         "objective": objective,
       };
@@ -48,9 +49,10 @@ class Habit {
   final String name;
   final int id;
   final Duration period;
+  String remainingTime;
   final int objective;
   final int achieved;
-  final DateTime start;
+  DateTime start;
   List<HabitResult> habitHistory;
   Habit(
       {this.name,
@@ -61,6 +63,17 @@ class Habit {
       this.habitHistory,
       this.start}) {
     habitHistory ??= List<HabitResult>();
+    start ??= DateTime.now();
+    remainingTime = getRemainingTime();
+  }
+
+  String getRemainingTime() {
+    return formatDuration(start.add(period).difference(DateTime.now()));
+  }
+
+  bool shouldUpdate() {
+    return start.add(period).isBefore(DateTime.now()) ||
+        getRemainingTime() != remainingTime;
   }
 
   // updateHistory shifts the list of achieved / failed goals based on current time. It returns a new habit
@@ -83,11 +96,11 @@ class Habit {
   }
 
   String workRemaining() {
-    HabitResult current = habitHistory.last;
-    String timeLeft =
-        formatDuration(current.start.add(period).difference(DateTime.now()));
-    int repetitionsLeft = achieved - current.achieved;
-    return "$repetitionsLeft left to do in $timeLeft";
+    int repetitionsLeft = objective - achieved;
+    if (repetitionsLeft == 0) {
+      return "Well done! Next time in $remainingTime";
+    }
+    return "$repetitionsLeft left to do in $remainingTime";
   }
 
   factory Habit.fromJson(Map<String, dynamic> json) {
@@ -97,7 +110,7 @@ class Habit {
     return Habit(
       id: json["id"],
       name: json["name"],
-      period: Duration(minutes: json["period"]),
+      period: Duration(seconds: json["period"]),
       objective: json["objective"],
       achieved: json["achieved"],
       start: DateTime.fromMicrosecondsSinceEpoch(json["start"]),
@@ -108,7 +121,7 @@ class Habit {
   Map<String, dynamic> toMap() => {
         "id": id,
         "name": name,
-        "period": period.inMinutes,
+        "period": period.inSeconds,
         "objective": objective,
         "achieved": achieved,
         "history": habitHistory.map((result) => result.toJson()).toList(),
@@ -119,7 +132,7 @@ class Habit {
     DateTime start,
     String name,
     int id,
-    Duration frequency,
+    Duration period,
     int objective,
     int achieved,
     List<HabitResult> habitHistory,
@@ -128,7 +141,7 @@ class Habit {
       start: start ?? this.start,
       name: name ?? this.name,
       id: id ?? this.id,
-      period: frequency ?? this.period,
+      period: period ?? this.period,
       objective: objective ?? this.objective,
       achieved: achieved ?? this.achieved,
       habitHistory: habitHistory ?? this.habitHistory,

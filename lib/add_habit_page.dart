@@ -13,16 +13,17 @@ import 'components/chip_picker.dart';
 
 class _Frequency {
   final String repr;
-  final Duration period;
-  _Frequency({this.repr, this.period});
+  final Duration duration;
+  _Frequency({this.repr, this.duration});
 }
 
-List<_Frequency> frequences = [
-  _Frequency(repr: "5m", period: Duration(minutes: 5)),
-  _Frequency(repr: "Day", period: Duration(days: 1)),
-  _Frequency(repr: "Week", period: Duration(days: 7)),
-  _Frequency(repr: "Month", period: Duration(days: 30)),
-  _Frequency(repr: "Year", period: Duration(days: 365))
+List<_Frequency> periods = [
+  _Frequency(repr: "30s", duration: Duration(seconds: 30)),
+  _Frequency(repr: "5m", duration: Duration(minutes: 5)),
+  _Frequency(repr: "Day", duration: Duration(days: 1)),
+  _Frequency(repr: "Week", duration: Duration(days: 7)),
+  _Frequency(repr: "Month", duration: Duration(days: 30)),
+  _Frequency(repr: "Year", duration: Duration(days: 365))
 ];
 
 class _Props {
@@ -33,22 +34,23 @@ class _Props {
 }
 
 class _AddHabitPage extends State<AddHabitPage> {
-  final TextEditingController _textController = new TextEditingController();
-  final TextEditingController _timesController = new TextEditingController();
-  String frequence;
+  final TextEditingController _nameController = new TextEditingController();
+  final TextEditingController _objectiveController =
+      new TextEditingController();
+  String period;
 
   @override
   void initState() {
     super.initState();
     if (widget.habit != null) {
-      _textController.text = widget.habit.name;
-      _timesController.text = widget.habit.times.toString();
-      frequence = frequences
-          .firstWhere((freq) => freq.period == widget.habit.period)
+      _nameController.text = widget.habit.name;
+      _objectiveController.text = widget.habit.objective.toString();
+      period = periods
+          .firstWhere((period) => period.duration == widget.habit.period)
           .repr;
     } else {
-      frequence = frequences[0].repr;
-      _timesController.text = '1';
+      period = periods[0].repr;
+      _objectiveController.text = '1';
     }
   }
 
@@ -60,13 +62,13 @@ class _AddHabitPage extends State<AddHabitPage> {
           return _Props(
             addHabit: () {
               try {
-                int times = int.parse(_timesController.text);
+                int times = int.parse(_objectiveController.text);
                 store.dispatch(AddHabit(Habit(
-                    name: _textController.text,
-                    period: frequences
-                        .firstWhere((freq) => freq.repr == frequence)
-                        .period,
-                    times: times)));
+                    name: _nameController.text,
+                    period: periods
+                        .firstWhere((freq) => freq.repr == period)
+                        .duration,
+                    objective: times)));
               } on FormatException {}
             },
             editHabit: (habit) {
@@ -79,24 +81,24 @@ class _AddHabitPage extends State<AddHabitPage> {
         builder: (context, props) {
           return Column(children: [
             EditableTitle(
-              textController: _textController,
+              textController: _nameController,
               color: props.goal.color,
               hint: "Habit name",
             ),
             FormLine(
               name: "Every",
               child: ChipPicker(
-                  values: frequences.map((period) => period.repr).toList(),
-                  value: frequence,
+                  values: periods.map((period) => period.repr).toList(),
+                  value: period,
                   onChange: (String f) {
                     setState(() {
-                      frequence = f;
+                      period = f;
                     });
                   }),
             ),
             FormDivider(),
             FormLine(
-              name: "Times / $frequence",
+              name: "Times / $period",
               child: Expanded(
                   child: Row(children: [
                 Expanded(
@@ -104,7 +106,7 @@ class _AddHabitPage extends State<AddHabitPage> {
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.end,
                   cursorColor: Colors.black,
-                  controller: _timesController,
+                  controller: _objectiveController,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(0),
                     isDense: true,
@@ -129,13 +131,13 @@ class _AddHabitPage extends State<AddHabitPage> {
                   onPressed: () {
                     if (widget.habit != null) {
                       try {
-                        int times = int.parse(_timesController.text);
+                        int objective = int.parse(_objectiveController.text);
                         props.editHabit(widget.habit.copyWith(
-                            name: _textController.text,
-                            frequency: frequences
-                                .firstWhere((freq) => freq.repr == frequence)
-                                .period,
-                            times: times));
+                            name: _nameController.text,
+                            period: periods
+                                .firstWhere((freq) => freq.repr == period)
+                                .duration,
+                            objective: objective));
                       } on FormatException {}
                     } else {
                       props.addHabit();

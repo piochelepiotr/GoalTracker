@@ -111,3 +111,19 @@ class ReOrderGoals extends GoalsAction {
   final int newIndex;
   ReOrderGoals(this.oldIndex, this.newIndex);
 }
+
+class IncrHabitAchieved extends HabitAction {
+  final Habit habit;
+  IncrHabitAchieved(this.habit);
+  Habit getHabit() {
+    return habit;
+  }
+}
+
+class DecrHabitAchieved extends HabitAction {
+  final Habit habit;
+  DecrHabitAchieved(this.habit);
+  Habit getHabit() {
+    return habit;
+  }
+}

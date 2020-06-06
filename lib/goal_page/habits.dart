@@ -5,12 +5,15 @@ import '../redux/actions.dart';
 import '../model/goal.dart';
 import '../model/habit.dart';
 import '../add_habit_page.dart';
-import 'package:reorderables/reorderables.dart';
+import '../components/refresher.dart';
+import '../components/round_icon_button.dart';
 
 class _Props {
   Goal goal;
   Function(Habit) remove;
   Function(Habit) editHabit;
+  Function(Habit) incrHabitAchieved;
+  Function(Habit) decrHabitAchieved;
   Function(int oldIndex, int newIndex) reOrder;
 
   _Props({
@@ -18,6 +21,8 @@ class _Props {
     this.remove,
     this.editHabit,
     this.reOrder,
+    this.incrHabitAchieved,
+    this.decrHabitAchieved,
   });
 }
 
@@ -29,6 +34,7 @@ class HabitsList extends StatefulWidget {
 }
 
 class _HabitsList extends State<HabitsList> {
+  int selectedHabitID;
   @override
   void initState() {
     super.initState();
@@ -46,11 +52,25 @@ class _HabitsList extends State<HabitsList> {
           editHabit: (Habit habit) => {
                 store.dispatch(EditHabit(habit)),
               },
+          incrHabitAchieved: (Habit habit) => {
+                store.dispatch(IncrHabitAchieved(habit)),
+              },
+          decrHabitAchieved: (Habit habit) => {
+                store.dispatch(DecrHabitAchieved(habit)),
+              },
           reOrder: (int oldIndex, int newIndex) {
             store.dispatch(ReOrderHabits(oldIndex, newIndex));
           }),
       builder: (context, props) {
         return Column(children: [
+          Refresher(refresh: () {
+            for (Habit habit in props.goal.habits) {
+              if (habit.shouldUpdate()) {
+                Habit updatedHabit = habit.updateHistory();
+                props.editHabit(updatedHabit);
+              }
+            }
+          }),
           Row(children: [
             Padding(padding: EdgeInsets.only(left: 10)),
             Text("Habits", style: TextStyle(fontSize: 19)),
@@ -65,37 +85,84 @@ class _HabitsList extends State<HabitsList> {
               for (final habit in props.goal.habits)
                 Card(
                   key: Key(habit.id.toString()),
-                  child: ListTile(
-                    title: Text(habit.name,
-                        style: TextStyle(color: props.goal.color)),
-                    subtitle: Text(habit.workRemaining()),
-                    trailing: PopupMenuButton<String>(
-                      icon: Icon(Icons.more_vert),
-                      onSelected: (String selected) {
-                        if (selected == "delete") {
-                          props.remove(habit);
-                        } else if (selected == "edit") {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    AddHabitPage(habit: habit)),
-                          );
-                        }
+                  child: Column(children: [
+                    ListTile(
+                      onTap: () {
+                        setState(() {
+                          if (selectedHabitID == habit.id) {
+                            selectedHabitID = null;
+                          } else {
+                            selectedHabitID = habit.id;
+                          }
+                        });
                       },
-                      itemBuilder: (BuildContext context) =>
-                          <PopupMenuEntry<String>>[
-                        const PopupMenuItem<String>(
-                          value: "edit",
-                          child: Text('Edit'),
-                        ),
-                        const PopupMenuItem<String>(
-                          value: "delete",
-                          child: Text('Delete'),
-                        ),
-                      ],
+                      title: Text(habit.name,
+                          style: TextStyle(color: props.goal.color)),
+                      subtitle: Text(habit.workRemaining()),
+                      trailing: PopupMenuButton<String>(
+                        icon: Icon(Icons.more_vert),
+                        onSelected: (String selected) {
+                          if (selected == "delete") {
+                            props.remove(habit);
+                          } else if (selected == "edit") {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      AddHabitPage(habit: habit)),
+                            );
+                          }
+                        },
+                        itemBuilder: (BuildContext context) =>
+                            <PopupMenuEntry<String>>[
+                          const PopupMenuItem<String>(
+                            value: "edit",
+                            child: Text('Edit'),
+                          ),
+                          const PopupMenuItem<String>(
+                            value: "delete",
+                            child: Text('Delete'),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                    if (selectedHabitID == habit.id)
+                      Row(
+                        children: [
+                          Padding(padding: EdgeInsets.only(left: 10)),
+                          RoundIconButton(
+                            color: props.goal.color,
+                            secondaryColor: Colors.white,
+                            onTap: () {
+                              props.decrHabitAchieved(habit);
+                            },
+                            icon: Icons.remove,
+                          ),
+                          Padding(padding: EdgeInsets.only(left: 10)),
+                          RoundIconButton(
+                            color: props.goal.color,
+                            secondaryColor: Colors.white,
+                            onTap: () {
+                              props.incrHabitAchieved(habit);
+                            },
+                            icon: Icons.add,
+                          ),
+                          Spacer(),
+                          RaisedButton(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 15),
+                            onPressed: () {},
+                            child: Text("View History",
+                                style: TextStyle(fontSize: 15)),
+                            color: props.goal.color,
+                            textColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100.0)),
+                          ),
+                          Padding(padding: EdgeInsets.only(left: 10)),
+                        ],
+                      )
+                  ]),
                   margin: EdgeInsets.symmetric(vertical: 2),
                 )
             ],
