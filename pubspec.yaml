@@ -24,12 +24,12 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_redux:
-  redux_thunk:
   sqflite:
   redux_persist:
   redux_persist_flutter:
   flutter_material_color_picker:
   flutter_redux_dev_tools:
+  reorderables:
 
 
   # The following adds the Cupertino Icons font to your application.

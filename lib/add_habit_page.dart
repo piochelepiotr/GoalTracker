@@ -9,7 +9,7 @@ import 'components/editable_title.dart';
 import 'components/bottom_bar.dart';
 import 'components/form_line.dart';
 import 'components/form_divider.dart';
-import 'components/unit_picker.dart';
+import 'components/chip_picker.dart';
 
 class _Frequency {
   final String repr;
@@ -18,6 +18,7 @@ class _Frequency {
 }
 
 List<_Frequency> frequences = [
+  _Frequency(repr: "5m", period: Duration(minutes: 5)),
   _Frequency(repr: "Day", period: Duration(days: 1)),
   _Frequency(repr: "Week", period: Duration(days: 7)),
   _Frequency(repr: "Month", period: Duration(days: 30)),
@@ -43,7 +44,7 @@ class _AddHabitPage extends State<AddHabitPage> {
       _textController.text = widget.habit.name;
       _timesController.text = widget.habit.times.toString();
       frequence = frequences
-          .firstWhere((freq) => freq.period == widget.habit.frequency)
+          .firstWhere((freq) => freq.period == widget.habit.period)
           .repr;
     } else {
       frequence = frequences[0].repr;
@@ -62,7 +63,7 @@ class _AddHabitPage extends State<AddHabitPage> {
                 int times = int.parse(_timesController.text);
                 store.dispatch(AddHabit(Habit(
                     name: _textController.text,
-                    frequency: frequences
+                    period: frequences
                         .firstWhere((freq) => freq.repr == frequence)
                         .period,
                     times: times)));

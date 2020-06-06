@@ -47,36 +47,46 @@ class HabitResult {
 class Habit {
   final String name;
   final int id;
-  final Duration frequency;
-  final int times;
-  final TextEditingController controller;
+  final Duration period;
+  final int objective;
+  final int achieved;
+  final DateTime start;
   List<HabitResult> habitHistory;
   Habit(
       {this.name,
       this.id,
-      this.frequency,
-      this.times,
-      this.controller,
-      this.habitHistory}) {
+      this.period,
+      this.objective,
+      this.achieved = 0,
+      this.habitHistory,
+      this.start}) {
     habitHistory ??= List<HabitResult>();
-    updateHistory();
-    DateTime now = DateTime.now();
-    print("habit was created that many minutes ago");
-    print(now.difference(habitHistory.last.start).inMinutes);
   }
 
-  // updateHistory shifts the list of achieved / failed goals based on current time
-  void updateHistory() {
-    if (habitHistory.length == 0) {
-      habitHistory.add(HabitResult(length: frequency, objective: times));
+  // updateHistory shifts the list of achieved / failed goals based on current time. It returns a new habit
+  Habit updateHistory() {
+    int achieved = this.achieved;
+    List<HabitResult> habitHistory = List<HabitResult>.from(this.habitHistory);
+    DateTime start = this.start;
+    DateTime now = DateTime.now();
+    while (start.add(period).isBefore(now)) {
+      habitHistory.add(HabitResult(
+          length: period, objective: objective, achieved: achieved));
+      achieved = 0;
+      start = start.add(period);
     }
+    return this.copyWith(
+      achieved: achieved,
+      habitHistory: habitHistory,
+      start: start,
+    );
   }
 
   String workRemaining() {
     HabitResult current = habitHistory.last;
     String timeLeft =
-        formatDuration(current.start.add(frequency).difference(DateTime.now()));
-    int repetitionsLeft = times - current.achieved;
+        formatDuration(current.start.add(period).difference(DateTime.now()));
+    int repetitionsLeft = achieved - current.achieved;
     return "$repetitionsLeft left to do in $timeLeft";
   }
 
@@ -87,9 +97,10 @@ class Habit {
     return Habit(
       id: json["id"],
       name: json["name"],
-      frequency: Duration(minutes: json["frequency"]),
-      times: json["times"],
-      controller: TextEditingController(text: json["name"]),
+      period: Duration(minutes: json["period"]),
+      objective: json["objective"],
+      achieved: json["achieved"],
+      start: DateTime.fromMicrosecondsSinceEpoch(json["start"]),
       habitHistory: habitHistory,
     );
   }
@@ -97,24 +108,30 @@ class Habit {
   Map<String, dynamic> toMap() => {
         "id": id,
         "name": name,
-        "frequency": frequency.inMinutes,
-        "times": times,
+        "period": period.inMinutes,
+        "objective": objective,
+        "achieved": achieved,
         "history": habitHistory.map((result) => result.toJson()).toList(),
+        "start": start.microsecondsSinceEpoch,
       };
 
-  copyWith({
+  Habit copyWith({
+    DateTime start,
     String name,
     int id,
     Duration frequency,
-    int times,
-    TextEditingController controller,
+    int objective,
+    int achieved,
+    List<HabitResult> habitHistory,
   }) {
     return Habit(
+      start: start ?? this.start,
       name: name ?? this.name,
       id: id ?? this.id,
-      frequency: frequency ?? this.frequency,
-      times: times ?? this.times,
-      controller: controller ?? this.controller,
+      period: frequency ?? this.period,
+      objective: objective ?? this.objective,
+      achieved: achieved ?? this.achieved,
+      habitHistory: habitHistory ?? this.habitHistory,
     );
   }
 }

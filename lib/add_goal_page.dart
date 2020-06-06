@@ -5,7 +5,7 @@ import 'redux/state.dart';
 import 'redux/actions.dart';
 import 'model/goal.dart';
 import 'components/color_picker.dart';
-import 'components/unit_picker.dart';
+import 'components/chip_picker.dart';
 import 'components/bottom_bar.dart';
 import 'components/editable_title.dart';
 import 'components/form_line.dart';

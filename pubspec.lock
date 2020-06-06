@@ -205,13 +205,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.8.2"
-  redux_thunk:
+  reorderables:
     dependency: "direct main"
     description:
-      name: redux_thunk
+      name: reorderables
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.2"
   shared_preferences:
     dependency: transitive
     description:

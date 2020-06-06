@@ -130,10 +130,7 @@ Goal goalReducer(Goal prev, dynamic action) {
 
 List<Habit> habitsReducer(List<Habit> prev, dynamic action) {
   if (action is AddHabit) {
-    return List.from(prev)
-      ..add(action.habit.copyWith(
-          controller: TextEditingController(text: action.habit.name),
-          id: nextHabitID(prev)));
+    return List.from(prev)..add(action.habit.copyWith(id: nextHabitID(prev)));
   }
   if (action is DeleteHabit) {
     return List.from(prev)..removeWhere((habit) => habit.id == action.habit.id);

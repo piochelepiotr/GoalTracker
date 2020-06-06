@@ -139,6 +139,7 @@ class _ActionsList extends State<ActionsList> {
                       onFocus: () {
                         props.focusAction(-1);
                       },
+                      onEditingComplete: () {},
                       onSubmitted: (String value) {
                         props.addAction(ActionModel(name: value));
                         newActionController.clear();

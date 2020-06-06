@@ -7,6 +7,7 @@ import 'redux/state.dart';
 import 'model/goal.dart';
 import 'redux/actions.dart';
 import 'quote.dart';
+import 'package:reorderables/reorderables.dart';
 
 class _Props {
   List<Goal> goals;
