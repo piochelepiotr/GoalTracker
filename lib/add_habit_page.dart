@@ -11,21 +11,6 @@ import 'components/form_line.dart';
 import 'components/form_divider.dart';
 import 'components/chip_picker.dart';
 
-class _Frequency {
-  final String repr;
-  final Duration duration;
-  _Frequency({this.repr, this.duration});
-}
-
-List<_Frequency> periods = [
-  _Frequency(repr: "30s", duration: Duration(seconds: 30)),
-  _Frequency(repr: "5m", duration: Duration(minutes: 5)),
-  _Frequency(repr: "Day", duration: Duration(days: 1)),
-  _Frequency(repr: "Week", duration: Duration(days: 7)),
-  _Frequency(repr: "Month", duration: Duration(days: 30)),
-  _Frequency(repr: "Year", duration: Duration(days: 365))
-];
-
 class _Props {
   VoidCallback addHabit;
   Function(Habit) editHabit;
@@ -45,9 +30,7 @@ class _AddHabitPage extends State<AddHabitPage> {
     if (widget.habit != null) {
       _nameController.text = widget.habit.name;
       _objectiveController.text = widget.habit.objective.toString();
-      period = periods
-          .firstWhere((period) => period.duration == widget.habit.period)
-          .repr;
+      period = getPeriodRepr(widget.habit.period);
     } else {
       period = periods[0].repr;
       _objectiveController.text = '1';
@@ -65,9 +48,7 @@ class _AddHabitPage extends State<AddHabitPage> {
                 int times = int.parse(_objectiveController.text);
                 store.dispatch(AddHabit(Habit(
                     name: _nameController.text,
-                    period: periods
-                        .firstWhere((freq) => freq.repr == period)
-                        .duration,
+                    period: getPeriodDuration(period),
                     objective: times)));
               } on FormatException {}
             },

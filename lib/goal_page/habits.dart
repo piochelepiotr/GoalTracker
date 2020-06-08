@@ -7,6 +7,7 @@ import '../model/habit.dart';
 import '../add_habit_page.dart';
 import '../components/refresher.dart';
 import '../components/round_icon_button.dart';
+import '../habit_history_page.dart';
 
 class _Props {
   Goal goal;
@@ -96,8 +97,13 @@ class _HabitsList extends State<HabitsList> {
                           }
                         });
                       },
-                      title: Text(habit.name,
-                          style: TextStyle(color: props.goal.color)),
+                      title: Row(children: [
+                        Text(habit.name,
+                            style: TextStyle(color: props.goal.color)),
+                        Padding(padding: EdgeInsets.only(left: 10)),
+                        Text(habit.historySummary(),
+                            style: TextStyle(color: Colors.grey, fontSize: 12)),
+                      ]),
                       subtitle: Text(habit.workRemaining()),
                       trailing: PopupMenuButton<String>(
                         icon: Icon(Icons.more_vert),
@@ -151,7 +157,14 @@ class _HabitsList extends State<HabitsList> {
                           RaisedButton(
                             padding: EdgeInsets.symmetric(
                                 vertical: 5, horizontal: 15),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HabitHistoryPage(
+                                        habit: habit, color: props.goal.color)),
+                              );
+                            },
                             child: Text("View History",
                                 style: TextStyle(fontSize: 15)),
                             color: props.goal.color,

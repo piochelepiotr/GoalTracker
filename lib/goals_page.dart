@@ -7,7 +7,8 @@ import 'redux/state.dart';
 import 'model/goal.dart';
 import 'redux/actions.dart';
 import 'quote.dart';
-import 'package:reorderables/reorderables.dart';
+import 'notifications/notifications.dart';
+import 'notifications/helper.dart';
 
 class _Props {
   List<Goal> goals;
@@ -17,7 +18,18 @@ class _Props {
   _Props({this.goals, this.remove, this.select, this.reOrder});
 }
 
-class GoalsPage extends StatelessWidget {
+class GoalsPage extends StatefulWidget {
+  @override
+  _State createState() => _State();
+}
+
+class _State extends State<GoalsPage> {
+  @override
+  void initState() {
+    super.initState();
+    initNotifications(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,11 +63,13 @@ class GoalsPage extends StatelessWidget {
                             style: TextStyle(color: goal.color)),
                         subtitle: Text(goal.workString()),
                         onTap: () => {
-                          props.select(goal.id),
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => GoalPage()),
-                          )
+                          showOngoingNotification(notifications,
+                              title: 'Tite', body: 'Body'),
+                          // props.select(goal.id),
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(builder: (context) => GoalPage()),
+                          // )
                         },
                       ),
                     ),

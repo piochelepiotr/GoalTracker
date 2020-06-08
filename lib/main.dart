@@ -11,6 +11,7 @@ import 'model/goal.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   final persistor = Persistor<AppState>(
     storage: FlutterStorage(),
     serializer: JsonSerializer<AppState>(AppState.fromJson),

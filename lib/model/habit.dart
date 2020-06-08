@@ -20,6 +20,29 @@ String formatDuration(Duration d) {
   return " a lot of time";
 }
 
+class Period {
+  final String repr;
+  final Duration duration;
+  Period({this.repr, this.duration});
+}
+
+List<Period> periods = [
+  Period(repr: "30s", duration: Duration(seconds: 30)),
+  Period(repr: "5m", duration: Duration(minutes: 5)),
+  Period(repr: "Day", duration: Duration(days: 1)),
+  Period(repr: "Week", duration: Duration(days: 7)),
+  Period(repr: "Month", duration: Duration(days: 30)),
+  Period(repr: "Year", duration: Duration(days: 365))
+];
+
+String getPeriodRepr(Duration period) {
+  return periods.firstWhere((p) => p.duration == period).repr;
+}
+
+Duration getPeriodDuration(String repr) {
+  return periods.firstWhere((p) => p.repr == repr).duration;
+}
+
 class HabitResult {
   DateTime start;
   Duration length;
@@ -116,6 +139,51 @@ class Habit {
       start: DateTime.fromMicrosecondsSinceEpoch(json["start"]),
       habitHistory: habitHistory,
     );
+  }
+
+  int getAchievedHabits() {
+    int ok = 0;
+    habitHistory.forEach((result) {
+      if (result.achieved == result.objective) {
+        ok++;
+      }
+    });
+    return ok;
+  }
+
+  int getLastStrike() {
+    int strike = 0;
+    for (int i = habitHistory.length - 1;
+        i >= 0 && habitHistory[i].achieved == habitHistory[i].objective;
+        strike++, i--) {
+      print("hello");
+    }
+    return strike;
+  }
+
+  int getLongestStrike() {
+    int i = habitHistory.length - 1;
+    int strike = 0;
+    int longestStrike = 0;
+    while (i >= 0) {
+      while (i >= 0 && habitHistory[i].achieved == habitHistory[i].objective) {
+        strike++;
+        i--;
+      }
+      if (strike > longestStrike) {
+        longestStrike = strike;
+      }
+      strike = 0;
+      i--; // i is either -1, or current result is not achieved
+    }
+    return longestStrike;
+  }
+
+  String historySummary() {
+    if (habitHistory.length == 0) {
+      return "";
+    }
+    return "Achieved ${getAchievedHabits()}/${habitHistory.length} times";
   }
 
   Map<String, dynamic> toMap() => {

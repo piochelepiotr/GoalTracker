@@ -30,6 +30,7 @@ dependencies:
   flutter_material_color_picker:
   flutter_redux_dev_tools:
   reorderables:
+  flutter_local_notifications:
 
 
   # The following adds the Cupertino Icons font to your application.
