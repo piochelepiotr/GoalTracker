@@ -63,13 +63,13 @@ class _State extends State<GoalsPage> {
                             style: TextStyle(color: goal.color)),
                         subtitle: Text(goal.workString()),
                         onTap: () => {
-                          showOngoingNotification(notifications,
-                              title: 'Tite', body: 'Body'),
-                          // props.select(goal.id),
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(builder: (context) => GoalPage()),
-                          // )
+                          // showOngoingNotification(notifications,
+                          //     title: 'Tite', body: 'Body'),
+                          props.select(goal.id),
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => GoalPage()),
+                          )
                         },
                       ),
                     ),

@@ -10,6 +10,8 @@ import 'components/bottom_bar.dart';
 import 'components/form_line.dart';
 import 'components/form_divider.dart';
 import 'components/chip_picker.dart';
+import 'components/datetime_picker.dart';
+import 'components/weekday_picker.dart';
 
 class _Props {
   VoidCallback addHabit;
@@ -23,6 +25,9 @@ class _AddHabitPage extends State<AddHabitPage> {
   final TextEditingController _objectiveController =
       new TextEditingController();
   String period;
+  bool notifications = false;
+  TimeOfDay notificationTime = TimeOfDay(hour: 19, minute: 0);
+  List<bool> notificationDays = List<bool>.filled(7, true);
 
   @override
   void initState() {
@@ -98,6 +103,44 @@ class _AddHabitPage extends State<AddHabitPage> {
                   ),
                 )),
               ])),
+            ),
+            FormDivider(),
+            FormLine(
+              name: "Notifications",
+              child: Switch(
+                value: notifications,
+                onChanged: (value) {
+                  setState(() {
+                    notifications = value;
+                  });
+                },
+                activeTrackColor: props.goal.color.withAlpha(150),
+                activeColor: props.goal.color,
+              ),
+            ),
+            FormLine(
+              name: "At",
+              child: DateTimePicker(
+                value: notificationTime,
+                onChanged: (TimeOfDay time) {
+                  setState(() {
+                    notificationTime = time;
+                  });
+                },
+                color: props.goal.color,
+              ),
+            ),
+            FormLine(
+              name: "On",
+              child: WeekDayPicker(
+                color: props.goal.color,
+                value: notificationDays,
+                onChange: (int index) {
+                  setState(() {
+                    notificationDays[index] = !notificationDays[index];
+                  });
+                },
+              ),
             ),
             FormDivider(),
             Spacer(),
