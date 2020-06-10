@@ -118,30 +118,34 @@ class _AddHabitPage extends State<AddHabitPage> {
                 activeColor: props.goal.color,
               ),
             ),
-            FormLine(
-              name: "At",
-              child: DateTimePicker(
-                value: notificationTime,
-                onChanged: (TimeOfDay time) {
-                  setState(() {
-                    notificationTime = time;
-                  });
-                },
-                color: props.goal.color,
-              ),
-            ),
-            FormLine(
-              name: "On",
-              child: WeekDayPicker(
-                color: props.goal.color,
-                value: notificationDays,
-                onChange: (int index) {
-                  setState(() {
-                    notificationDays[index] = !notificationDays[index];
-                  });
-                },
-              ),
-            ),
+            notifications
+                ? FormLine(
+                    name: "At",
+                    child: DateTimePicker(
+                      value: notificationTime,
+                      onChanged: (TimeOfDay time) {
+                        setState(() {
+                          notificationTime = time;
+                        });
+                      },
+                      color: props.goal.color,
+                    ),
+                  )
+                : Container(),
+            notifications
+                ? FormLine(
+                    name: "On",
+                    child: WeekDayPicker(
+                      color: props.goal.color,
+                      value: notificationDays,
+                      onChange: (int index) {
+                        setState(() {
+                          notificationDays[index] = !notificationDays[index];
+                        });
+                      },
+                    ),
+                  )
+                : Container(),
             FormDivider(),
             Spacer(),
             BottomBar(buttons: [
