@@ -14,6 +14,7 @@ class _Refresher extends State<Refresher> {
   @override
   void initState() {
     super.initState();
+    widget.refresh();
     update = Timer.periodic(Duration(seconds: 30), (timer) {
       widget.refresh();
     });

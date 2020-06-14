@@ -83,6 +83,7 @@ class Habit {
   bool notifications;
   List<int> notificationIDs;
   TimeInDay notificationTime;
+  String workRemaining;
   Habit({
     this.name,
     this.id,
@@ -95,6 +96,7 @@ class Habit {
     this.notifications,
     this.notificationIDs,
     this.notificationTime,
+    this.workRemaining,
   }) {
     // temp
     notificationTime ??= TimeInDay(hour: 19, minute: 0);
@@ -105,6 +107,7 @@ class Habit {
     notificationDays ??= List<bool>.filled(7, true);
     notificationIDs ??= List<int>();
     remainingTime = getRemainingTime();
+    workRemaining = getWorkRemaining(objective, achieved, remainingTime);
   }
 
   String getRemainingTime() {
@@ -133,14 +136,6 @@ class Habit {
       habitHistory: habitHistory,
       start: start,
     );
-  }
-
-  String workRemaining() {
-    int repetitionsLeft = objective - achieved;
-    if (repetitionsLeft == 0) {
-      return "Well done! Next time in $remainingTime";
-    }
-    return "$repetitionsLeft left to do in $remainingTime";
   }
 
   int getAchievedHabits() {
@@ -233,8 +228,9 @@ class Habit {
     List<int> notificationIDs,
     List<bool> notificationDays,
     TimeInDay notificationTime,
+    String workRemaining,
   }) {
-    return Habit(
+    Habit habit = Habit(
       start: start ?? this.start,
       name: name ?? this.name,
       id: id ?? this.id,
@@ -246,6 +242,19 @@ class Habit {
       notificationIDs: notificationIDs ?? this.notificationIDs,
       notificationDays: notificationDays ?? this.notificationDays,
       notificationTime: notificationTime ?? this.notificationTime,
+      workRemaining: workRemaining ?? this.workRemaining,
     );
+    if (habit.shouldUpdate()) {
+      habit = habit.updateHistory();
+    }
+    return habit;
   }
+}
+
+String getWorkRemaining(int objective, int achieved, String remainingTime) {
+  int repetitionsLeft = objective - achieved;
+  if (repetitionsLeft == 0) {
+    return "Well done! Next time in $remainingTime";
+  }
+  return "$repetitionsLeft left to do in $remainingTime";
 }

@@ -4,30 +4,27 @@ import '../model/goal.dart';
 
 class AppState {
   List<Goal> goals = List<Goal>();
-  int selectedGoalID = 0;
   int focusedAction;
 
-  AppState({this.goals, this.selectedGoalID, this.focusedAction});
+  AppState({this.goals, this.focusedAction});
 
   AppState copyWith({List<Goal> goals, int selectedGoalID}) {
     return AppState(
       goals: goals ?? this.goals,
-      selectedGoalID: selectedGoalID ?? this.selectedGoalID,
       focusedAction: this.focusedAction,
     );
   }
 
   // can't use method above to set focus to null
-  AppState updateFocus(int focusedAction, int focusedHabit) {
+  AppState updateFocus(int focusedAction) {
     return AppState(
       goals: this.goals,
-      selectedGoalID: this.selectedGoalID,
       focusedAction: focusedAction,
     );
   }
 
-  Goal activeGoal() {
-    return goals.firstWhere((goal) => goal.id == selectedGoalID);
+  Goal getGoal(int goalID) {
+    return goals.firstWhere((goal) => goal.id == goalID);
   }
 
   static AppState fromJson(dynamic json) {

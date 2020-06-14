@@ -34,11 +34,11 @@ class _GoalPage extends State<GoalPage> {
                 context: context,
                 removeTop: true,
                 child: ListView(children: [
-                  GoalPageHeader(),
+                  GoalPageHeader(goalID: widget.goalID),
                   Padding(padding: EdgeInsets.only(top: 10)),
-                  ActionsList(),
+                  ActionsList(goalID: widget.goalID),
                   Padding(padding: EdgeInsets.only(top: 5)),
-                  HabitsList(),
+                  HabitsList(goalID: widget.goalID),
                 ]))),
         StoreConnector<AppState, _Props>(
           converter: (store) => _Props(
@@ -76,7 +76,8 @@ class _GoalPage extends State<GoalPage> {
 }
 
 class GoalPage extends StatefulWidget {
-  GoalPage();
+  final int goalID;
+  GoalPage({@required this.goalID});
 
   @override
   _GoalPage createState() => _GoalPage();

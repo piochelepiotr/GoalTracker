@@ -72,16 +72,17 @@ class _AddHabitPage extends State<AddHabitPage> {
                   notificationDays: notificationDays,
                   objective: times);
               List<int> ids = await updateHabitNotifications(
-                  null, habit, store.state.activeGoal());
-              store.dispatch(AddHabit(habit.copyWith(notificationIDs: ids)));
+                  null, habit, store.state.getGoal(widget.goalID));
+              store.dispatch(AddHabit(
+                  habit.copyWith(notificationIDs: ids), widget.goalID));
             },
             editHabit: (habit) async {
               List<int> ids = await updateHabitNotifications(
-                  widget.habit, habit, store.state.activeGoal());
-              store.dispatch(EditHabit(habit.copyWith(notificationIDs: ids)));
+                  widget.habit, habit, store.state.getGoal(widget.goalID));
+              store.dispatch(EditHabit(
+                  habit.copyWith(notificationIDs: ids), widget.goalID));
             },
-            goal: store.state.goals
-                .firstWhere((goal) => goal.id == store.state.selectedGoalID),
+            goal: store.state.getGoal(widget.goalID),
           );
         },
         builder: (context, props) {
@@ -211,7 +212,8 @@ class _AddHabitPage extends State<AddHabitPage> {
 
 class AddHabitPage extends StatefulWidget {
   final Habit habit;
-  AddHabitPage({this.habit});
+  final int goalID;
+  AddHabitPage({this.habit, @required this.goalID});
   @override
   _AddHabitPage createState() => _AddHabitPage();
 }

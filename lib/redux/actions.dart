@@ -2,13 +2,21 @@ import '../model/goal.dart';
 import '../model/action.dart';
 import '../model/habit.dart';
 
-class IncrWork {}
+class IncrWork {
+  final int goalID;
+  IncrWork(this.goalID);
+}
 
-class DecrWork {}
+class DecrWork {
+  final int goalID;
+  DecrWork(this.goalID);
+}
 
 abstract class GoalsAction {}
 
-abstract class GoalAction extends GoalsAction {}
+abstract class GoalAction extends GoalsAction {
+  int getGoalID();
+}
 
 abstract class HabitsAction extends GoalAction {}
 
@@ -24,7 +32,8 @@ abstract class ActionAction extends ActionsAction {
 
 class SetWork {
   final int workDone;
-  SetWork(this.workDone);
+  final int goalID;
+  SetWork(this.workDone, this.goalID);
 }
 
 class AddGoal extends GoalsAction {
@@ -33,31 +42,51 @@ class AddGoal extends GoalsAction {
 }
 
 class AddAction extends ActionsAction {
+  final int goalID;
   final ActionModel action;
-  AddAction(this.action);
+  int getGoalID() {
+    return goalID;
+  }
+
+  AddAction(this.action, this.goalID);
 }
 
 class EditAction extends ActionAction {
+  final int goalID;
   final ActionModel action;
   ActionModel getAction() {
     return action;
   }
 
-  EditAction(this.action);
+  int getGoalID() {
+    return goalID;
+  }
+
+  EditAction(this.action, this.goalID);
 }
 
 class AddHabit extends HabitsAction {
+  final int goalID;
   final Habit habit;
-  AddHabit(this.habit);
+  int getGoalID() {
+    return goalID;
+  }
+
+  AddHabit(this.habit, this.goalID);
 }
 
 class EditHabit extends HabitAction {
+  final int goalID;
   final Habit habit;
+  int getGoalID() {
+    return goalID;
+  }
+
   Habit getHabit() {
     return habit;
   }
 
-  EditHabit(this.habit);
+  EditHabit(this.habit, this.goalID);
 }
 
 class DeleteGoal {
@@ -71,22 +100,37 @@ class SelectGoal {
 }
 
 class DeleteAction extends ActionsAction {
+  final int goalID;
   final ActionModel action;
-  DeleteAction(this.action);
+  int getGoalID() {
+    return goalID;
+  }
+
+  DeleteAction(this.action, this.goalID);
 }
 
 class DeleteHabit extends HabitsAction {
+  final int goalID;
   final Habit habit;
-  DeleteHabit(this.habit);
+  int getGoalID() {
+    return goalID;
+  }
+
+  DeleteHabit(this.habit, this.goalID);
 }
 
 class CrossAction extends ActionAction {
+  final int goalID;
   final ActionModel action;
+  int getGoalID() {
+    return goalID;
+  }
+
   ActionModel getAction() {
     return action;
   }
 
-  CrossAction(this.action);
+  CrossAction(this.action, this.goalID);
 }
 
 class FocusAction {
@@ -95,15 +139,25 @@ class FocusAction {
 }
 
 class ReOrderHabits extends HabitsAction {
+  final int goalID;
   final int oldIndex;
   final int newIndex;
-  ReOrderHabits(this.oldIndex, this.newIndex);
+  int getGoalID() {
+    return goalID;
+  }
+
+  ReOrderHabits(this.oldIndex, this.newIndex, this.goalID);
 }
 
 class ReOrderActions extends ActionsAction {
+  final int goalID;
   final int oldIndex;
   final int newIndex;
-  ReOrderActions(this.oldIndex, this.newIndex);
+  int getGoalID() {
+    return goalID;
+  }
+
+  ReOrderActions(this.oldIndex, this.newIndex, this.goalID);
 }
 
 class ReOrderGoals extends GoalsAction {
@@ -113,16 +167,26 @@ class ReOrderGoals extends GoalsAction {
 }
 
 class IncrHabitAchieved extends HabitAction {
+  final int goalID;
   final Habit habit;
-  IncrHabitAchieved(this.habit);
+  int getGoalID() {
+    return goalID;
+  }
+
+  IncrHabitAchieved(this.habit, this.goalID);
   Habit getHabit() {
     return habit;
   }
 }
 
 class DecrHabitAchieved extends HabitAction {
+  final int goalID;
   final Habit habit;
-  DecrHabitAchieved(this.habit);
+  int getGoalID() {
+    return goalID;
+  }
+
+  DecrHabitAchieved(this.habit, this.goalID);
   Habit getHabit() {
     return habit;
   }

@@ -70,7 +70,8 @@ class _State extends State<GoalsPage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => GoalPage()),
+                                          builder: (context) =>
+                                              GoalPage(goalID: goal.id)),
                                     )
                                   },
                                   trailing: PopupMenuButton<String>(

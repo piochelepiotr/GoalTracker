@@ -15,7 +15,8 @@ void initNotifications(context) {
   Future onSelectNotification(String payload) async {
     return await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => GoalPage()),
+      MaterialPageRoute(
+          builder: (context) => GoalPage(goalID: int.parse(payload))),
     );
   }
 

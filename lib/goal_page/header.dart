@@ -22,19 +22,23 @@ class _Props {
 }
 
 class GoalPageHeader extends StatelessWidget {
+  final int goalID;
+
+  GoalPageHeader({@required this.goalID});
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _Props>(
       converter: (store) => _Props(
-        goal: store.state.activeGoal(),
+        goal: store.state.getGoal(goalID),
         incrWork: () => {
-          store.dispatch(IncrWork()),
+          store.dispatch(IncrWork(goalID)),
         },
         decrWork: () => {
-          store.dispatch(DecrWork()),
+          store.dispatch(DecrWork(goalID)),
         },
         setWork: (int workDone) => {
-          store.dispatch(SetWork(workDone)),
+          store.dispatch(SetWork(workDone, goalID)),
         },
       ),
       builder: (context, props) {

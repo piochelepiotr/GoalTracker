@@ -28,7 +28,7 @@ AppState reducer(AppState prev, dynamic action) {
   }
   if (action is IncrWork) {
     List<Goal> goals = prev.goals.map((goal) {
-      if (goal.id == prev.selectedGoalID) {
+      if (goal.id == action.goalID) {
         if (goal.workDone < goal.totalWork) {
           return goal.copyWith(workDone: goal.workDone + 1);
         }
@@ -38,7 +38,7 @@ AppState reducer(AppState prev, dynamic action) {
     return prev.copyWith(goals: goals);
   } else if (action is DecrWork) {
     List<Goal> goals = prev.goals.map((goal) {
-      if (goal.id == prev.selectedGoalID) {
+      if (goal.id == action.goalID) {
         if (goal.workDone > 0) {
           return goal.copyWith(workDone: goal.workDone - 1);
         }
@@ -48,24 +48,23 @@ AppState reducer(AppState prev, dynamic action) {
     return prev.copyWith(goals: goals);
   } else if (action is SetWork) {
     List<Goal> goals = prev.goals.map((goal) {
-      if (goal.id == prev.selectedGoalID) {
+      if (goal.id == action.goalID) {
         return goal.copyWith(workDone: action.workDone);
       }
       return goal;
     }).toList();
     return prev.copyWith(goals: goals);
   } else if (action is FocusAction) {
-    return prev.updateFocus(action.index, null);
+    return prev.updateFocus(action.index);
   }
   if (action is GoalsAction) {
-    return prev.copyWith(
-        goals: goalsReducer(prev.goals, action, prev.selectedGoalID));
+    return prev.copyWith(goals: goalsReducer(prev.goals, action));
   }
   print("unrecognized action type");
   return prev;
 }
 
-List<Goal> goalsReducer(List<Goal> prev, dynamic action, int selectedGoalID) {
+List<Goal> goalsReducer(List<Goal> prev, dynamic action) {
   if (action is AddGoal) {
     List<Goal> goals = List<Goal>();
     bool newGoal = true;
@@ -97,7 +96,7 @@ List<Goal> goalsReducer(List<Goal> prev, dynamic action, int selectedGoalID) {
   if (action is GoalAction) {
     return prev
         .map((goal) =>
-            goal.id == selectedGoalID ? goalReducer(goal, action) : goal)
+            goal.id == action.getGoalID() ? goalReducer(goal, action) : goal)
         .toList();
   }
   print("unrecognized action type");

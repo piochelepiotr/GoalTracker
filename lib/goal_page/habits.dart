@@ -28,7 +28,8 @@ class _Props {
 }
 
 class HabitsList extends StatefulWidget {
-  HabitsList();
+  final int goalID;
+  HabitsList({@required this.goalID});
 
   @override
   _HabitsList createState() => _HabitsList();
@@ -45,33 +46,36 @@ class _HabitsList extends State<HabitsList> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _Props>(
       converter: (store) => _Props(
-          goal: store.state.goals
-              .firstWhere((goal) => goal.id == store.state.selectedGoalID),
+          goal:
+              store.state.goals.firstWhere((goal) => goal.id == widget.goalID),
           remove: (Habit habit) => {
-                store.dispatch(DeleteHabit(habit)),
+                store.dispatch(DeleteHabit(habit, widget.goalID)),
               },
           editHabit: (Habit habit) => {
-                store.dispatch(EditHabit(habit)),
+                store.dispatch(EditHabit(habit, widget.goalID)),
               },
           incrHabitAchieved: (Habit habit) => {
-                store.dispatch(IncrHabitAchieved(habit)),
+                store.dispatch(IncrHabitAchieved(habit, widget.goalID)),
               },
           decrHabitAchieved: (Habit habit) => {
-                store.dispatch(DecrHabitAchieved(habit)),
+                store.dispatch(DecrHabitAchieved(habit, widget.goalID)),
               },
           reOrder: (int oldIndex, int newIndex) {
-            store.dispatch(ReOrderHabits(oldIndex, newIndex));
+            store.dispatch(ReOrderHabits(oldIndex, newIndex, widget.goalID));
           }),
       builder: (context, props) {
-        return Column(children: [
-          Refresher(refresh: () {
-            for (Habit habit in props.goal.habits) {
-              if (habit.shouldUpdate()) {
-                Habit updatedHabit = habit.updateHistory();
-                props.editHabit(updatedHabit);
-              }
+        VoidCallback refresh = () {
+          for (Habit habit in props.goal.habits) {
+            if (habit.shouldUpdate()) {
+              print("should update");
+              Habit updatedHabit = habit.copyWith();
+              props.editHabit(updatedHabit);
             }
-          }),
+          }
+        };
+        print("refreshing");
+        return Column(children: [
+          Refresher(refresh: refresh),
           Row(children: [
             Padding(padding: EdgeInsets.only(left: 10)),
             Text("Habits", style: TextStyle(fontSize: 19)),
@@ -104,7 +108,7 @@ class _HabitsList extends State<HabitsList> {
                         Text(habit.historySummary(),
                             style: TextStyle(color: Colors.grey, fontSize: 12)),
                       ]),
-                      subtitle: Text(habit.workRemaining()),
+                      subtitle: Text(habit.workRemaining),
                       trailing: PopupMenuButton<String>(
                         icon: Icon(Icons.more_vert),
                         onSelected: (String selected) {
@@ -114,8 +118,8 @@ class _HabitsList extends State<HabitsList> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      AddHabitPage(habit: habit)),
+                                  builder: (context) => AddHabitPage(
+                                      habit: habit, goalID: widget.goalID)),
                             );
                           }
                         },
@@ -189,7 +193,9 @@ class _HabitsList extends State<HabitsList> {
                   FocusScope.of(context).requestFocus(new FocusNode());
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AddHabitPage()),
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            AddHabitPage(goalID: widget.goalID)),
                   );
                 },
                 child: Text(

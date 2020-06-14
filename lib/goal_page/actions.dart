@@ -14,7 +14,6 @@ class _Props {
   Function(ActionModel) addAction;
   Function(ActionModel) cross;
   Function(int) focusAction;
-  Color goalColor;
 
   _Props({
     this.goal,
@@ -24,12 +23,12 @@ class _Props {
     this.addAction,
     this.focusAction,
     this.focusedAction,
-    this.goalColor,
   });
 }
 
 class ActionsList extends StatefulWidget {
-  ActionsList();
+  final int goalID;
+  ActionsList({@required this.goalID});
 
   @override
   _ActionsList createState() => _ActionsList();
@@ -47,25 +46,23 @@ class _ActionsList extends State<ActionsList> {
   Widget build(BuildContext context) {
     return StoreConnector<AppState, _Props>(
       converter: (store) => _Props(
-        goal: store.state.goals
-            .firstWhere((goal) => goal.id == store.state.selectedGoalID),
+        goal: store.state.getGoal(widget.goalID),
         remove: (ActionModel action) => {
-          store.dispatch(DeleteAction(action)),
+          store.dispatch(DeleteAction(action, widget.goalID)),
         },
         cross: (ActionModel action) => {
-          store.dispatch(CrossAction(action)),
+          store.dispatch(CrossAction(action, widget.goalID)),
         },
         editAction: (ActionModel action) => {
-          store.dispatch(EditAction(action)),
+          store.dispatch(EditAction(action, widget.goalID)),
         },
         addAction: (ActionModel action) => {
-          store.dispatch(AddAction(action)),
+          store.dispatch(AddAction(action, widget.goalID)),
         },
         focusAction: (int index) => {
           store.dispatch(FocusAction(index)),
         },
         focusedAction: store.state.focusedAction,
-        goalColor: store.state.activeGoal().color,
       ),
       builder: (context, props) {
         List<ActionModel> actions = props.goal.actions;
@@ -94,7 +91,7 @@ class _ActionsList extends State<ActionsList> {
                                     height: 24,
                                     width: 24,
                                     child: Checkbox(
-                                        activeColor: props.goalColor,
+                                        activeColor: props.goal.color,
                                         value: action.crossed,
                                         onChanged: (value) {
                                           props.cross(action);
