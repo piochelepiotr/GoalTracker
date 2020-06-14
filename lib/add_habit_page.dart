@@ -72,12 +72,12 @@ class _AddHabitPage extends State<AddHabitPage> {
                   notificationDays: notificationDays,
                   objective: times);
               List<int> ids = await updateHabitNotifications(
-                  null, habit, store.state.activeGoal().name);
+                  null, habit, store.state.activeGoal());
               store.dispatch(AddHabit(habit.copyWith(notificationIDs: ids)));
             },
             editHabit: (habit) async {
               List<int> ids = await updateHabitNotifications(
-                  widget.habit, habit, store.state.activeGoal().name);
+                  widget.habit, habit, store.state.activeGoal());
               store.dispatch(EditHabit(habit.copyWith(notificationIDs: ids)));
             },
             goal: store.state.goals

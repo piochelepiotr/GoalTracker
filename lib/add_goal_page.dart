@@ -89,6 +89,7 @@ class _State extends State<AddGoalPage> {
                   cursorColor: Colors.black,
                   controller: _totalProgressController,
                   decoration: InputDecoration(
+                    hintText: '0',
                     contentPadding: EdgeInsets.all(0),
                     isDense: true,
                     border: InputBorder.none,
@@ -97,6 +98,7 @@ class _State extends State<AddGoalPage> {
                     disabledBorder: InputBorder.none,
                   ),
                 )),
+                Padding(padding: EdgeInsets.only(right: 5)),
                 Text(progressUnit),
               ])),
             ),
@@ -112,6 +114,7 @@ class _State extends State<AddGoalPage> {
                   cursorColor: Colors.black,
                   controller: _currentProgressController,
                   decoration: InputDecoration(
+                    hintText: '0',
                     contentPadding: EdgeInsets.all(0),
                     isDense: true,
                     border: InputBorder.none,
@@ -120,6 +123,7 @@ class _State extends State<AddGoalPage> {
                     disabledBorder: InputBorder.none,
                   ),
                 )),
+                Padding(padding: EdgeInsets.only(right: 5)),
                 Text(progressUnit),
               ])),
             ),

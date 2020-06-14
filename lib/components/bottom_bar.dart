@@ -15,6 +15,9 @@ class BottomBar extends StatelessWidget {
     List<Widget> children = List<Widget>();
     int i = 0;
     buttons.forEach((button) {
+      if (buttons.length == 1 || i != 0) {
+        children.add(Spacer());
+      }
       children.add(RaisedButton(
         padding: EdgeInsets.symmetric(vertical: 14, horizontal: 25),
         onPressed: button.onPressed,
@@ -24,14 +27,10 @@ class BottomBar extends StatelessWidget {
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(100.0)),
       ));
-      if (buttons.length > 1 && i != (buttons.length - 1)) {
-        children.add(Spacer());
-      }
       i++;
     });
     return Container(
         padding: EdgeInsets.only(right: 15, left: 15, bottom: 10, top: 5),
-        decoration: BoxDecoration(color: Colors.black12),
         child: Row(children: children));
   }
 }

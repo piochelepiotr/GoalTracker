@@ -8,6 +8,7 @@ import 'model/goal.dart';
 import 'redux/actions.dart';
 import 'quote.dart';
 import 'notifications/notifications.dart';
+import 'components/bottom_bar.dart';
 
 class _Props {
   List<Goal> goals;
@@ -46,58 +47,70 @@ class _State extends State<GoalsPage> {
         builder: (context, props) {
           return Column(children: [
             Quote(),
-            Expanded(
-                child: ReorderableListView(
-              onReorder: (oldIndex, newIndex) {
-                print("reorder $oldIndex -> $newIndex");
-                props.reOrder(oldIndex, newIndex);
-              },
-              children: [
-                for (final goal in props.goals)
-                  Dismissible(
-                    child: Card(
-                      margin: EdgeInsets.symmetric(vertical: 2),
-                      child: ListTile(
-                        title: Text(goal.name,
-                            style: TextStyle(color: goal.color)),
-                        subtitle: Text(goal.workString()),
-                        onTap: () => {
-                          // showOngoingNotification(notifications,
-                          //     title: 'Tite', body: 'Body'),
-                          props.select(goal.id),
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => GoalPage()),
-                          )
-                        },
-                      ),
-                    ),
-                    key: Key(goal.id.toString()),
-                    background: Container(
-                      color: Colors.red,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Icon(Icons.delete),
-                      ),
-                    ),
-                    onDismissed: (DismissDirection direction) =>
-                        {props.remove(goal.id)},
-                    direction: DismissDirection.endToStart,
-                  )
-              ],
-            ))
+            props.goals.length > 0
+                ? Expanded(
+                    child: MediaQuery.removePadding(
+                        context: context,
+                        removeTop: true,
+                        child: ListView(
+                          // onReorder: (oldIndex, newIndex) {
+                          //   print("reorder $oldIndex -> $newIndex");
+                          //   props.reOrder(oldIndex, newIndex);
+                          // },
+                          children: [
+                            for (final goal in props.goals)
+                              Card(
+                                margin: EdgeInsets.symmetric(vertical: 2),
+                                child: ListTile(
+                                  title: Text(goal.name,
+                                      style: TextStyle(color: goal.color)),
+                                  subtitle: Text(goal.workString()),
+                                  onTap: () => {
+                                    props.select(goal.id),
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => GoalPage()),
+                                    )
+                                  },
+                                  trailing: PopupMenuButton<String>(
+                                    icon: Icon(Icons.more_vert),
+                                    onSelected: (String selected) {
+                                      if (selected == "delete") {
+                                        props.remove(goal.id);
+                                      }
+                                    },
+                                    itemBuilder: (BuildContext context) =>
+                                        <PopupMenuEntry<String>>[
+                                      PopupMenuItem<String>(
+                                        value: "delete",
+                                        child: Text('Delete'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                          ],
+                        )))
+                : Expanded(
+                    child: Center(
+                        child: Text("No Goals here yet",
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.grey.withAlpha(180),
+                                fontStyle: FontStyle.italic)))),
+            BottomBar(buttons: [
+              Button(
+                  label: "Add Goal",
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AddGoalPage()),
+                    );
+                  }),
+            ]),
           ]);
         },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AddGoalPage()),
-          );
-        },
-        label: Text("Add Goal"),
-        backgroundColor: Colors.pink,
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../model/habit.dart';
+import '../model/goal.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:math';
 import '../goal_page/goal_page.dart';
@@ -11,10 +12,13 @@ final randomGenerator = Random();
 void initNotifications(context) {
   print("init notifications");
   final settingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-  Future onSelectNotification(String payload) async => await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => GoalPage()),
-      );
+  Future onSelectNotification(String payload) async {
+    return await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => GoalPage()),
+    );
+  }
+
   final settingsIOS = IOSInitializationSettings(
       onDidReceiveLocalNotification: (id, title, body, payload) =>
           onSelectNotification(payload));
@@ -24,7 +28,7 @@ void initNotifications(context) {
 }
 
 Future<void> showWeeklyAtDayAndTime(
-    Time time, Day day, int id, String goalName, String habitName) async {
+    Time time, Day day, int id, Goal goal, String habitName) async {
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'show weekly channel id',
       'show weekly channel name',
@@ -32,12 +36,13 @@ Future<void> showWeeklyAtDayAndTime(
   var iOSPlatformChannelSpecifics = IOSNotificationDetails();
   var platformChannelSpecifics = NotificationDetails(
       androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-  await notifications.showWeeklyAtDayAndTime(id, goalName,
-      "Reminder: $habitName", day, time, platformChannelSpecifics);
+  await notifications.showWeeklyAtDayAndTime(id, goal.name,
+      "Reminder: $habitName", day, time, platformChannelSpecifics,
+      payload: goal.id.toString());
 }
 
 Future<List<int>> updateHabitNotifications(
-    Habit oldHabit, Habit newHabit, String goalName) async {
+    Habit oldHabit, Habit newHabit, Goal goal) async {
   List<int> notificationsIDs = List<int>();
   if (oldHabit != null &&
       oldHabit.notifications == newHabit.notifications &&
@@ -62,7 +67,7 @@ Future<List<int>> updateHabitNotifications(
                 newHabit.notificationTime.minute),
             Day.values[i],
             id,
-            goalName,
+            goal,
             newHabit.name);
       }
       i++;

@@ -39,6 +39,7 @@ class _ColorPicker extends State<ColorPicker> {
               contentPadding: const EdgeInsets.all(6.0),
               title: Text("Pick the color"),
               content: MaterialColorPicker(
+                shrinkWrap: true,
                 allowShades: false,
                 onMainColorChange: (ColorSwatch color) {
                   setState(() {
