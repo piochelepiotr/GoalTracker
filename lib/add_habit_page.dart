@@ -5,6 +5,7 @@ import 'redux/state.dart';
 import 'redux/actions.dart';
 import 'model/goal.dart';
 import 'model/habit.dart';
+import 'model/time.dart';
 import 'components/editable_title.dart';
 import 'components/bottom_bar.dart';
 import 'components/form_line.dart';
@@ -12,6 +13,7 @@ import 'components/form_divider.dart';
 import 'components/chip_picker.dart';
 import 'components/datetime_picker.dart';
 import 'components/weekday_picker.dart';
+import 'notifications/notifications.dart';
 
 class _Props {
   VoidCallback addHabit;
@@ -36,6 +38,11 @@ class _AddHabitPage extends State<AddHabitPage> {
       _nameController.text = widget.habit.name;
       _objectiveController.text = widget.habit.objective.toString();
       period = getPeriodRepr(widget.habit.period);
+      notifications = widget.habit.notifications;
+      notificationTime = TimeOfDay(
+          hour: widget.habit.notificationTime.hour,
+          minute: widget.habit.notificationTime.minute);
+      notificationDays = List<bool>.from(widget.habit.notificationDays);
     } else {
       period = periods[0].repr;
       _objectiveController.text = '1';
@@ -48,17 +55,30 @@ class _AddHabitPage extends State<AddHabitPage> {
       body: StoreConnector<AppState, _Props>(
         converter: (store) {
           return _Props(
-            addHabit: () {
+            addHabit: () async {
+              int times;
               try {
-                int times = int.parse(_objectiveController.text);
-                store.dispatch(AddHabit(Habit(
-                    name: _nameController.text,
-                    period: getPeriodDuration(period),
-                    objective: times)));
-              } on FormatException {}
+                times = int.parse(_objectiveController.text);
+              } on FormatException {
+                return;
+              }
+              Habit habit = Habit(
+                  name: _nameController.text,
+                  period: getPeriodDuration(period),
+                  notifications: notifications,
+                  notificationTime: TimeInDay(
+                      hour: notificationTime.hour,
+                      minute: notificationTime.minute),
+                  notificationDays: notificationDays,
+                  objective: times);
+              List<int> ids = await updateHabitNotifications(
+                  null, habit, store.state.activeGoal().name);
+              store.dispatch(AddHabit(habit.copyWith(notificationIDs: ids)));
             },
-            editHabit: (habit) {
-              store.dispatch(EditHabit(habit));
+            editHabit: (habit) async {
+              List<int> ids = await updateHabitNotifications(
+                  widget.habit, habit, store.state.activeGoal().name);
+              store.dispatch(EditHabit(habit.copyWith(notificationIDs: ids)));
             },
             goal: store.state.goals
                 .firstWhere((goal) => goal.id == store.state.selectedGoalID),
@@ -123,7 +143,7 @@ class _AddHabitPage extends State<AddHabitPage> {
                     name: "At",
                     child: DateTimePicker(
                       value: notificationTime,
-                      onChanged: (TimeOfDay time) {
+                      onChanged: (TimeOfDay time) async {
                         setState(() {
                           notificationTime = time;
                         });
@@ -158,15 +178,24 @@ class _AddHabitPage extends State<AddHabitPage> {
                   label: "Save",
                   onPressed: () {
                     if (widget.habit != null) {
+                      int objective;
                       try {
-                        int objective = int.parse(_objectiveController.text);
-                        props.editHabit(widget.habit.copyWith(
-                            name: _nameController.text,
-                            period: periods
-                                .firstWhere((freq) => freq.repr == period)
-                                .duration,
-                            objective: objective));
-                      } on FormatException {}
+                        objective = int.parse(_objectiveController.text);
+                      } on FormatException {
+                        return;
+                      }
+                      props.editHabit(widget.habit.copyWith(
+                        name: _nameController.text,
+                        period: periods
+                            .firstWhere((freq) => freq.repr == period)
+                            .duration,
+                        objective: objective,
+                        notifications: notifications,
+                        notificationTime: TimeInDay(
+                            hour: notificationTime.hour,
+                            minute: notificationTime.minute),
+                        notificationDays: notificationDays,
+                      ));
                     } else {
                       props.addHabit();
                     }

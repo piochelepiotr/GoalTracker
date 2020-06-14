@@ -8,7 +8,6 @@ import 'model/goal.dart';
 import 'redux/actions.dart';
 import 'quote.dart';
 import 'notifications/notifications.dart';
-import 'notifications/helper.dart';
 
 class _Props {
   List<Goal> goals;

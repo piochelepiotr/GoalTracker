@@ -1,3 +1,5 @@
+import 'time.dart';
+
 String formatDuration(Duration d) {
   if (d < Duration(minutes: 1)) {
     return d.inSeconds.toString() + " seconds";
@@ -77,16 +79,31 @@ class Habit {
   final int achieved;
   DateTime start;
   List<HabitResult> habitHistory;
-  Habit(
-      {this.name,
-      this.id,
-      this.period,
-      this.objective,
-      this.achieved = 0,
-      this.habitHistory,
-      this.start}) {
+  List<bool> notificationDays;
+  bool notifications;
+  List<int> notificationIDs;
+  TimeInDay notificationTime;
+  Habit({
+    this.name,
+    this.id,
+    this.period,
+    this.objective,
+    this.achieved = 0,
+    this.habitHistory,
+    this.start,
+    this.notificationDays,
+    this.notifications,
+    this.notificationIDs,
+    this.notificationTime,
+  }) {
+    // temp
+    notificationTime ??= TimeInDay(hour: 19, minute: 0);
+    notifications ??= false;
+    //
     habitHistory ??= List<HabitResult>();
     start ??= DateTime.now();
+    notificationDays ??= List<bool>.filled(7, true);
+    notificationIDs ??= List<int>();
     remainingTime = getRemainingTime();
   }
 
@@ -126,21 +143,6 @@ class Habit {
     return "$repetitionsLeft left to do in $remainingTime";
   }
 
-  factory Habit.fromJson(Map<String, dynamic> json) {
-    List<HabitResult> habitHistory = List<HabitResult>();
-    json['history']
-        ?.forEach((result) => habitHistory.add(HabitResult.fromJson(result)));
-    return Habit(
-      id: json["id"],
-      name: json["name"],
-      period: Duration(seconds: json["period"]),
-      objective: json["objective"],
-      achieved: json["achieved"],
-      start: DateTime.fromMicrosecondsSinceEpoch(json["start"]),
-      habitHistory: habitHistory,
-    );
-  }
-
   int getAchievedHabits() {
     int ok = 0;
     habitHistory.forEach((result) {
@@ -155,9 +157,7 @@ class Habit {
     int strike = 0;
     for (int i = habitHistory.length - 1;
         i >= 0 && habitHistory[i].achieved == habitHistory[i].objective;
-        strike++, i--) {
-      print("hello");
-    }
+        strike++, i--) {}
     return strike;
   }
 
@@ -186,6 +186,27 @@ class Habit {
     return "Achieved ${getAchievedHabits()}/${habitHistory.length} times";
   }
 
+  factory Habit.fromJson(Map<String, dynamic> json) {
+    List<HabitResult> habitHistory = List<HabitResult>();
+    json['history']
+        ?.forEach((result) => habitHistory.add(HabitResult.fromJson(result)));
+    // List<int> notificationIDs = json['
+    // json['notification_ids']?.forEach
+    return Habit(
+      id: json["id"],
+      notifications: json["notifications"],
+      notificationDays: List<bool>.from(json["notification_days"]),
+      notificationTime: TimeInDay.fromJson(json["notification_time"]),
+      name: json["name"],
+      period: Duration(seconds: json["period"]),
+      objective: json["objective"],
+      achieved: json["achieved"],
+      start: DateTime.fromMicrosecondsSinceEpoch(json["start"]),
+      habitHistory: habitHistory,
+      notificationIDs: List<int>.from(json["notification_ids"]),
+    );
+  }
+
   Map<String, dynamic> toMap() => {
         "id": id,
         "name": name,
@@ -194,6 +215,10 @@ class Habit {
         "achieved": achieved,
         "history": habitHistory.map((result) => result.toJson()).toList(),
         "start": start.microsecondsSinceEpoch,
+        "notification_days": notificationDays,
+        "notifications": notifications,
+        "notification_time": notificationTime.toJson(),
+        "notification_ids": notificationIDs,
       };
 
   Habit copyWith({
@@ -204,6 +229,10 @@ class Habit {
     int objective,
     int achieved,
     List<HabitResult> habitHistory,
+    bool notifications,
+    List<int> notificationIDs,
+    List<bool> notificationDays,
+    TimeInDay notificationTime,
   }) {
     return Habit(
       start: start ?? this.start,
@@ -213,6 +242,10 @@ class Habit {
       objective: objective ?? this.objective,
       achieved: achieved ?? this.achieved,
       habitHistory: habitHistory ?? this.habitHistory,
+      notifications: notifications ?? this.notifications,
+      notificationIDs: notificationIDs ?? this.notificationIDs,
+      notificationDays: notificationDays ?? this.notificationDays,
+      notificationTime: notificationTime ?? this.notificationTime,
     );
   }
 }

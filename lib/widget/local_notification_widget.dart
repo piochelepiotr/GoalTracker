@@ -15,7 +15,6 @@ class _LocalNotificationWidgetState extends State<LocalNotificationWidget> {
   void initState() {
     super.initState();
     initNotifications(context);
-    print("hello");
   }
 
   @override
