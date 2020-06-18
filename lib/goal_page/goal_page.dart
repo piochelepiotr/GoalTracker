@@ -8,17 +8,6 @@ import 'actions.dart';
 import 'habits.dart';
 import 'header.dart';
 
-typedef void _Focus(int index);
-
-class _Props {
-  final bool focused;
-  _Focus focusAction;
-  _Props({
-    this.focused,
-    this.focusAction,
-  });
-}
-
 class _GoalPage extends State<GoalPage> {
   @override
   void initState() {
@@ -28,49 +17,23 @@ class _GoalPage extends State<GoalPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(children: [
-        Expanded(
-            child: MediaQuery.removePadding(
-                context: context,
-                removeTop: true,
-                child: ListView(children: [
-                  GoalPageHeader(goalID: widget.goalID),
-                  Padding(padding: EdgeInsets.only(top: 10)),
-                  ActionsList(goalID: widget.goalID),
-                  Padding(padding: EdgeInsets.only(top: 5)),
-                  HabitsList(goalID: widget.goalID),
-                ]))),
-        StoreConnector<AppState, _Props>(
-          converter: (store) => _Props(
-            focused: store.state.focusedAction != null,
-            focusAction: (int index) => {
-              store.dispatch(FocusAction(index)),
-            },
-          ),
-          builder: (context, props) {
-            return BottomBar(
-              buttons: props.focused
-                  ? [
-                      Button(
-                        label: "Cancel",
-                        onPressed: () {
-                          props.focusAction(null);
-                          FocusScope.of(context).requestFocus(new FocusNode());
-                        },
-                      ),
-                    ]
-                  : [
-                      Button(
-                        label: "Home",
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
-            );
+      body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(new FocusNode());
           },
-        ),
-      ]),
+          child: Column(children: [
+            Expanded(
+                child: MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: ListView(children: [
+                      GoalPageHeader(goalID: widget.goalID),
+                      Padding(padding: EdgeInsets.only(top: 10)),
+                      ActionsList(goalID: widget.goalID),
+                      Padding(padding: EdgeInsets.only(top: 5)),
+                      HabitsList(goalID: widget.goalID),
+                    ]))),
+          ])),
     );
   }
 }

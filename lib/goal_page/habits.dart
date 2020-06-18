@@ -93,6 +93,7 @@ class _HabitsList extends State<HabitsList> {
                   child: Column(children: [
                     ListTile(
                       onTap: () {
+                        FocusScope.of(context).requestFocus(new FocusNode());
                         setState(() {
                           if (selectedHabitID == habit.id) {
                             selectedHabitID = null;

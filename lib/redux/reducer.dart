@@ -54,8 +54,6 @@ AppState reducer(AppState prev, dynamic action) {
       return goal;
     }).toList();
     return prev.copyWith(goals: goals);
-  } else if (action is FocusAction) {
-    return prev.updateFocus(action.index);
   }
   if (action is GoalsAction) {
     return prev.copyWith(goals: goalsReducer(prev.goals, action));

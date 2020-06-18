@@ -50,9 +50,15 @@ class GoalPageHeader extends StatelessWidget {
               decoration: BoxDecoration(color: props.goal.color),
               child: Padding(
                 padding:
-                    EdgeInsets.only(left: 20, right: 20, top: 50, bottom: 5),
+                    EdgeInsets.only(left: 5, right: 20, top: 50, bottom: 5),
                 child: Column(children: [
                   Row(children: [
+                    IconButton(
+                      icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
                     Text(props.goal.name,
                         style: TextStyle(fontSize: 18, color: Colors.white)),
                     Spacer(),

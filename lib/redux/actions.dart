@@ -133,11 +133,6 @@ class CrossAction extends ActionAction {
   CrossAction(this.action, this.goalID);
 }
 
-class FocusAction {
-  final int index;
-  FocusAction(this.index);
-}
-
 class ReOrderHabits extends HabitsAction {
   final int goalID;
   final int oldIndex;

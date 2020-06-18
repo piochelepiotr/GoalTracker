@@ -4,22 +4,12 @@ import '../model/goal.dart';
 
 class AppState {
   List<Goal> goals = List<Goal>();
-  int focusedAction;
 
-  AppState({this.goals, this.focusedAction});
+  AppState({this.goals});
 
   AppState copyWith({List<Goal> goals, int selectedGoalID}) {
     return AppState(
       goals: goals ?? this.goals,
-      focusedAction: this.focusedAction,
-    );
-  }
-
-  // can't use method above to set focus to null
-  AppState updateFocus(int focusedAction) {
-    return AppState(
-      goals: this.goals,
-      focusedAction: focusedAction,
     );
   }
 

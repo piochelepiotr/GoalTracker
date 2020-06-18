@@ -8,12 +8,10 @@ import 'text_edit.dart';
 
 class _Props {
   Goal goal;
-  int focusedAction;
   Function(ActionModel) remove;
   Function(ActionModel) editAction;
   Function(ActionModel) addAction;
   Function(ActionModel) cross;
-  Function(int) focusAction;
 
   _Props({
     this.goal,
@@ -21,8 +19,6 @@ class _Props {
     this.cross,
     this.editAction,
     this.addAction,
-    this.focusAction,
-    this.focusedAction,
   });
 }
 
@@ -36,7 +32,6 @@ class ActionsList extends StatefulWidget {
 
 class _ActionsList extends State<ActionsList> {
   final TextEditingController newActionController = TextEditingController();
-  // final FocusNode newActionFocus = FocusNode();
   @override
   void initState() {
     super.initState();
@@ -59,10 +54,6 @@ class _ActionsList extends State<ActionsList> {
         addAction: (ActionModel action) => {
           store.dispatch(AddAction(action, widget.goalID)),
         },
-        focusAction: (int index) => {
-          store.dispatch(FocusAction(index)),
-        },
-        focusedAction: store.state.focusedAction,
       ),
       builder: (context, props) {
         List<ActionModel> actions = props.goal.actions;
@@ -108,11 +99,7 @@ class _ActionsList extends State<ActionsList> {
                                                     decoration: TextDecoration
                                                         .lineThrough))))
                                     : TextEdit(
-                                        onFocus: () {
-                                          props.focusAction(index);
-                                        },
                                         onSubmitted: (String value) {
-                                          props.focusAction(null);
                                           props.editAction(
                                               action.copyWith(name: value));
                                         },
@@ -120,7 +107,6 @@ class _ActionsList extends State<ActionsList> {
                                       ),
                                 GestureDetector(
                                   onTap: () {
-                                    props.focusAction(null);
                                     props.remove(action);
                                   },
                                   child: Padding(
@@ -136,9 +122,6 @@ class _ActionsList extends State<ActionsList> {
                     Padding(padding: EdgeInsets.only(left: 10)),
                     TextEdit(
                       hint: 'Add Action',
-                      onFocus: () {
-                        props.focusAction(-1);
-                      },
                       onEditingComplete: () {},
                       onSubmitted: (String value) {
                         props.addAction(ActionModel(name: value));
