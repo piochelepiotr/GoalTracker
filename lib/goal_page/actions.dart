@@ -83,24 +83,24 @@ class _ActionsList extends State<ActionsList> {
                 List<Widget> elements = List<Widget>();
                 actions.asMap().forEach(
                       (index, action) => elements.add(Padding(
-                          padding: EdgeInsets.symmetric(vertical: 4),
+                          padding: EdgeInsets.symmetric(vertical: 0),
                           child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SizedBox(
-                                    height: 24,
-                                    width: 24,
+                                    height: 35,
+                                    width: 35,
                                     child: Checkbox(
                                         activeColor: props.goal.color,
                                         value: action.crossed,
                                         onChanged: (value) {
                                           props.cross(action);
                                         })),
-                                Padding(padding: EdgeInsets.only(left: 10)),
+                                Padding(padding: EdgeInsets.only(left: 5)),
                                 action.crossed
                                     ? Expanded(
                                         child: Padding(
-                                            padding: EdgeInsets.only(top: 2),
+                                            padding: EdgeInsets.only(top: 6),
                                             child: Text(action.name,
                                                 style: TextStyle(
                                                     color: Colors.grey,
@@ -123,7 +123,10 @@ class _ActionsList extends State<ActionsList> {
                                     props.focusAction(null);
                                     props.remove(action);
                                   },
-                                  child: Icon(Icons.clear, color: Colors.grey),
+                                  child: Padding(
+                                      padding: EdgeInsets.all(4),
+                                      child: Icon(Icons.clear,
+                                          color: Colors.grey)),
                                 ),
                               ]))),
                     );

@@ -18,7 +18,7 @@ class TextEdit extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
         child: Padding(
-            padding: EdgeInsets.only(top: 2),
+            padding: EdgeInsets.only(top: 6),
             child: TextField(
               keyboardType: TextInputType.text,
               maxLines: null,

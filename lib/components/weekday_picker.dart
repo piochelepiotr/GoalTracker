@@ -23,8 +23,8 @@ class DayPicker extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 2),
         child: GestureDetector(
           child: SizedBox(
-            height: 25,
-            width: 25,
+            height: 35,
+            width: 35,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: selected ? color : Colors.white,

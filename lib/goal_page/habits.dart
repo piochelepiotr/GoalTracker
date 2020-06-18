@@ -113,7 +113,37 @@ class _HabitsList extends State<HabitsList> {
                         icon: Icon(Icons.more_vert),
                         onSelected: (String selected) {
                           if (selected == "delete") {
-                            props.remove(habit);
+                            showDialog<void>(
+                              context: context,
+                              barrierDismissible:
+                                  false, // user must tap button!
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text(habit.name),
+                                  content: SingleChildScrollView(
+                                    child: ListBody(
+                                      children: <Widget>[
+                                        Text(
+                                            "Are you sure you want to delete that habit?"),
+                                      ],
+                                    ),
+                                  ),
+                                  actions: [
+                                    FlatButton(
+                                      child: Text('Cancel'),
+                                      onPressed: Navigator.of(context).pop,
+                                    ),
+                                    FlatButton(
+                                      child: Text('Delete'),
+                                      onPressed: () {
+                                        props.remove(habit);
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           } else if (selected == "edit") {
                             Navigator.push(
                               context,

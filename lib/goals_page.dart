@@ -78,7 +78,38 @@ class _State extends State<GoalsPage> {
                                     icon: Icon(Icons.more_vert),
                                     onSelected: (String selected) {
                                       if (selected == "delete") {
-                                        props.remove(goal.id);
+                                        showDialog<void>(
+                                          context: context,
+                                          barrierDismissible:
+                                              false, // user must tap button!
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text(goal.name),
+                                              content: SingleChildScrollView(
+                                                child: ListBody(
+                                                  children: <Widget>[
+                                                    Text(
+                                                        "Are you sure you want to delete that goal?"),
+                                                  ],
+                                                ),
+                                              ),
+                                              actions: [
+                                                FlatButton(
+                                                  child: Text('Cancel'),
+                                                  onPressed:
+                                                      Navigator.of(context).pop,
+                                                ),
+                                                FlatButton(
+                                                  child: Text('Delete'),
+                                                  onPressed: () {
+                                                    props.remove(goal.id);
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
                                       }
                                     },
                                     itemBuilder: (BuildContext context) =>
