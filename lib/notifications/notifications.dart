@@ -9,15 +9,22 @@ import '../goal_page/goal_page.dart';
 final notifications = FlutterLocalNotificationsPlugin();
 final randomGenerator = Random();
 
+Future<void> navigateToGoal(BuildContext context, int goalID) async {
+  while (Navigator.canPop(context)) {
+    Navigator.pop(context);
+  }
+  return await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GoalPage(goalID: goalID),
+      ));
+}
+
 void initNotifications(context) {
   print("init notifications");
   final settingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
   Future onSelectNotification(String payload) async {
-    return await Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => GoalPage(goalID: int.parse(payload))),
-    );
+    return await navigateToGoal(context, int.parse(payload));
   }
 
   final settingsIOS = IOSInitializationSettings(
@@ -49,13 +56,12 @@ Future<List<int>> updateHabitNotifications(
       oldHabit.notifications == newHabit.notifications &&
       listEquals(oldHabit.notificationDays, newHabit.notificationDays) &&
       oldHabit.notificationTime.hour == newHabit.notificationTime.hour &&
-      oldHabit.notificationTime.minute == newHabit.notificationTime.minute) {
+      oldHabit.notificationTime.minute == newHabit.notificationTime.minute &&
+      oldHabit.name == newHabit.name) {
     return notificationsIDs;
   }
   if (oldHabit != null) {
-    for (int id in oldHabit.notificationIDs) {
-      await notifications.cancel(id);
-    }
+    await removeHabitNotifications(oldHabit);
   }
   if (newHabit.notifications) {
     int i = 0;
@@ -75,4 +81,16 @@ Future<List<int>> updateHabitNotifications(
     }
   }
   return notificationsIDs;
+}
+
+Future<void> removeHabitNotifications(Habit habit) async {
+  for (int id in habit.notificationIDs) {
+    await notifications.cancel(id);
+  }
+}
+
+Future<void> removeGoalNotifications(Goal goal) async {
+  for (Habit habit in goal.habits) {
+    await removeHabitNotifications(habit);
+  }
 }

@@ -47,7 +47,18 @@ class GoalPageHeader extends StatelessWidget {
           Row(children: [
             Expanded(
                 child: Container(
-              decoration: BoxDecoration(color: props.goal.color),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment(1.2, 0.0),
+                  colors: [
+                    props.goal.color,
+                    props.goal.color.withAlpha(140)
+                  ], // whitish to gray
+                  tileMode:
+                      TileMode.repeated, // repeats the gradient over the canvas
+                ),
+              ), //BoxDecoration(color: props.goal.color),
               child: Padding(
                 padding:
                     EdgeInsets.only(left: 5, right: 20, top: 50, bottom: 5),
@@ -59,9 +70,10 @@ class GoalPageHeader extends StatelessWidget {
                         Navigator.pop(context);
                       },
                     ),
-                    Text(props.goal.name,
-                        style: TextStyle(fontSize: 18, color: Colors.white)),
-                    Spacer(),
+                    Expanded(
+                        child: Text(props.goal.name,
+                            style:
+                                TextStyle(fontSize: 18, color: Colors.white))),
                     ClipOval(
                       child: Material(
                         color: color, // button color
@@ -85,8 +97,9 @@ class GoalPageHeader extends StatelessWidget {
                   ]),
                   Padding(padding: EdgeInsets.only(bottom: 20)),
                   Row(children: [
+                    Padding(padding: EdgeInsets.only(left: 5)),
                     Text(props.goal.workString(),
-                        style: TextStyle(color: Colors.grey)),
+                        style: TextStyle(color: Colors.white)),
                     Spacer(),
                     ClipOval(
                       child: Material(

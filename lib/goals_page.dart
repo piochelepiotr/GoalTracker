@@ -12,7 +12,7 @@ import 'components/bottom_bar.dart';
 
 class _Props {
   List<Goal> goals;
-  Function(int) remove;
+  Function(Goal) remove;
   Function(int) select;
   Function(int oldIndex, int newIndex) reOrder;
   _Props({this.goals, this.remove, this.select, this.reOrder});
@@ -36,8 +36,9 @@ class _State extends State<GoalsPage> {
       body: new StoreConnector<AppState, _Props>(
         converter: (store) => _Props(
           goals: store.state.goals,
-          remove: (int goalID) => {
-            store.dispatch(DeleteGoal(goalID)),
+          remove: (Goal goal) async {
+            await removeGoalNotifications(goal);
+            store.dispatch(DeleteGoal(goal.id));
           },
           reOrder: (int oldIndex, int newIndex) => {
             store.dispatch(ReOrderGoals(oldIndex, newIndex)),
@@ -102,7 +103,7 @@ class _State extends State<GoalsPage> {
                                                 FlatButton(
                                                   child: Text('Delete'),
                                                   onPressed: () {
-                                                    props.remove(goal.id);
+                                                    props.remove(goal);
                                                     Navigator.of(context).pop();
                                                   },
                                                 ),

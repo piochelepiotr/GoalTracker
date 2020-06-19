@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 
-import '../redux/state.dart';
-import '../redux/actions.dart';
-import '../components/bottom_bar.dart';
 import 'actions.dart';
 import 'habits.dart';
 import 'header.dart';

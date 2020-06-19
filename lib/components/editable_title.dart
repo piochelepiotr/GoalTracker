@@ -9,7 +9,14 @@ class EditableTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: new BoxDecoration(color: color),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment(1.2, 0.0),
+          colors: [color, color.withAlpha(140)], // whitish to gray
+          tileMode: TileMode.repeated, // repeats the gradient over the canvas
+        ),
+      ),
       child: Padding(
         padding: EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 20),
         child: TextField(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'model/habit.dart';
-import 'components/bottom_bar.dart';
 import 'components/form_line.dart';
 import 'components/form_divider.dart';
 
@@ -16,14 +15,30 @@ class HabitHistoryPage extends StatelessWidget {
       Row(children: [
         Expanded(
             child: Container(
-          decoration: new BoxDecoration(color: color),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment(1.2, 0.0),
+              colors: [color, color.withAlpha(140)], // whitish to gray
+              tileMode:
+                  TileMode.repeated, // repeats the gradient over the canvas
+            ),
+          ),
           child: Padding(
-            padding: EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 20),
-            child: Center(
-                child: Text(
-              habit.name,
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            )),
+            padding: EdgeInsets.only(left: 20, right: 20, top: 50, bottom: 40),
+            child: Row(children: [
+              IconButton(
+                icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              Expanded(
+                  child: Text(
+                habit.name,
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              )),
+            ]),
           ),
         ))
       ]),
@@ -42,17 +57,6 @@ class HabitHistoryPage extends StatelessWidget {
           name: "Longest Strike",
           child: Text(habit.getLongestStrike().toString())),
       FormDivider(),
-      Spacer(),
-      BottomBar(
-        buttons: [
-          Button(
-            label: "Back",
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
     ]));
   }
 }

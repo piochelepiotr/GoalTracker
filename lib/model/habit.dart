@@ -29,8 +29,8 @@ class Period {
 }
 
 List<Period> periods = [
-  Period(repr: "30s", duration: Duration(seconds: 30)),
-  Period(repr: "5m", duration: Duration(minutes: 5)),
+  // Period(repr: "30s", duration: Duration(seconds: 30)),
+  // Period(repr: "5m", duration: Duration(minutes: 5)),
   Period(repr: "Day", duration: Duration(days: 1)),
   Period(repr: "Week", duration: Duration(days: 7)),
   Period(repr: "Month", duration: Duration(days: 30)),
@@ -178,7 +178,7 @@ class Habit {
     if (habitHistory.length == 0) {
       return "";
     }
-    return "Achieved ${getAchievedHabits()}/${habitHistory.length} times";
+    return "${getAchievedHabits()}/${habitHistory.length}";
   }
 
   factory Habit.fromJson(Map<String, dynamic> json) {

@@ -11,7 +11,21 @@ import 'components/editable_title.dart';
 import 'components/form_line.dart';
 import 'components/form_divider.dart';
 
-List<String> units = ["Hours", "Minutes", "Months", "\$"];
+List<String> units = [
+  "Hours",
+  "Days",
+  "Weeks",
+  "Months",
+  "\$",
+  "%",
+  "Steps",
+  "Times",
+  "Chapters",
+  "Pages",
+  "Books",
+  "Kgs",
+  "Lbs"
+];
 
 class _Props {
   VoidCallback addGoal;

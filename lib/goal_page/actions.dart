@@ -118,6 +118,7 @@ class _ActionsList extends State<ActionsList> {
                     );
                 elements.add(
                   Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Padding(padding: EdgeInsets.only(left: 5)),
                     Icon(Icons.add, color: Colors.grey),
                     Padding(padding: EdgeInsets.only(left: 10)),
                     TextEdit(

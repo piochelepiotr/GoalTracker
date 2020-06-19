@@ -8,6 +8,7 @@ import '../add_habit_page.dart';
 import '../components/refresher.dart';
 import '../components/round_icon_button.dart';
 import '../habit_history_page.dart';
+import '../notifications/notifications.dart';
 
 class _Props {
   Goal goal;
@@ -48,9 +49,10 @@ class _HabitsList extends State<HabitsList> {
       converter: (store) => _Props(
           goal:
               store.state.goals.firstWhere((goal) => goal.id == widget.goalID),
-          remove: (Habit habit) => {
-                store.dispatch(DeleteHabit(habit, widget.goalID)),
-              },
+          remove: (Habit habit) async {
+            await removeHabitNotifications(habit);
+            store.dispatch(DeleteHabit(habit, widget.goalID));
+          },
           editHabit: (Habit habit) => {
                 store.dispatch(EditHabit(habit, widget.goalID)),
               },
@@ -67,13 +69,11 @@ class _HabitsList extends State<HabitsList> {
         VoidCallback refresh = () {
           for (Habit habit in props.goal.habits) {
             if (habit.shouldUpdate()) {
-              print("should update");
               Habit updatedHabit = habit.copyWith();
               props.editHabit(updatedHabit);
             }
           }
         };
-        print("refreshing");
         return Column(children: [
           Refresher(refresh: refresh),
           Row(children: [
@@ -103,11 +103,12 @@ class _HabitsList extends State<HabitsList> {
                         });
                       },
                       title: Row(children: [
-                        Text(habit.name,
-                            style: TextStyle(color: props.goal.color)),
-                        Padding(padding: EdgeInsets.only(left: 10)),
+                        Expanded(
+                            child: Text(habit.name,
+                                style: TextStyle(color: props.goal.color))),
+                        Padding(padding: EdgeInsets.only(left: 5)),
                         Text(habit.historySummary(),
-                            style: TextStyle(color: Colors.grey, fontSize: 12)),
+                            style: TextStyle(color: Colors.grey, fontSize: 12))
                       ]),
                       subtitle: Text(habit.workRemaining),
                       trailing: PopupMenuButton<String>(
@@ -215,8 +216,9 @@ class _HabitsList extends State<HabitsList> {
                 )
             ],
           ),
+          Padding(padding: EdgeInsets.only(bottom: 5)),
           Row(children: [
-            Padding(padding: EdgeInsets.only(left: 10)),
+            Padding(padding: EdgeInsets.only(left: 15)),
             Icon(Icons.add, color: Colors.grey),
             Padding(padding: EdgeInsets.only(left: 10)),
             GestureDetector(
