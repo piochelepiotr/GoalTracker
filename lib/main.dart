@@ -28,9 +28,11 @@ void main() async {
 
   var areAnalyticsEnabled = await AppCenterAnalytics.isEnabled;
   var areCrashesEnabled = await AppCenterCrashes.isEnabled;
+  var installId = await AppCenter.installId;
 
   print("crashes $areCrashesEnabled");
   print("analytics $areAnalyticsEnabled");
+  print("installID $installId");
 
   final persistor = Persistor<AppState>(
     storage: FlutterStorage(),
