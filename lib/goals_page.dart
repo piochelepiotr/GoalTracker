@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:appcenter_analytics/appcenter_analytics.dart';
 
 import 'add_goal_page.dart';
 import 'goal_page/goal_page.dart';
@@ -137,7 +136,6 @@ class _State extends State<GoalsPage> {
               Button(
                   label: "Add Goal",
                   onPressed: () {
-                    AppCenterAnalytics.trackEvent("newGoal");
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => AddGoalPage()),

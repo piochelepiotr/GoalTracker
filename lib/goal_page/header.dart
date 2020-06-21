@@ -146,7 +146,6 @@ class GoalPageHeader extends StatelessWidget {
                           child: SizedBox(
                               width: 35, height: 35, child: Icon(Icons.add)),
                           onTap: () {
-                            throw Exception("test exception");
                             props.incrWork();
                           },
                         ),

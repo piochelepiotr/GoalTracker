@@ -31,9 +31,6 @@ dependencies:
   flutter_redux_dev_tools:
   reorderables:
   flutter_local_notifications:
-  appcenter:
-  appcenter_crashes:
-  appcenter_analytics:
 
 flutter_icons:
   android: true
