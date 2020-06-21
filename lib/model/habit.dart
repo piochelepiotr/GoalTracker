@@ -29,7 +29,7 @@ class Period {
 }
 
 List<Period> periods = [
-  // Period(repr: "30s", duration: Duration(seconds: 30)),
+  // Period(repr: "5s", duration: Duration(seconds: 5)),
   // Period(repr: "5m", duration: Duration(minutes: 5)),
   Period(repr: "Day", duration: Duration(days: 1)),
   Period(repr: "Week", duration: Duration(days: 7)),
@@ -127,8 +127,13 @@ class Habit {
     DateTime now = DateTime.now();
     while (start.add(period).isBefore(now)) {
       habitHistory.add(HabitResult(
-          length: period, objective: objective, achieved: achieved));
+          start: start,
+          length: period,
+          objective: objective,
+          achieved: achieved));
       achieved = 0;
+      print("adding history");
+      print(start);
       start = start.add(period);
     }
     return this.copyWith(

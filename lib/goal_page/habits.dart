@@ -7,7 +7,7 @@ import '../model/habit.dart';
 import '../add_habit_page.dart';
 import '../components/refresher.dart';
 import '../components/round_icon_button.dart';
-import '../habit_history_page.dart';
+import '../habit_history_page/habit_history_page.dart';
 import '../notifications/notifications.dart';
 
 class _Props {

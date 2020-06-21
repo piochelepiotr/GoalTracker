@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'model/habit.dart';
-import 'components/form_line.dart';
-import 'components/form_divider.dart';
+import '../model/habit.dart';
+import '../components/form_line.dart';
+import '../components/form_divider.dart';
+import 'chart.dart';
 
 class HabitHistoryPage extends StatelessWidget {
   final Habit habit;
@@ -57,6 +58,8 @@ class HabitHistoryPage extends StatelessWidget {
           name: "Longest Strike",
           child: Text(habit.getLongestStrike().toString())),
       FormDivider(),
+      TimeSeriesBar(habit.habitHistory, habit.period, color),
+      Text("% of achievement over time"),
     ]));
   }
 }
