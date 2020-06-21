@@ -1,4 +1,4 @@
-package com.example.motivation_app
+package com.magnolia.motivation_app
 
 import io.flutter.embedding.android.FlutterActivity
 

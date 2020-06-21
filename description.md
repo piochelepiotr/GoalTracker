@@ -6,10 +6,7 @@ long:
 
 Have you ever started a new habit to achieve your goals but found it hard to keep after a few days?
 
-Do you like to split your goals into actions you need to take to achieve them, but struggle to keep track of all your goals and actions you need to take?
-
-Or do you simply need some motivation to help you achieve your life dreams?
-
-Goal: Habit Tracker, To-Do List, Motivation Booster is done for that!
+The best way to do it is to split your goals into small actions you need to take and habits you need to keep to achieve them.
+Goal: Habit Tracker, To-Do List, Motivation Booster helps you do that, and can keep track of all of your goals and provide you the additional motivation you need to achieve your life dreams.
 
 Try it out!
