@@ -32,6 +32,8 @@ dependencies:
   reorderables:
   flutter_local_notifications:
   charts_flutter:
+  firebase_core:
+  firebase_analytics:
 
 flutter_icons:
   android: true
