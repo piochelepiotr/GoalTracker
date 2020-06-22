@@ -136,6 +136,7 @@ class _State extends State<GoalsPage> {
               Button(
                   label: "Add Goal",
                   onPressed: () {
+                    throw Exception("exception");
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => AddGoalPage()),
