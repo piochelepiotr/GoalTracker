@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "38779281782",
+    "firebase_url": "https://goals-application.firebaseio.com",
+    "project_id": "goals-application",
+    "storage_bucket": "goals-application.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:38779281782:android:06c21b54535a89169b1a57",
+        "android_client_info": {
+          "package_name": "com.magnolia.motivation_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "38779281782-b2152234t8lg6fitae762lofgvp0eh86.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.magnolia.motivation_app",
+            "certificate_hash": "c113c51795fedc87a72c0613030a9f5e77299720"
+          }
+        },
+        {
+          "client_id": "38779281782-lmccsb4qiahmg5d9f5k8jla4kc2kfnbk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAH4Sknyk0Zsg8Vojz1NMuzvC0pdT_KDCQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "38779281782-lmccsb4qiahmg5d9f5k8jla4kc2kfnbk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
