@@ -3,6 +3,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:redux_persist/redux_persist.dart';
 import 'package:redux_persist_flutter/redux_persist_flutter.dart';
+import 'package:flutter/services.dart';
 
 import 'goals_page.dart';
 import 'redux/reducer.dart';
@@ -11,6 +12,7 @@ import 'model/goal.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   final persistor = Persistor<AppState>(
     storage: FlutterStorage(),
