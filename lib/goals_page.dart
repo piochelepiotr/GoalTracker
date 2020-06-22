@@ -9,6 +9,7 @@ import 'redux/actions.dart';
 import 'quote.dart';
 import 'notifications/notifications.dart';
 import 'components/bottom_bar.dart';
+import 'analytics/analytics.dart';
 
 class _Props {
   List<Goal> goals;
@@ -136,7 +137,7 @@ class _State extends State<GoalsPage> {
               Button(
                   label: "Add Goal",
                   onPressed: () {
-                    throw Exception("exception");
+                    sendAnalyticsEvent("addGoal");
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => AddGoalPage()),
