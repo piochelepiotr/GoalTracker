@@ -22,7 +22,7 @@ Future<void> navigateToGoal(BuildContext context, int goalID) async {
 
 void initNotifications(context) {
   print("init notifications");
-  final settingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+  final settingsAndroid = AndroidInitializationSettings('app_icon');
   Future onSelectNotification(String payload) async {
     return await navigateToGoal(context, int.parse(payload));
   }
