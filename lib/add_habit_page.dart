@@ -14,6 +14,7 @@ import 'components/chip_picker.dart';
 import 'components/datetime_picker.dart';
 import 'components/weekday_picker.dart';
 import 'notifications/notifications.dart';
+import 'analytics/analytics.dart';
 
 class _Props {
   VoidCallback addHabit;
@@ -198,6 +199,7 @@ class _AddHabitPage extends State<AddHabitPage> {
                         notificationDays: notificationDays,
                       ));
                     } else {
+                      sendAnalyticsEvent("addHabit");
                       props.addHabit();
                     }
                     Navigator.pop(context);

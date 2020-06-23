@@ -5,6 +5,7 @@ import '../redux/actions.dart';
 import '../model/goal.dart';
 import '../model/action.dart';
 import 'text_edit.dart';
+import '../analytics/analytics.dart';
 
 class _Props {
   Goal goal;
@@ -125,6 +126,7 @@ class _ActionsList extends State<ActionsList> {
                       hint: 'Add Action',
                       onEditingComplete: () {},
                       onSubmitted: (String value) {
+                        sendAnalyticsEvent("addAction");
                         props.addAction(ActionModel(name: value));
                         newActionController.clear();
                       },

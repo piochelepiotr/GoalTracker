@@ -104,6 +104,8 @@ class _State extends State<GoalsPage> {
                                                 FlatButton(
                                                   child: Text('Delete'),
                                                   onPressed: () {
+                                                    sendAnalyticsEvent(
+                                                        "deleteGoal");
                                                     props.remove(goal);
                                                     Navigator.of(context).pop();
                                                   },
@@ -137,7 +139,7 @@ class _State extends State<GoalsPage> {
               Button(
                   label: "Add Goal",
                   onPressed: () {
-                    sendAnalyticsEvent("addGoal");
+                    sendAnalyticsEvent("addGoalStart");
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => AddGoalPage()),

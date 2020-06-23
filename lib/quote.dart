@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'quotes.dart';
+import 'analytics/analytics.dart';
 
 class Quote extends StatefulWidget {
   @override
@@ -40,6 +41,7 @@ class _Quote extends State<Quote> {
       Expanded(
           child: GestureDetector(
               onTap: () {
+                sendAnalyticsEvent("nextQuote");
                 setState(() {
                   quoteIndex = generator.nextInt(quotes.length);
                   timer.cancel();

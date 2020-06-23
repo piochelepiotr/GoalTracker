@@ -10,6 +10,7 @@ import 'components/bottom_bar.dart';
 import 'components/editable_title.dart';
 import 'components/form_line.dart';
 import 'components/form_divider.dart';
+import 'analytics/analytics.dart';
 
 List<String> units = [
   "Hours",
@@ -192,6 +193,7 @@ class _State extends State<AddGoalPage> {
                               );
                             });
                       } else {
+                        sendAnalyticsEvent("addGoal");
                         buttonActions.addGoal();
                         Navigator.pop(context);
                       }

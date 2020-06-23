@@ -9,6 +9,7 @@ import '../components/refresher.dart';
 import '../components/round_icon_button.dart';
 import '../habit_history_page/habit_history_page.dart';
 import '../notifications/notifications.dart';
+import '../analytics/analytics.dart';
 
 class _Props {
   Goal goal;
@@ -94,13 +95,16 @@ class _HabitsList extends State<HabitsList> {
                     ListTile(
                       onTap: () {
                         FocusScope.of(context).requestFocus(new FocusNode());
-                        setState(() {
-                          if (selectedHabitID == habit.id) {
+                        if (selectedHabitID == habit.id) {
+                          setState(() {
                             selectedHabitID = null;
-                          } else {
+                          });
+                        } else {
+                          sendAnalyticsEvent("expandHabitEasy");
+                          setState(() {
                             selectedHabitID = habit.id;
-                          }
-                        });
+                          });
+                        }
                       },
                       title: Row(children: [
                         Expanded(
@@ -138,6 +142,7 @@ class _HabitsList extends State<HabitsList> {
                                     FlatButton(
                                       child: Text('Delete'),
                                       onPressed: () {
+                                        sendAnalyticsEvent("deleteHabit");
                                         props.remove(habit);
                                         Navigator.of(context).pop();
                                       },
@@ -147,16 +152,35 @@ class _HabitsList extends State<HabitsList> {
                               },
                             );
                           } else if (selected == "edit") {
+                            sendAnalyticsEvent("editHabit");
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => AddHabitPage(
                                       habit: habit, goalID: widget.goalID)),
                             );
+                          } else if (selected == "expand") {
+                            sendAnalyticsEvent("expandHabit");
+                            setState(() {
+                              selectedHabitID = habit.id;
+                            });
+                          } else if (selected == "collapse") {
+                            setState(() {
+                              selectedHabitID = null;
+                            });
                           }
                         },
                         itemBuilder: (BuildContext context) =>
                             <PopupMenuEntry<String>>[
+                          selectedHabitID == habit.id
+                              ? const PopupMenuItem<String>(
+                                  value: "collapse",
+                                  child: Text('Collapse'),
+                                )
+                              : const PopupMenuItem<String>(
+                                  value: "expand",
+                                  child: Text('Expand'),
+                                ),
                           const PopupMenuItem<String>(
                             value: "edit",
                             child: Text('Edit'),
