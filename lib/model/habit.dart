@@ -1,9 +1,6 @@
 import 'time.dart';
 
 String formatDuration(Duration d) {
-  if (d < Duration(minutes: 1)) {
-    return d.inSeconds.toString() + " seconds";
-  }
   if (d < Duration(hours: 1)) {
     return d.inMinutes.toString() + " minutes";
   }
@@ -103,7 +100,8 @@ class Habit {
     notifications ??= false;
     //
     habitHistory ??= List<HabitResult>();
-    start ??= DateTime.now();
+    DateTime now = DateTime.now();
+    start ??= DateTime(now.year, now.month, now.day);
     notificationDays ??= List<bool>.filled(7, true);
     notificationIDs ??= List<int>();
     remainingTime = getRemainingTime();
