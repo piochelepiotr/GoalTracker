@@ -5,6 +5,7 @@ import 'package:redux_persist/redux_persist.dart';
 import 'package:redux_persist_flutter/redux_persist_flutter.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import 'goals_page.dart';
 import 'redux/reducer.dart';
@@ -47,7 +48,10 @@ class FlutterReduxApp extends StatelessWidget {
       store: store,
       child: MaterialApp(
         title: title,
-        home: GoalsPage(),
+        home: ShowCaseWidget(
+            builder: Builder(
+          builder: (context) => GoalsPage(),
+        )),
       ),
     );
   }

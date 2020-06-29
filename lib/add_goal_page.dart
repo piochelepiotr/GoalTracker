@@ -11,6 +11,7 @@ import 'components/editable_title.dart';
 import 'components/form_line.dart';
 import 'components/form_divider.dart';
 import 'analytics/analytics.dart';
+import 'goal_page/goal_page.dart';
 
 List<String> units = [
   "Hours",
@@ -29,7 +30,7 @@ List<String> units = [
 ];
 
 class _Props {
-  VoidCallback addGoal;
+  int Function() addGoal;
   bool Function() isDuplicate;
   _Props({this.addGoal, this.isDuplicate});
 }
@@ -153,14 +154,23 @@ class _State extends State<AddGoalPage> {
                       totalWork = int.parse(_totalProgressController.text);
                       workDone = int.parse(_currentProgressController.text);
                     } on FormatException {}
+                    int goalID;
+                    bool newGoal = false;
+                    if (widget.goal == null) {
+                      goalID = store.state.nextGoalID();
+                      newGoal = true;
+                    } else {
+                      goalID = widget.goal.id;
+                    }
                     store.dispatch(AddGoal(Goal(
                       name: _textController.text,
                       workUnit: progressUnit,
                       totalWork: totalWork,
                       workDone: workDone,
                       color: goalColor,
-                      id: widget.goal != null ? widget.goal.id : null,
+                      id: goalID,
                     )));
+                    return newGoal ? goalID : null;
                   },
                   isDuplicate: () =>
                       widget.goal == null &&
@@ -194,8 +204,15 @@ class _State extends State<AddGoalPage> {
                             });
                       } else {
                         sendAnalyticsEvent("addGoal");
-                        buttonActions.addGoal();
+                        int goalID = buttonActions.addGoal();
                         Navigator.pop(context);
+                        if (goalID != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => GoalPage(goalID: goalID)),
+                          );
+                        }
                       }
                     })
               ]);

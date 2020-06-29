@@ -4,13 +4,19 @@ import '../model/goal.dart';
 
 class AppState {
   List<Goal> goals = List<Goal>();
+  final bool addGoalIntroDone;
 
-  AppState({this.goals});
+  AppState({this.goals, this.addGoalIntroDone});
 
-  AppState copyWith({List<Goal> goals, int selectedGoalID}) {
+  AppState copyWith({List<Goal> goals, bool addGoalIntroDone}) {
     return AppState(
       goals: goals ?? this.goals,
+      addGoalIntroDone: addGoalIntroDone ?? this.addGoalIntroDone,
     );
+  }
+
+  int nextGoalID() {
+    return goals.fold(0, (m, goal) => goal.id > m ? goal.id : m) + 1;
   }
 
   Goal getGoal(int goalID) {
@@ -20,16 +26,24 @@ class AppState {
   static AppState fromJson(dynamic json) {
     List<Goal> goals = List<Goal>();
     if (json == null) {
-      return AppState(goals: goals);
+      return AppState(goals: goals, addGoalIntroDone: false);
     }
     var jsonData = jsonDecode(json);
     jsonData['goals']?.forEach((goalMap) => goals.add(Goal.fromJson(goalMap)));
-    return AppState(goals: goals);
+    print(jsonData['add_goal_intro_done']);
+    return AppState(
+      goals: goals,
+      addGoalIntroDone: jsonData['add_goal_intro_done'] != null
+          ? jsonData['add_goal_intro_done']
+          : false,
+    );
   }
 
   dynamic toJson() {
-    dynamic json =
-        jsonEncode({'goals': goals.map((goal) => goal.toMap()).toList()});
+    dynamic json = jsonEncode({
+      'goals': goals.map((goal) => goal.toMap()).toList(),
+      'add_goal_intro_done': addGoalIntroDone,
+    });
     return json;
   }
 }

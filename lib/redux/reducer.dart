@@ -5,10 +5,6 @@ import '../model/goal.dart';
 import '../model/action.dart';
 import '../model/habit.dart';
 
-int nextGoalID(List<Goal> goals) {
-  return goals.fold(0, (m, goal) => goal.id > m ? goal.id : m) + 1;
-}
-
 int nextActionID(List<ActionModel> actions) {
   return actions.fold(0, (m, action) => action.id > m ? action.id : m) + 1;
 }
@@ -18,13 +14,13 @@ int nextHabitID(List<Habit> habits) {
 }
 
 AppState reducer(AppState prev, dynamic action) {
+  if (action is AddGoal && !prev.addGoalIntroDone) {
+    prev = prev.copyWith(addGoalIntroDone: true);
+  }
   if (action is DeleteGoal) {
     List<Goal> goals = List.from(prev.goals)
       ..removeWhere((goal) => goal.id == action.goalID);
     return prev.copyWith(goals: goals);
-  }
-  if (action is SelectGoal) {
-    return prev.copyWith(selectedGoalID: action.goalID);
   }
   if (action is IncrWork) {
     List<Goal> goals = prev.goals.map((goal) {
@@ -75,8 +71,7 @@ List<Goal> goalsReducer(List<Goal> prev, dynamic action) {
       }
     });
     if (newGoal) {
-      int id = nextGoalID(prev);
-      goals.add(action.goal.copyWith(id: id));
+      goals.add(action.goal);
     }
     return goals;
   }

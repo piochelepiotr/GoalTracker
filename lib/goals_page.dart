@@ -10,13 +10,19 @@ import 'quote.dart';
 import 'notifications/notifications.dart';
 import 'components/bottom_bar.dart';
 import 'analytics/analytics.dart';
+import 'dart:ui';
+import 'onboarding.dart';
 
 class _Props {
   List<Goal> goals;
   Function(Goal) remove;
-  Function(int) select;
   Function(int oldIndex, int newIndex) reOrder;
-  _Props({this.goals, this.remove, this.select, this.reOrder});
+  final bool addGoalIntroDone;
+  _Props(
+      {@required this.goals,
+      @required this.remove,
+      @required this.reOrder,
+      @required this.addGoalIntroDone});
 }
 
 class GoalsPage extends StatefulWidget {
@@ -25,6 +31,8 @@ class GoalsPage extends StatefulWidget {
 }
 
 class _State extends State<GoalsPage> {
+  GlobalKey _one = GlobalKey();
+
   @override
   void initState() {
     super.initState();
@@ -34,7 +42,7 @@ class _State extends State<GoalsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: new StoreConnector<AppState, _Props>(
+      body: StoreConnector<AppState, _Props>(
         converter: (store) => _Props(
           goals: store.state.goals,
           remove: (Goal goal) async {
@@ -44,7 +52,7 @@ class _State extends State<GoalsPage> {
           reOrder: (int oldIndex, int newIndex) => {
             store.dispatch(ReOrderGoals(oldIndex, newIndex)),
           },
-          select: (int goalID) => {store.dispatch(SelectGoal(goalID))},
+          addGoalIntroDone: store.state.addGoalIntroDone,
         ),
         builder: (context, props) {
           return Column(children: [
@@ -68,7 +76,6 @@ class _State extends State<GoalsPage> {
                                       style: TextStyle(color: goal.color)),
                                   subtitle: Text(goal.workString()),
                                   onTap: () => {
-                                    props.select(goal.id),
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -136,15 +143,30 @@ class _State extends State<GoalsPage> {
                                 color: Colors.grey.withAlpha(180),
                                 fontStyle: FontStyle.italic)))),
             BottomBar(buttons: [
-              Button(
-                  label: "Add Goal",
-                  onPressed: () {
-                    sendAnalyticsEvent("addGoalStart");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AddGoalPage()),
-                    );
-                  }),
+              props.addGoalIntroDone
+                  ? Button(
+                      label: "Add Goal",
+                      onPressed: () {
+                        sendAnalyticsEvent("addGoalStart");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddGoalPage()),
+                        );
+                      })
+                  : OnBoardingWidget(
+                      key: _one,
+                      child: Button(
+                          label: "Add Goal",
+                          onPressed: () {
+                            sendAnalyticsEvent("addGoalStartOnBoarding");
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddGoalPage()),
+                            );
+                          })),
             ]),
           ]);
         },

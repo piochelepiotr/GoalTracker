@@ -94,11 +94,6 @@ class DeleteGoal {
   DeleteGoal(this.goalID);
 }
 
-class SelectGoal {
-  final int goalID;
-  SelectGoal(this.goalID);
-}
-
 class DeleteAction extends ActionsAction {
   final int goalID;
   final ActionModel action;
