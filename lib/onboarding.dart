@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'components/bottom_bar.dart';
 import 'dart:ui';
 
 class OnBoardingWidget extends StatefulWidget {
@@ -85,22 +84,9 @@ class TutorialOverlay extends ModalRoute<void> {
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Center(
                   child: Text(
-                      "Let's start by adding a goal, anything you want to achieve",
+                      "Welcome to the Goal Tracker application. Thanks to it, you can keep track of the actions and habits you need to take to achieve your goals! Let's start by adding a goal.",
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 20, color: Colors.white)))),
         ]));
   }
-
-  // @override
-  // Widget buildTransitions(
-  //     BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-  //   // You can add your own animations for the overlay content
-  //   return FadeTransition(
-  //     opacity: animation,
-  //     child: ScaleTransition(
-  //       scale: animation,
-  //       child: child,
-  //     ),
-  //   );
-  // }
 }

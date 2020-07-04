@@ -4,7 +4,12 @@ class EditableTitle extends StatelessWidget {
   final Color color;
   final String hint;
   final TextEditingController textController;
-  EditableTitle({this.color, this.hint, this.textController});
+  final bool autofocus;
+  EditableTitle(
+      {@required this.color,
+      @required this.hint,
+      @required this.textController,
+      this.autofocus = true});
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +25,7 @@ class EditableTitle extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 20),
         child: TextField(
+          autofocus: autofocus,
           style: TextStyle(color: Colors.white),
           cursorColor: Colors.white,
           controller: textController,

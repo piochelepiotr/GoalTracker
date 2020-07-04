@@ -160,11 +160,17 @@ class _HabitsList extends State<HabitsList> {
                                       habit: habit, goalID: widget.goalID)),
                             );
                           } else if (selected == "expand") {
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                                content: Text(
+                                    "You can simply click on a habit to expand or collapse it")));
                             sendAnalyticsEvent("expandHabit");
                             setState(() {
                               selectedHabitID = habit.id;
                             });
                           } else if (selected == "collapse") {
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                                content: Text(
+                                    "You can simply click on a habit to expand or collapse it")));
                             setState(() {
                               selectedHabitID = null;
                             });

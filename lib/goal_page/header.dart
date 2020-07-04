@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-import '../add_goal_page.dart';
 import '../redux/state.dart';
 import '../redux/actions.dart';
 import '../model/goal.dart';
+import '../notifications/notifications.dart';
 
 typedef void _SetWork(int workDone);
 
@@ -31,14 +31,21 @@ class GoalPageHeader extends StatelessWidget {
     return StoreConnector<AppState, _Props>(
       converter: (store) => _Props(
         goal: store.state.getGoal(goalID),
-        incrWork: () => {
-          store.dispatch(IncrWork(goalID)),
+        incrWork: () {
+          final Goal goal = store.state.getGoal(goalID);
+          if (goal.workDone >= goal.totalWork) {
+            Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text(
+                    "To increase the total work for this goal, click on the edit icon in the top right corner")));
+          } else {
+            store.dispatch(IncrWork(goalID));
+          }
         },
-        decrWork: () => {
-          store.dispatch(DecrWork(goalID)),
+        decrWork: () {
+          store.dispatch(DecrWork(goalID));
         },
-        setWork: (int workDone) => {
-          store.dispatch(SetWork(workDone, goalID)),
+        setWork: (int workDone) {
+          store.dispatch(SetWork(workDone, goalID));
         },
       ),
       builder: (context, props) {
@@ -83,13 +90,21 @@ class GoalPageHeader extends StatelessWidget {
                               width: 35,
                               height: 35,
                               child: Icon(Icons.edit, color: Colors.white)),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      AddGoalPage(goal: props.goal)),
+                          onTap: () async {
+                            String s = await showPendingNotifications();
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                title: Text("Notifications"),
+                                content: Text(s),
+                              ),
                             );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) =>
+                            //           AddGoalPage(goal: props.goal)),
+                            // );
                           },
                         ),
                       ),

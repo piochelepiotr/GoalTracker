@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 
 import 'actions.dart';
 import 'habits.dart';
 import 'header.dart';
+import '../components/onboarding_dialog.dart';
+import '../redux/actions.dart';
+import '../redux/state.dart';
+
+class _Props {
+  final bool doneOnboarding;
+  final VoidCallback doOnboarding;
+  _Props({this.doneOnboarding, this.doOnboarding});
+}
 
 class _GoalPage extends State<GoalPage> {
   @override
@@ -18,6 +28,22 @@ class _GoalPage extends State<GoalPage> {
             FocusScope.of(context).requestFocus(new FocusNode());
           },
           child: Column(children: [
+            StoreConnector<AppState, _Props>(converter: (store) {
+              return _Props(
+                doOnboarding: () => store.dispatch(DoOnBoarding("goal_page")),
+                doneOnboarding:
+                    store.state.onBoardingDone.contains("goal_page"),
+              );
+            }, builder: (context, props) {
+              return OnBoardingDialog(
+                title: "The Goal Page",
+                content:
+                    "On the Goal Page, you can track the one time actions, and repeated actions (habits) that you need to take to achieve your goal.",
+                dismissText: "OK",
+                onDismiss: props.doOnboarding,
+                show: !props.doneOnboarding,
+              );
+            }),
             Expanded(
                 child: MediaQuery.removePadding(
                     context: context,

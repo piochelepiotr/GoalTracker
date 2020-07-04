@@ -12,6 +12,7 @@ import 'components/form_line.dart';
 import 'components/form_divider.dart';
 import 'analytics/analytics.dart';
 import 'goal_page/goal_page.dart';
+import 'components/onboarding_dialog.dart';
 
 List<String> units = [
   "Hours",
@@ -32,7 +33,13 @@ List<String> units = [
 class _Props {
   int Function() addGoal;
   bool Function() isDuplicate;
-  _Props({this.addGoal, this.isDuplicate});
+  final VoidCallback seenAddGoalOnBoarding;
+  final bool doneAddGoalOnBoarding;
+  _Props(
+      {@required this.addGoal,
+      @required this.isDuplicate,
+      @required this.seenAddGoalOnBoarding,
+      @required this.doneAddGoalOnBoarding});
 }
 
 bool isDuplicate(List<Goal> goals, String goalName) {
@@ -63,13 +70,56 @@ class _State extends State<AddGoalPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Align(
+        body: StoreConnector<AppState, _Props>(converter: (store) {
+      return _Props(
+        addGoal: () {
+          int totalWork = 0;
+          int workDone = 0;
+          try {
+            totalWork = int.parse(_totalProgressController.text);
+            workDone = int.parse(_currentProgressController.text);
+          } on FormatException {}
+          int goalID;
+          bool newGoal = false;
+          if (widget.goal == null) {
+            goalID = store.state.nextGoalID();
+            newGoal = true;
+          } else {
+            goalID = widget.goal.id;
+          }
+          store.dispatch(AddGoal(Goal(
+            name: _textController.text,
+            workUnit: progressUnit,
+            totalWork: totalWork,
+            workDone: workDone,
+            color: goalColor,
+            id: goalID,
+          )));
+          return newGoal ? goalID : null;
+        },
+        isDuplicate: () =>
+            widget.goal == null &&
+            isDuplicate(store.state.goals, _textController.text),
+        seenAddGoalOnBoarding: () => store.dispatch(DoOnBoarding("add_goal")),
+        doneAddGoalOnBoarding: store.state.onBoardingDone.contains("add_goal"),
+      );
+    }, builder: (context, props) {
+      return Align(
         child: Column(
           children: [
+            OnBoardingDialog(
+              title: "Your first goal!",
+              content:
+                  "Your goal can be anything from finishing writing your book, to buying a home. Try to estimate the work required to achieve your goal. It will help you to keep track of the progress. You can always edit it later.",
+              dismissText: "Let's go!",
+              onDismiss: props.seenAddGoalOnBoarding,
+              show: !props.doneAddGoalOnBoarding,
+            ),
             EditableTitle(
               textController: _textController,
               color: goalColor,
               hint: 'Goal name',
+              autofocus: props.doneAddGoalOnBoarding,
             ),
             FormLine(
               name: "Unit",
@@ -145,84 +195,53 @@ class _State extends State<AddGoalPage> {
             ),
             FormDivider(),
             Spacer(),
-            StoreConnector<AppState, _Props>(converter: (store) {
-              return _Props(
-                  addGoal: () {
-                    int totalWork = 0;
-                    int workDone = 0;
-                    try {
-                      totalWork = int.parse(_totalProgressController.text);
-                      workDone = int.parse(_currentProgressController.text);
-                    } on FormatException {}
-                    int goalID;
-                    bool newGoal = false;
-                    if (widget.goal == null) {
-                      goalID = store.state.nextGoalID();
-                      newGoal = true;
+            BottomBar(buttons: [
+              Button(
+                  label: "Cancel",
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
+              Button(
+                  label: "Save",
+                  onPressed: () {
+                    if (props.isDuplicate()) {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("Error"),
+                              content: Text(
+                                  "You already have a goal with this name"),
+                              actions: [
+                                FlatButton(
+                                    child: Text("OK"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    }),
+                              ],
+                            );
+                          });
                     } else {
-                      goalID = widget.goal.id;
-                    }
-                    store.dispatch(AddGoal(Goal(
-                      name: _textController.text,
-                      workUnit: progressUnit,
-                      totalWork: totalWork,
-                      workDone: workDone,
-                      color: goalColor,
-                      id: goalID,
-                    )));
-                    return newGoal ? goalID : null;
-                  },
-                  isDuplicate: () =>
-                      widget.goal == null &&
-                      isDuplicate(store.state.goals, _textController.text));
-            }, builder: (context, buttonActions) {
-              return BottomBar(buttons: [
-                Button(
-                    label: "Cancel",
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    }),
-                Button(
-                    label: "Save",
-                    onPressed: () {
-                      if (buttonActions.isDuplicate()) {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text("Error"),
-                                content: Text(
-                                    "You already have a goal with this name"),
-                                actions: [
-                                  FlatButton(
-                                      child: Text("OK"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      }),
-                                ],
-                              );
-                            });
-                      } else {
-                        sendAnalyticsEvent("addGoal");
-                        int goalID = buttonActions.addGoal();
-                        Navigator.pop(context);
-                        if (goalID != null) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => GoalPage(goalID: goalID)),
-                          );
-                        }
+                      sendAnalyticsEvent("addGoal");
+                      int goalID = props.addGoal();
+                      Navigator.pop(context);
+                      if (goalID != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => GoalPage(goalID: goalID)),
+                        );
                       }
-                    })
-              ]);
-            }),
+                    }
+                  })
+            ]),
           ],
         ),
         alignment: Alignment.topCenter,
-      ),
-      // resizeToAvoidBottomInset: true,
-    );
+      );
+    }
+            // resizeToAvoidBottomInset: true,
+            ));
   }
 }
 

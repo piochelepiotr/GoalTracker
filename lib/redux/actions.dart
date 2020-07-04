@@ -12,6 +12,11 @@ class DecrWork {
   DecrWork(this.goalID);
 }
 
+class DoOnBoarding {
+  final String onBoarding;
+  DoOnBoarding(this.onBoarding);
+}
+
 abstract class GoalsAction {}
 
 abstract class GoalAction extends GoalsAction {

@@ -35,7 +35,6 @@ dependencies:
   firebase_core:
   firebase_analytics:
   firebase_crashlytics:
-  showcaseview:
 
 flutter_icons:
   android: true

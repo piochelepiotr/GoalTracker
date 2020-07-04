@@ -18,11 +18,12 @@ class _Props {
   Function(Goal) remove;
   Function(int oldIndex, int newIndex) reOrder;
   final bool addGoalIntroDone;
-  _Props(
-      {@required this.goals,
-      @required this.remove,
-      @required this.reOrder,
-      @required this.addGoalIntroDone});
+  _Props({
+    @required this.goals,
+    @required this.remove,
+    @required this.reOrder,
+    @required this.addGoalIntroDone,
+  });
 }
 
 class GoalsPage extends StatefulWidget {
@@ -52,7 +53,7 @@ class _State extends State<GoalsPage> {
           reOrder: (int oldIndex, int newIndex) => {
             store.dispatch(ReOrderGoals(oldIndex, newIndex)),
           },
-          addGoalIntroDone: store.state.addGoalIntroDone,
+          addGoalIntroDone: store.state.onBoardingDone.contains("add_goal"),
         ),
         builder: (context, props) {
           return Column(children: [

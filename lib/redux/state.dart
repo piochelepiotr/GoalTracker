@@ -4,15 +4,20 @@ import '../model/goal.dart';
 
 class AppState {
   List<Goal> goals = List<Goal>();
-  final bool addGoalIntroDone;
+  final List<String> onBoardingDone;
 
-  AppState({this.goals, this.addGoalIntroDone});
+  AppState({this.goals, this.onBoardingDone});
 
-  AppState copyWith({List<Goal> goals, bool addGoalIntroDone}) {
+  AppState copyWith({List<Goal> goals, List<String> onBoardingDone}) {
     return AppState(
       goals: goals ?? this.goals,
-      addGoalIntroDone: addGoalIntroDone ?? this.addGoalIntroDone,
+      onBoardingDone: onBoardingDone ?? this.onBoardingDone,
     );
+  }
+
+  AppState doOnBoarding(String onBoarding) {
+    return copyWith(
+        onBoardingDone: List<String>.from(onBoardingDone)..add(onBoarding));
   }
 
   int nextGoalID() {
@@ -26,23 +31,23 @@ class AppState {
   static AppState fromJson(dynamic json) {
     List<Goal> goals = List<Goal>();
     if (json == null) {
-      return AppState(goals: goals, addGoalIntroDone: false);
+      return AppState(goals: goals, onBoardingDone: List<String>());
     }
     var jsonData = jsonDecode(json);
     jsonData['goals']?.forEach((goalMap) => goals.add(Goal.fromJson(goalMap)));
-    print(jsonData['add_goal_intro_done']);
+    List<String> onBoardingDone = List();
+    jsonData['onboarding_done']
+        ?.forEach((onBoarding) => onBoardingDone.add(onBoarding));
     return AppState(
       goals: goals,
-      addGoalIntroDone: jsonData['add_goal_intro_done'] != null
-          ? jsonData['add_goal_intro_done']
-          : false,
+      onBoardingDone: onBoardingDone,
     );
   }
 
   dynamic toJson() {
     dynamic json = jsonEncode({
       'goals': goals.map((goal) => goal.toMap()).toList(),
-      'add_goal_intro_done': addGoalIntroDone,
+      'onboarding_done': onBoardingDone,
     });
     return json;
   }

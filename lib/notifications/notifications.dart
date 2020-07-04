@@ -49,6 +49,16 @@ Future<void> showWeeklyAtDayAndTime(
       payload: goal.id.toString());
 }
 
+List<Day> days = [
+  Day.Monday,
+  Day.Tuesday,
+  Day.Wednesday,
+  Day.Thursday,
+  Day.Friday,
+  Day.Saturday,
+  Day.Sunday
+];
+
 Future<List<int>> updateHabitNotifications(
     Habit oldHabit, Habit newHabit, Goal goal) async {
   List<int> notificationsIDs = List<int>();
@@ -66,13 +76,15 @@ Future<List<int>> updateHabitNotifications(
   if (newHabit.notifications) {
     int i = 0;
     for (bool notification in newHabit.notificationDays) {
+      print("notifications $i");
       if (notification) {
         int id = randomGenerator.nextInt(1 << 31);
+        print("generated ID $id");
         notificationsIDs.add(id);
         await showWeeklyAtDayAndTime(
             Time(newHabit.notificationTime.hour,
                 newHabit.notificationTime.minute),
-            Day.values[i],
+            days[i],
             id,
             goal,
             newHabit.name);
@@ -81,6 +93,16 @@ Future<List<int>> updateHabitNotifications(
     }
   }
   return notificationsIDs;
+}
+
+Future<String> showPendingNotifications() async {
+  var pendingNotificationRequests =
+      await notifications.pendingNotificationRequests();
+  String s = "";
+  for (final p in pendingNotificationRequests) {
+    s += ",id:${p.id},title:${p.title}";
+  }
+  return s;
 }
 
 Future<void> removeHabitNotifications(Habit habit) async {

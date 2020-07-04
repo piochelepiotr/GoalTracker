@@ -14,8 +14,8 @@ int nextHabitID(List<Habit> habits) {
 }
 
 AppState reducer(AppState prev, dynamic action) {
-  if (action is AddGoal && !prev.addGoalIntroDone) {
-    prev = prev.copyWith(addGoalIntroDone: true);
+  if (action is DoOnBoarding) {
+    return prev.doOnBoarding(action.onBoarding);
   }
   if (action is DeleteGoal) {
     List<Goal> goals = List.from(prev.goals)
