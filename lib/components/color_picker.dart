@@ -32,6 +32,7 @@ class _ColorPicker extends State<ColorPicker> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        FocusScope.of(context).requestFocus(new FocusNode());
         showDialog(
           context: context,
           builder: (_) {

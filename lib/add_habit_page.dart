@@ -28,6 +28,7 @@ class _AddHabitPage extends State<AddHabitPage> {
   final TextEditingController _objectiveController =
       new TextEditingController();
   String period;
+  int objective = 1;
   bool notifications = false;
   TimeOfDay notificationTime = TimeOfDay(hour: 19, minute: 0);
   List<bool> notificationDays = List<bool>.filled(7, true);
@@ -38,6 +39,7 @@ class _AddHabitPage extends State<AddHabitPage> {
     if (widget.habit != null) {
       _nameController.text = widget.habit.name;
       _objectiveController.text = widget.habit.objective.toString();
+      objective = widget.habit.objective;
       period = getPeriodRepr(widget.habit.period);
       notifications = widget.habit.notifications;
       notificationTime = TimeOfDay(
@@ -46,7 +48,6 @@ class _AddHabitPage extends State<AddHabitPage> {
       notificationDays = List<bool>.from(widget.habit.notificationDays);
     } else {
       period = periods[0].repr;
-      _objectiveController.text = '1';
     }
   }
 
@@ -57,12 +58,6 @@ class _AddHabitPage extends State<AddHabitPage> {
         converter: (store) {
           return _Props(
             addHabit: () async {
-              int times;
-              try {
-                times = int.parse(_objectiveController.text);
-              } on FormatException {
-                return;
-              }
               Habit habit = Habit(
                   name: _nameController.text,
                   period: getPeriodDuration(period),
@@ -71,7 +66,7 @@ class _AddHabitPage extends State<AddHabitPage> {
                       hour: notificationTime.hour,
                       minute: notificationTime.minute),
                   notificationDays: notificationDays,
-                  objective: times);
+                  objective: objective);
               List<int> ids = await updateHabitNotifications(
                   null, habit, store.state.getGoal(widget.goalID));
               store.dispatch(AddHabit(
@@ -111,11 +106,21 @@ class _AddHabitPage extends State<AddHabitPage> {
                   child: Row(children: [
                 Expanded(
                     child: TextField(
+                  onChanged: (String quantity) {
+                    try {
+                      setState(() {
+                        objective = int.parse(quantity);
+                      });
+                    } on FormatException {
+                      objective = 1;
+                    }
+                  },
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.end,
                   cursorColor: Colors.black,
                   controller: _objectiveController,
                   decoration: InputDecoration(
+                    hintText: '1',
                     contentPadding: EdgeInsets.all(0),
                     isDense: true,
                     border: InputBorder.none,
@@ -124,6 +129,9 @@ class _AddHabitPage extends State<AddHabitPage> {
                     disabledBorder: InputBorder.none,
                   ),
                 )),
+                Padding(padding: EdgeInsets.symmetric(horizontal: 2)),
+                Text("Time" + (objective == 1 ? '' : 's'),
+                    style: TextStyle(color: Colors.grey)),
               ])),
             ),
             FormDivider(),
@@ -180,12 +188,6 @@ class _AddHabitPage extends State<AddHabitPage> {
                   label: "Save",
                   onPressed: () {
                     if (widget.habit != null) {
-                      int objective;
-                      try {
-                        objective = int.parse(_objectiveController.text);
-                      } on FormatException {
-                        return;
-                      }
                       props.editHabit(widget.habit.copyWith(
                         name: _nameController.text,
                         period: periods
