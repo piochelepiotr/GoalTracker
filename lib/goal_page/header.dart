@@ -5,6 +5,7 @@ import '../redux/state.dart';
 import '../redux/actions.dart';
 import '../model/goal.dart';
 import '../notifications/notifications.dart';
+import '../add_goal_page.dart';
 
 typedef void _SetWork(int workDone);
 
@@ -91,20 +92,20 @@ class GoalPageHeader extends StatelessWidget {
                               height: 35,
                               child: Icon(Icons.edit, color: Colors.white)),
                           onTap: () async {
-                            String s = await showPendingNotifications();
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) => AlertDialog(
-                                title: Text("Notifications"),
-                                content: Text(s),
-                              ),
-                            );
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //       builder: (context) =>
-                            //           AddGoalPage(goal: props.goal)),
+                            // String s = await showPendingNotifications();
+                            // showDialog(
+                            //   context: context,
+                            //   builder: (BuildContext context) => AlertDialog(
+                            //     title: Text("Notifications"),
+                            //     content: Text(s),
+                            //   ),
                             // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      AddGoalPage(goal: props.goal)),
+                            );
                           },
                         ),
                       ),
