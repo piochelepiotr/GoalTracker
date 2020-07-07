@@ -247,25 +247,25 @@ class _HabitsList extends State<HabitsList> {
             ],
           ),
           Padding(padding: EdgeInsets.only(bottom: 5)),
-          Row(children: [
-            Padding(padding: EdgeInsets.only(left: 15)),
-            Icon(Icons.add, color: Colors.grey),
-            Padding(padding: EdgeInsets.only(left: 10)),
-            GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).requestFocus(new FocusNode());
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            AddHabitPage(goalID: widget.goalID)),
-                  );
-                },
-                child: Text(
-                  "Add Habit",
-                  style: TextStyle(color: Colors.grey, fontSize: 16),
-                )),
-          ]),
+          GestureDetector(
+            onTap: () {
+              FocusScope.of(context).requestFocus(new FocusNode());
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AddHabitPage(goalID: widget.goalID)),
+              );
+            },
+            child: Row(children: [
+              Padding(padding: EdgeInsets.only(left: 15)),
+              Icon(Icons.add, color: Colors.grey),
+              Padding(padding: EdgeInsets.only(left: 10)),
+              Text(
+                "Add Habit",
+                style: TextStyle(color: Colors.grey, fontSize: 16),
+              ),
+            ]),
+          ),
         ]);
       },
     );

@@ -32,6 +32,7 @@ class _AddHabitPage extends State<AddHabitPage> {
   bool notifications = false;
   TimeOfDay notificationTime = TimeOfDay(hour: 19, minute: 0);
   List<bool> notificationDays = List<bool>.filled(7, true);
+  FocusNode objectiveFocusNode;
 
   @override
   void initState() {
@@ -49,6 +50,13 @@ class _AddHabitPage extends State<AddHabitPage> {
     } else {
       period = periods[0].repr;
     }
+    objectiveFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    objectiveFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -82,6 +90,23 @@ class _AddHabitPage extends State<AddHabitPage> {
           );
         },
         builder: (context, props) {
+          ChipPicker periodPicker = ChipPicker(
+              values: periods.map((period) => period.repr).toList(),
+              value: period,
+              onChange: (String f) {
+                setState(() {
+                  period = f;
+                });
+              });
+          DateTimePicker dateTimePicker = DateTimePicker(
+            value: notificationTime,
+            onChanged: (TimeOfDay time) async {
+              setState(() {
+                notificationTime = time;
+              });
+            },
+            color: props.goal.color,
+          );
           return Column(children: [
             EditableTitle(
               textController: _nameController,
@@ -89,53 +114,56 @@ class _AddHabitPage extends State<AddHabitPage> {
               hint: "Habit name",
             ),
             FormLine(
-              name: "Every",
-              child: ChipPicker(
-                  values: periods.map((period) => period.repr).toList(),
-                  value: period,
-                  onChange: (String f) {
-                    setState(() {
-                      period = f;
-                    });
-                  }),
-            ),
+                name: "Every",
+                child: periodPicker,
+                onTap: () {
+                  periodPicker.onTap(context);
+                }),
             FormDivider(),
             FormLine(
-              name: "Times / $period",
-              child: Expanded(
-                  child: Row(children: [
-                Expanded(
-                    child: TextField(
-                  onChanged: (String quantity) {
-                    try {
-                      setState(() {
-                        objective = int.parse(quantity);
-                      });
-                    } on FormatException {
-                      objective = 1;
-                    }
-                  },
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.end,
-                  cursorColor: Colors.black,
-                  controller: _objectiveController,
-                  decoration: InputDecoration(
-                    hintText: '1',
-                    contentPadding: EdgeInsets.all(0),
-                    isDense: true,
-                    border: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                  ),
-                )),
-                Padding(padding: EdgeInsets.symmetric(horizontal: 2)),
-                Text("Time" + (objective == 1 ? '' : 's'),
-                    style: TextStyle(color: Colors.grey)),
-              ])),
-            ),
+                name: "Times / $period",
+                child: Expanded(
+                    child: Row(children: [
+                  Expanded(
+                      child: TextField(
+                    focusNode: objectiveFocusNode,
+                    onChanged: (String quantity) {
+                      try {
+                        setState(() {
+                          objective = int.parse(quantity);
+                        });
+                      } on FormatException {
+                        objective = 1;
+                      }
+                    },
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.end,
+                    cursorColor: Colors.black,
+                    controller: _objectiveController,
+                    decoration: InputDecoration(
+                      hintText: '1',
+                      contentPadding: EdgeInsets.all(0),
+                      isDense: true,
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                    ),
+                  )),
+                  Padding(padding: EdgeInsets.symmetric(horizontal: 2)),
+                  Text("Time" + (objective == 1 ? '' : 's'),
+                      style: TextStyle(color: Colors.grey)),
+                ])),
+                onTap: () {
+                  objectiveFocusNode.requestFocus();
+                }),
             FormDivider(),
             FormLine(
+              onTap: () {
+                setState(() {
+                  notifications = !notifications;
+                });
+              },
               name: "Notifications",
               child: Switch(
                 value: notifications,
@@ -151,15 +179,10 @@ class _AddHabitPage extends State<AddHabitPage> {
             notifications
                 ? FormLine(
                     name: "At",
-                    child: DateTimePicker(
-                      value: notificationTime,
-                      onChanged: (TimeOfDay time) async {
-                        setState(() {
-                          notificationTime = time;
-                        });
-                      },
-                      color: props.goal.color,
-                    ),
+                    child: dateTimePicker,
+                    onTap: () {
+                      dateTimePicker.onTap(context);
+                    },
                   )
                 : Container(),
             notifications

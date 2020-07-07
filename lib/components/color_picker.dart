@@ -3,73 +3,82 @@ import 'package:flutter_material_color_picker/flutter_material_color_picker.dart
 
 const Color defaultPickerColor = Colors.red;
 
-typedef void ColorChange(Color color);
+class ColorPicker extends StatelessWidget {
+  final Function(Color) onChange;
+  final Color value;
 
-class ColorPicker extends StatefulWidget {
-  final ColorChange onColorChange;
-  final Color defaultColor;
-
-  ColorPicker({this.onColorChange, this.defaultColor});
+  ColorPicker({@required this.onChange, @required this.value});
 
   @override
-  _ColorPicker createState() => _ColorPicker();
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        onTap(context);
+      },
+      child: CircleColor(color: value, circleSize: 25),
+    );
+  }
+
+  void onTap(BuildContext context) {
+    FocusScope.of(context).requestFocus(new FocusNode());
+    showDialog(
+      context: context,
+      builder: (_) {
+        return ColorPickerDialog(onChange: onChange, value: value);
+      },
+    );
+  }
 }
 
-class _ColorPicker extends State<ColorPicker> {
+class ColorPickerDialog extends StatefulWidget {
+  final Function(Color) onChange;
+  final Color value;
+
+  ColorPickerDialog({@required this.onChange, @required this.value});
+
+  @override
+  _ColorPickerDialog createState() => _ColorPickerDialog();
+}
+
+class _ColorPickerDialog extends State<ColorPickerDialog> {
   Color selectedColor = defaultPickerColor;
-  Color acceptedColor = defaultPickerColor;
 
   @override
   void initState() {
-    if (widget.defaultColor != null) {
-      selectedColor = widget.defaultColor;
-      acceptedColor = widget.defaultColor;
+    if (widget.value != null) {
+      selectedColor = widget.value;
     }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).requestFocus(new FocusNode());
-        showDialog(
-          context: context,
-          builder: (_) {
-            return AlertDialog(
-              contentPadding: const EdgeInsets.all(6.0),
-              title: Text("Pick the color"),
-              content: MaterialColorPicker(
-                shrinkWrap: true,
-                allowShades: false,
-                onMainColorChange: (ColorSwatch color) {
-                  setState(() {
-                    selectedColor = color;
-                  });
-                },
-                selectedColor: selectedColor,
-              ),
-              actions: [
-                FlatButton(
-                  child: Text('Cancel'),
-                  onPressed: Navigator.of(context).pop,
-                ),
-                FlatButton(
-                  child: Text('Update'),
-                  onPressed: () {
-                    setState(() {
-                      acceptedColor = selectedColor;
-                    });
-                    Navigator.of(context).pop();
-                    widget.onColorChange(acceptedColor);
-                  },
-                ),
-              ],
-            );
+    return AlertDialog(
+      contentPadding: const EdgeInsets.all(6.0),
+      title: Text("Pick the color"),
+      content: MaterialColorPicker(
+        shrinkWrap: true,
+        allowShades: false,
+        onMainColorChange: (ColorSwatch color) {
+          setState(() {
+            selectedColor = color;
+          });
+        },
+        selectedColor: selectedColor,
+      ),
+      actions: [
+        FlatButton(
+          child: Text('Cancel'),
+          onPressed: Navigator.of(context).pop,
+        ),
+        FlatButton(
+          child: Text('Update'),
+          onPressed: () {
+            Navigator.of(context).pop();
+            widget.onChange(selectedColor);
           },
-        );
-      },
-      child: CircleColor(color: acceptedColor, circleSize: 25),
+        ),
+      ],
     );
   }
 }

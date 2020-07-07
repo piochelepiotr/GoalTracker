@@ -54,9 +54,12 @@ class _State extends State<AddGoalPage> {
       new TextEditingController();
   Color goalColor = defaultPickerColor;
   String progressUnit = units[0];
+  FocusNode totalWorkFocusNode;
+  FocusNode workDoneFocusNode;
 
   @override
   void initState() {
+    super.initState();
     if (widget.goal != null) {
       _textController.text = widget.goal.name;
       goalColor = widget.goal.color;
@@ -64,7 +67,15 @@ class _State extends State<AddGoalPage> {
       _totalProgressController.text = widget.goal.totalWork.toString();
       _currentProgressController.text = widget.goal.workDone.toString();
     }
-    super.initState();
+    totalWorkFocusNode = FocusNode();
+    workDoneFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    totalWorkFocusNode.dispose();
+    workDoneFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -104,6 +115,21 @@ class _State extends State<AddGoalPage> {
         doneAddGoalOnBoarding: store.state.onBoardingDone.contains("add_goal"),
       );
     }, builder: (context, props) {
+      ChipPicker unitPicker = ChipPicker(
+          values: units,
+          value: progressUnit,
+          onChange: (String unit) {
+            setState(() {
+              progressUnit = unit;
+            });
+          });
+      ColorPicker colorPicker = ColorPicker(
+          value: goalColor,
+          onChange: (Color color) {
+            setState(() {
+              goalColor = color;
+            });
+          });
       return Align(
         child: Column(
           children: [
@@ -123,25 +149,18 @@ class _State extends State<AddGoalPage> {
             ),
             FormLine(
               name: "Unit",
-              child: ChipPicker(
-                  values: units,
-                  value: progressUnit,
-                  onChange: (String unit) {
-                    setState(() {
-                      progressUnit = unit;
-                    });
-                  }),
+              child: unitPicker,
+              onTap: () {
+                unitPicker.onTap(context);
+              },
             ),
             FormDivider(),
             FormLine(
               name: "Color",
-              child: ColorPicker(
-                  defaultColor: goalColor,
-                  onColorChange: (Color color) {
-                    setState(() {
-                      goalColor = color;
-                    });
-                  }),
+              child: colorPicker,
+              onTap: () {
+                colorPicker.onTap(context);
+              },
             ),
             FormDivider(),
             FormLine(
@@ -150,6 +169,7 @@ class _State extends State<AddGoalPage> {
                   child: Row(children: [
                 Expanded(
                     child: TextField(
+                  focusNode: totalWorkFocusNode,
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.end,
                   cursorColor: Colors.black,
@@ -167,6 +187,9 @@ class _State extends State<AddGoalPage> {
                 Padding(padding: EdgeInsets.only(right: 5)),
                 Text(progressUnit),
               ])),
+              onTap: () {
+                totalWorkFocusNode.requestFocus();
+              },
             ),
             FormDivider(),
             FormLine(
@@ -175,6 +198,7 @@ class _State extends State<AddGoalPage> {
                   child: Row(children: [
                 Expanded(
                     child: TextField(
+                  focusNode: workDoneFocusNode,
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.end,
                   cursorColor: Colors.black,
@@ -192,6 +216,9 @@ class _State extends State<AddGoalPage> {
                 Padding(padding: EdgeInsets.only(right: 5)),
                 Text(progressUnit),
               ])),
+              onTap: () {
+                workDoneFocusNode.requestFocus();
+              },
             ),
             FormDivider(),
             Spacer(),
