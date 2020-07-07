@@ -238,6 +238,20 @@ class _HabitsList extends State<HabitsList> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(100.0)),
                           ),
+                          Padding(padding: EdgeInsets.only(left: 5)),
+                          RoundIconButton(
+                            color: props.goal.color,
+                            secondaryColor: Colors.white,
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => AddHabitPage(
+                                          habit: habit,
+                                          goalID: widget.goalID)));
+                            },
+                            icon: Icons.edit,
+                          ),
                           Padding(padding: EdgeInsets.only(left: 10)),
                         ],
                       )

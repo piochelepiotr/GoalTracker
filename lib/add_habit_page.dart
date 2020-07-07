@@ -29,7 +29,7 @@ class _AddHabitPage extends State<AddHabitPage> {
       new TextEditingController();
   String period;
   int objective = 1;
-  bool notifications = false;
+  bool notifications = true;
   TimeOfDay notificationTime = TimeOfDay(hour: 19, minute: 0);
   List<bool> notificationDays = List<bool>.filled(7, true);
   FocusNode objectiveFocusNode;
