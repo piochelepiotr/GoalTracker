@@ -57,6 +57,7 @@ class WeekDayPicker extends StatelessWidget {
             color: color,
             selected: value[i],
             onSelected: () {
+              FocusScope.of(context).requestFocus(new FocusNode());
               onChange(i);
             }),
     ]);

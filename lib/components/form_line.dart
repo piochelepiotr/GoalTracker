@@ -11,11 +11,13 @@ class FormLine extends StatelessWidget {
     return GestureDetector(
         onTap: () {
           if (onTap != null) {
+            FocusScope.of(context).requestFocus(new FocusNode());
             onTap();
           }
         },
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        child: Container(
+          color: Colors.white,
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
           child: Row(children: [
             Expanded(child: Text(name, style: TextStyle(fontSize: 18))),
             child,

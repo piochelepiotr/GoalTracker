@@ -35,6 +35,7 @@ dependencies:
   firebase_core:
   firebase_analytics:
   firebase_crashlytics:
+  introduction_screen:
 
 flutter_icons:
   android: true

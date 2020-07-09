@@ -10,6 +10,7 @@ import 'goals_page.dart';
 import 'redux/reducer.dart';
 import 'redux/state.dart';
 import 'model/goal.dart';
+import 'onboarding/first_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,7 +48,7 @@ class FlutterReduxApp extends StatelessWidget {
       store: store,
       child: MaterialApp(
         title: title,
-        home: GoalsPage(),
+        home: FirstOnBoarding(), // GoalsPage(),
       ),
     );
   }

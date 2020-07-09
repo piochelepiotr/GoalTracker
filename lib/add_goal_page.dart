@@ -130,141 +130,143 @@ class _State extends State<AddGoalPage> {
               goalColor = color;
             });
           });
-      return Align(
-        child: Column(
-          children: [
-            OnBoardingDialog(
-              title: "Your first goal!",
-              content:
-                  "Your goal can be anything from finishing writing your book, to buying a home. Try to estimate the work required to achieve your goal. It will help you to keep track of the progress. You can always edit it later.",
-              dismissText: "Let's go!",
-              onDismiss: props.seenAddGoalOnBoarding,
-              show: !props.doneAddGoalOnBoarding,
-            ),
-            EditableTitle(
-              textController: _textController,
-              color: goalColor,
-              hint: 'Goal name',
-              autofocus: props.doneAddGoalOnBoarding,
-            ),
-            FormLine(
-              name: "Unit",
-              child: unitPicker,
-              onTap: () {
-                unitPicker.onTap(context);
-              },
-            ),
-            FormDivider(),
-            FormLine(
-              name: "Color",
-              child: colorPicker,
-              onTap: () {
-                colorPicker.onTap(context);
-              },
-            ),
-            FormDivider(),
-            FormLine(
-              name: "Total work required",
-              child: Expanded(
-                  child: Row(children: [
-                Expanded(
-                    child: TextField(
-                  focusNode: totalWorkFocusNode,
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.end,
-                  cursorColor: Colors.black,
-                  controller: _totalProgressController,
-                  decoration: InputDecoration(
-                    hintText: '0',
-                    contentPadding: EdgeInsets.all(0),
-                    isDense: true,
-                    border: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                  ),
-                )),
-                Padding(padding: EdgeInsets.only(right: 5)),
-                Text(progressUnit),
-              ])),
-              onTap: () {
-                totalWorkFocusNode.requestFocus();
-              },
-            ),
-            FormDivider(),
-            FormLine(
-              name: "Work already done",
-              child: Expanded(
-                  child: Row(children: [
-                Expanded(
-                    child: TextField(
-                  focusNode: workDoneFocusNode,
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.end,
-                  cursorColor: Colors.black,
-                  controller: _currentProgressController,
-                  decoration: InputDecoration(
-                    hintText: '0',
-                    contentPadding: EdgeInsets.all(0),
-                    isDense: true,
-                    border: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                  ),
-                )),
-                Padding(padding: EdgeInsets.only(right: 5)),
-                Text(progressUnit),
-              ])),
-              onTap: () {
-                workDoneFocusNode.requestFocus();
-              },
-            ),
-            FormDivider(),
-            Spacer(),
-            BottomBar(buttons: [
-              Button(
-                  label: "Cancel",
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  }),
-              Button(
-                  label: "Save",
-                  onPressed: () {
-                    if (props.isDuplicate()) {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text("Error"),
-                              content: Text(
-                                  "You already have a goal with this name"),
-                              actions: [
-                                FlatButton(
-                                    child: Text("OK"),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    }),
-                              ],
-                            );
-                          });
-                    } else {
-                      sendAnalyticsEvent("addGoal");
-                      int goalID = props.addGoal();
-                      Navigator.pop(context);
-                      if (goalID != null) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => GoalPage(goalID: goalID)),
-                        );
-                      }
+      return Column(
+        children: [
+          OnBoardingDialog(
+            title: "Your first goal!",
+            content:
+                "Your goal can be anything from finishing writing your book, to buying a home. Try to estimate the work required to achieve your goal. It will help you to keep track of the progress. You can always edit it later.",
+            dismissText: "Let's go!",
+            onDismiss: props.seenAddGoalOnBoarding,
+            show: !props.doneAddGoalOnBoarding,
+          ),
+          Expanded(
+              child: MediaQuery.removePadding(
+                  context: context,
+                  removeTop: true,
+                  child: ListView(children: [
+                    EditableTitle(
+                      textController: _textController,
+                      color: goalColor,
+                      hint: 'Goal name',
+                      autofocus: props.doneAddGoalOnBoarding,
+                    ),
+                    FormLine(
+                      name: "Unit",
+                      child: unitPicker,
+                      onTap: () {
+                        unitPicker.onTap(context);
+                      },
+                    ),
+                    FormDivider(),
+                    FormLine(
+                      name: "Color",
+                      child: colorPicker,
+                      onTap: () {
+                        colorPicker.onTap(context);
+                      },
+                    ),
+                    FormDivider(),
+                    FormLine(
+                      name: "Total work required",
+                      child: Expanded(
+                          child: Row(children: [
+                        Expanded(
+                            child: TextField(
+                          focusNode: totalWorkFocusNode,
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.end,
+                          cursorColor: Colors.black,
+                          controller: _totalProgressController,
+                          decoration: InputDecoration(
+                            hintText: '0',
+                            contentPadding: EdgeInsets.all(0),
+                            isDense: true,
+                            border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                          ),
+                        )),
+                        Padding(padding: EdgeInsets.only(right: 5)),
+                        Text(progressUnit),
+                      ])),
+                      onTap: () {
+                        totalWorkFocusNode.requestFocus();
+                      },
+                    ),
+                    FormDivider(),
+                    FormLine(
+                      name: "Work already done",
+                      child: Expanded(
+                          child: Row(children: [
+                        Expanded(
+                            child: TextField(
+                          focusNode: workDoneFocusNode,
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.end,
+                          cursorColor: Colors.black,
+                          controller: _currentProgressController,
+                          decoration: InputDecoration(
+                            hintText: '0',
+                            contentPadding: EdgeInsets.all(0),
+                            isDense: true,
+                            border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                          ),
+                        )),
+                        Padding(padding: EdgeInsets.only(right: 5)),
+                        Text(progressUnit),
+                      ])),
+                      onTap: () {
+                        workDoneFocusNode.requestFocus();
+                      },
+                    ),
+                    FormDivider(),
+                  ]))),
+          BottomBar(buttons: [
+            Button(
+                label: "Cancel",
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }),
+            Button(
+                label: "Save",
+                onPressed: () {
+                  if (props.isDuplicate()) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Error"),
+                            content:
+                                Text("You already have a goal with this name"),
+                            actions: [
+                              FlatButton(
+                                  child: Text("OK"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  }),
+                            ],
+                          );
+                        });
+                  } else {
+                    sendAnalyticsEvent("addGoal");
+                    int goalID = props.addGoal();
+                    Navigator.pop(context);
+                    if (goalID != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => GoalPage(goalID: goalID)),
+                      );
                     }
-                  })
-            ]),
-          ],
-        ),
-        alignment: Alignment.topCenter,
+                  }
+                })
+          ]),
+        ],
       );
     }
             // resizeToAvoidBottomInset: true,

@@ -101,6 +101,7 @@ class _AddHabitPage extends State<AddHabitPage> {
           DateTimePicker dateTimePicker = DateTimePicker(
             value: notificationTime,
             onChanged: (TimeOfDay time) async {
+              FocusScope.of(context).requestFocus(new FocusNode());
               setState(() {
                 notificationTime = time;
               });
@@ -108,99 +109,108 @@ class _AddHabitPage extends State<AddHabitPage> {
             color: props.goal.color,
           );
           return Column(children: [
-            EditableTitle(
-              textController: _nameController,
-              color: props.goal.color,
-              hint: "Habit name",
-            ),
-            FormLine(
-                name: "Every",
-                child: periodPicker,
-                onTap: () {
-                  periodPicker.onTap(context);
-                }),
-            FormDivider(),
-            FormLine(
-                name: "Times / $period",
-                child: Expanded(
-                    child: Row(children: [
-                  Expanded(
-                      child: TextField(
-                    focusNode: objectiveFocusNode,
-                    onChanged: (String quantity) {
-                      try {
-                        setState(() {
-                          objective = int.parse(quantity);
-                        });
-                      } on FormatException {
-                        objective = 1;
-                      }
-                    },
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.end,
-                    cursorColor: Colors.black,
-                    controller: _objectiveController,
-                    decoration: InputDecoration(
-                      hintText: '1',
-                      contentPadding: EdgeInsets.all(0),
-                      isDense: true,
-                      border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                    ),
-                  )),
-                  Padding(padding: EdgeInsets.symmetric(horizontal: 2)),
-                  Text("Time" + (objective == 1 ? '' : 's'),
-                      style: TextStyle(color: Colors.grey)),
-                ])),
-                onTap: () {
-                  objectiveFocusNode.requestFocus();
-                }),
-            FormDivider(),
-            FormLine(
-              onTap: () {
-                setState(() {
-                  notifications = !notifications;
-                });
-              },
-              name: "Notifications",
-              child: Switch(
-                value: notifications,
-                onChanged: (value) {
-                  setState(() {
-                    notifications = value;
-                  });
-                },
-                activeTrackColor: props.goal.color.withAlpha(150),
-                activeColor: props.goal.color,
-              ),
-            ),
-            notifications
-                ? FormLine(
-                    name: "At",
-                    child: dateTimePicker,
-                    onTap: () {
-                      dateTimePicker.onTap(context);
-                    },
-                  )
-                : Container(),
-            notifications
-                ? FormLine(
-                    name: "On",
-                    child: WeekDayPicker(
-                      color: props.goal.color,
-                      value: notificationDays,
-                      onChange: (int index) {
-                        setState(() {
-                          notificationDays[index] = !notificationDays[index];
-                        });
-                      },
-                    ),
-                  )
-                : Container(),
-            FormDivider(),
-            Spacer(),
+            Expanded(
+                child: MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: ListView(children: [
+                      EditableTitle(
+                        textController: _nameController,
+                        color: props.goal.color,
+                        hint: "Habit name",
+                      ),
+                      FormLine(
+                          name: "Every",
+                          child: periodPicker,
+                          onTap: () {
+                            periodPicker.onTap(context);
+                          }),
+                      FormDivider(),
+                      FormLine(
+                          name: "Times / $period",
+                          child: Expanded(
+                              child: Row(children: [
+                            Expanded(
+                                child: TextField(
+                              focusNode: objectiveFocusNode,
+                              onChanged: (String quantity) {
+                                try {
+                                  setState(() {
+                                    objective = int.parse(quantity);
+                                  });
+                                } on FormatException {
+                                  objective = 1;
+                                }
+                              },
+                              keyboardType: TextInputType.number,
+                              textAlign: TextAlign.end,
+                              cursorColor: Colors.black,
+                              controller: _objectiveController,
+                              decoration: InputDecoration(
+                                hintText: '1',
+                                contentPadding: EdgeInsets.all(0),
+                                isDense: true,
+                                border: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                              ),
+                            )),
+                            Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 2)),
+                            Text("Time" + (objective == 1 ? '' : 's'),
+                                style: TextStyle(color: Colors.grey)),
+                          ])),
+                          onTap: () {
+                            objectiveFocusNode.requestFocus();
+                          }),
+                      FormDivider(),
+                      FormLine(
+                        onTap: () {
+                          setState(() {
+                            notifications = !notifications;
+                          });
+                        },
+                        name: "Notifications",
+                        child: Switch(
+                          value: notifications,
+                          onChanged: (value) {
+                            FocusScope.of(context)
+                                .requestFocus(new FocusNode());
+                            setState(() {
+                              notifications = value;
+                            });
+                          },
+                          activeTrackColor: props.goal.color.withAlpha(150),
+                          activeColor: props.goal.color,
+                        ),
+                      ),
+                      notifications
+                          ? FormLine(
+                              name: "At",
+                              child: dateTimePicker,
+                              onTap: () {
+                                dateTimePicker.onTap(context);
+                              },
+                            )
+                          : Container(),
+                      notifications
+                          ? FormLine(
+                              name: "On",
+                              child: WeekDayPicker(
+                                color: props.goal.color,
+                                value: notificationDays,
+                                onChange: (int index) {
+                                  setState(() {
+                                    notificationDays[index] =
+                                        !notificationDays[index];
+                                  });
+                                },
+                              ),
+                            )
+                          : Container(),
+                      FormDivider(),
+                    ]))),
             BottomBar(buttons: [
               Button(
                   label: "Cancel",
