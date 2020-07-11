@@ -85,10 +85,23 @@ class HabitsOnBoarding extends StatelessWidget {
                               Padding(padding: EdgeInsets.only(top: 10)),
                               Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 25),
-                                  child: Text(
-                                      "You can also add habits for regular tasks. Set them up to get a proper reminder and start tracking your progress.",
-                                      style: TextStyle(fontSize: 18),
-                                      textAlign: TextAlign.center)),
+                                  child: RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.black),
+                                          children: <TextSpan>[
+                                            TextSpan(text: "You can also add "),
+                                            TextSpan(
+                                                text: "habits",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            TextSpan(
+                                                text:
+                                                    " for regular tasks. Set them up to get a proper reminder and start tracking your progress."),
+                                          ]))),
                               Padding(padding: EdgeInsets.only(top: 10)),
                             ])));
                   }),

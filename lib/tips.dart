@@ -4,12 +4,18 @@ import 'dart:math';
 class TipPage extends StatelessWidget {
   final String imagePath;
   final String title;
-  final String body;
+  final List<String> body;
   TipPage(
       {@required this.imagePath, @required this.title, @required this.body});
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> bodyWidgets = List();
+    body.forEach((String text) {
+      bodyWidgets.add(Text(text,
+          style: TextStyle(fontSize: 16), textAlign: TextAlign.center));
+      bodyWidgets.add(Padding(padding: EdgeInsets.only(top: 10)));
+    });
     return Column(children: [
       Padding(padding: EdgeInsets.only(top: 50)),
       Expanded(
@@ -26,9 +32,8 @@ class TipPage extends StatelessWidget {
               style: TextStyle(fontSize: 22), textAlign: TextAlign.center)),
       Padding(
           padding: EdgeInsets.symmetric(horizontal: 25),
-          child: Text(body,
-              style: TextStyle(fontSize: 16), textAlign: TextAlign.center)),
-      Padding(padding: EdgeInsets.only(top: 30)),
+          child: Column(children: bodyWidgets)),
+      Padding(padding: EdgeInsets.only(top: 20)),
     ]);
   }
 }
@@ -54,26 +59,34 @@ class _Tips extends State<Tips> {
     TipPage(
       imagePath: "images/Pomodorro_rule.png",
       title: "The Pomodoro technique",
-      body:
-          "Set up a 25-min timer to accomplish a single task - it should be well-defined and atomic. Do NOTHING else - no mail/phone check, no bio break, no coffee! Once the timer is out, you can loose your focus and take a well-deserved 5-min break.",
+      body: [
+        "Set up a 25-min timer to accomplish a single task - it should be well-defined and atomic. Do NOTHING else - no mail/phone check, no bio break, no coffee!",
+        "Once the timer is out, you can loose your focus and take a well-deserved 5-min break."
+      ],
     ),
     TipPage(
       imagePath: "images/2_min_rule.png",
       title: "The 2-minute rule",
-      body:
-          "It can be hard to stick to a habit after the first days passed. Happily, committing 2 minutes per day isn’t so hard. This one is simple: do a given task for 2 minutes EVERY day - no exception. If you feel like doing more, great! But the key here is regularity.",
+      body: [
+        "It can be hard to stick to a habit after the first days passed. Happily, committing 2 minutes per day isn’t so hard.",
+        "This one is simple: do a given task for 2 minutes EVERY day - no exception. If you feel like doing more, great! But the key here is regularity."
+      ],
     ),
     TipPage(
       imagePath: "images/chart.png",
       title: "The Pareto rule",
-      body:
-          "You can do 80% of the result in 20% of the effort. The key is to identify the super-efficient tactics that make most of the result. The end is not perfect? Well, nothing is, so don’t sweat. If you absolutely need to get it exactly right, you can do the remaining 20% knowing that you’ve done most of the job already",
+      body: [
+        "You can do 80% of the result in 20% of the effort.",
+        "The key is to identify the super-efficient tactics that make most of the result. The end is not perfect? Well, nothing is, so don’t sweat. If you absolutely need to get it exactly right, you can do the remaining 20% knowing that you’ve done most of the job already"
+      ],
     ),
     TipPage(
       imagePath: "images/self_talk.png",
       title: "Self-Talk",
-      body:
-          "This one can be very powerful in every aspect of your life. It shapes the way we react to the world - something totally in our control. Be optimistic and, above all, be your own friend - one that will effectively be forever with you. Be kind, patient, and loving.",
+      body: [
+        "This one can be very powerful in every aspect of your life. It shapes the way we react to the world - something totally in our control.",
+        "Be optimistic and, above all, be your own friend - one that will effectively be forever with you. Be kind, patient, and loving."
+      ],
     ),
   ];
 

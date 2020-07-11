@@ -13,7 +13,6 @@ List<charts.Series<TimeSeriesPercentage, DateTime>> generateTimeSeries(
 
   final int emptySlots = length - habitHistory.length;
   if (emptySlots > 0) {
-    print("not engough data");
     DateTime startDate = DateTime.now();
     if (habitHistory.length > 0) {
       startDate = habitHistory[0].start;
@@ -34,14 +33,9 @@ List<charts.Series<TimeSeriesPercentage, DateTime>> generateTimeSeries(
           .add(TimeSeriesPercentage(result.start, (100 * ok / total).round()));
     }
   }
-  print("percentages");
-  for (final p in percentages) {
-    print(p.percentage);
-    print(p.time);
-  }
   return [
     new charts.Series<TimeSeriesPercentage, DateTime>(
-      id: 'Sales',
+      id: 'Activity',
       colorFn: (_, __) =>
           charts.Color(r: color.red, g: color.green, b: color.blue),
       domainFn: (TimeSeriesPercentage percentage, _) => percentage.time,
@@ -82,45 +76,6 @@ class TimeSeriesBar extends StatelessWidget {
                 new charts.DomainHighlighter()
               ],
             )));
-  }
-
-  /// Create one series with sample hard coded data.
-  static List<charts.Series<TimeSeriesPercentage, DateTime>>
-      _createSampleData() {
-    final data = [
-      new TimeSeriesPercentage(new DateTime(2017, 9, 1), 5),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 2), 5),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 3), 25),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 4), 100),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 5), 75),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 6), 88),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 7), 65),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 8), 91),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 9), 100),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 10), 111),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 11), 90),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 12), 50),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 13), 40),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 14), 30),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 15), 40),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 16), 50),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 17), 30),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 18), 35),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 19), 40),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 20), 32),
-      new TimeSeriesPercentage(new DateTime(2017, 9, 21), 31),
-    ];
-
-    return [
-      new charts.Series<TimeSeriesPercentage, DateTime>(
-        id: 'Percentages',
-        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-        domainFn: (TimeSeriesPercentage percentage, _) => percentage.time,
-        measureFn: (TimeSeriesPercentage percentage, _) =>
-            percentage.percentage,
-        data: data,
-      )
-    ];
   }
 }
 

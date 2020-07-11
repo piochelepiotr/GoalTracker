@@ -10,6 +10,7 @@ import '../model/action.dart';
 import '../model/goal.dart';
 import '../onboarding/onboarding_pusher.dart';
 import '../onboarding/actions.dart';
+import 'achievement.dart';
 
 class _OnBoardingProps {
   final bool doneOnboarding;
@@ -68,38 +69,49 @@ class _GoalPage extends State<GoalPage> {
             }),
             Expanded(
                 child: MediaQuery.removePadding(
-                    context: context,
-                    removeTop: true,
-                    child: ListView(children: [
-                      GoalPageHeader(goalID: widget.goalID),
-                      Padding(padding: EdgeInsets.only(top: 10)),
-                      StoreConnector<AppState, _Props>(converter: (store) {
-                        return _Props(
-                          goal: store.state.getGoal(widget.goalID),
-                          remove: (ActionModel action) => {
-                            store.dispatch(DeleteAction(action, widget.goalID)),
-                          },
-                          cross: (ActionModel action) => {
-                            store.dispatch(CrossAction(action, widget.goalID)),
-                          },
-                          editAction: (ActionModel action) => {
-                            store.dispatch(EditAction(action, widget.goalID)),
-                          },
-                          addAction: (ActionModel action) => {
-                            store.dispatch(AddAction(action, widget.goalID)),
-                          },
-                        );
-                      }, builder: (context, props) {
-                        return ActionsList(
-                            goal: props.goal,
-                            remove: props.remove,
-                            cross: props.cross,
-                            editAction: props.editAction,
-                            addAction: props.addAction);
-                      }),
-                      Padding(padding: EdgeInsets.only(top: 5)),
-                      HabitsList(goalID: widget.goalID),
-                    ]))),
+              context: context,
+              removeTop: true,
+              child: StoreConnector<AppState, _Props>(converter: (store) {
+                return _Props(
+                  goal: store.state.getGoal(widget.goalID),
+                  remove: (ActionModel action) => {
+                    store.dispatch(DeleteAction(action, widget.goalID)),
+                  },
+                  cross: (ActionModel action) => {
+                    store.dispatch(CrossAction(action, widget.goalID)),
+                  },
+                  editAction: (ActionModel action) => {
+                    store.dispatch(EditAction(action, widget.goalID)),
+                  },
+                  addAction: (ActionModel action) => {
+                    store.dispatch(AddAction(action, widget.goalID)),
+                  },
+                );
+              }, builder: (context, props) {
+                return ListView(children: [
+                  GoalPageHeader(goalID: widget.goalID),
+                  Row(children: [
+                    Expanded(
+                        child: FractionallySizedBox(
+                            widthFactor: 0.5,
+                            child: AspectRatio(
+                                aspectRatio: 1,
+                                child: DonutPieChart(
+                                    workDone: props.goal.progress(),
+                                    color: props.goal.color))))
+                  ]),
+                  Padding(padding: EdgeInsets.only(top: 10)),
+                  ActionsList(
+                      goal: props.goal,
+                      remove: props.remove,
+                      cross: props.cross,
+                      editAction: props.editAction,
+                      addAction: props.addAction),
+                  Padding(padding: EdgeInsets.only(top: 5)),
+                  HabitsList(goalID: widget.goalID),
+                ]);
+              }),
+            )),
           ])),
     );
   }

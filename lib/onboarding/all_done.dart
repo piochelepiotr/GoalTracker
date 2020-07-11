@@ -18,10 +18,29 @@ class AllDoneOnBoarding extends StatelessWidget {
                                 "images/Goal_app_onboarding_4.png")))))),
         Padding(
             padding: EdgeInsets.symmetric(horizontal: 25),
-            child: Text(
-                "You’re all set, congratulations on your new goal! If you ever need more advice, click on the [logo] button - a library of tips and methods to keep you rolling every day.",
-                style: TextStyle(fontSize: 18),
-                textAlign: TextAlign.center)),
+            child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: TextStyle(fontSize: 18, color: Colors.black),
+                  children: <InlineSpan>[
+                    TextSpan(
+                        text:
+                            "You’re all set, congratulations on your new goal! If you ever need more advice, click on the "),
+                    WidgetSpan(
+                        child: SizedBox(
+                            width: 25,
+                            height: 25,
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        fit: BoxFit.contain,
+                                        image: AssetImage(
+                                            "images/square_icon.png")))))),
+                    TextSpan(
+                        text:
+                            " button - a library of tips and methods to keep you rolling every day."),
+                  ],
+                ))),
         Padding(padding: EdgeInsets.only(top: 30)),
         BottomBar(buttons: [
           Button(

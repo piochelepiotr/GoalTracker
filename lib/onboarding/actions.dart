@@ -116,10 +116,33 @@ class ActionsOnBoarding extends StatelessWidget {
                               Padding(padding: EdgeInsets.only(top: 10)),
                               Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 25),
-                                  child: Text(
-                                      "Now, let’s add more details into your goal. You can add actions for one-time tasks and habits for regular tasks. Set them up to get a proper reminder and start tracking your progress.",
-                                      style: TextStyle(fontSize: 18),
-                                      textAlign: TextAlign.center)),
+                                  child: RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.black),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                                text:
+                                                    "Now, let’s add more details into your goal. You can add "),
+                                            TextSpan(
+                                                text: "actions",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            TextSpan(
+                                                text:
+                                                    " for one-time tasks. Simply press "),
+                                            TextSpan(
+                                                text: "done",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            TextSpan(
+                                                text:
+                                                    " on your keyboard to add one."),
+                                          ]))),
                               Padding(padding: EdgeInsets.only(top: 10)),
                             ]));
                       })),

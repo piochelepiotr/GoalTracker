@@ -4,7 +4,6 @@ import 'package:flutter_redux/flutter_redux.dart';
 import '../redux/state.dart';
 import '../redux/actions.dart';
 import '../model/goal.dart';
-import '../notifications/notifications.dart';
 import '../add_goal_page.dart';
 
 typedef void _SetWork(int workDone);
@@ -69,7 +68,7 @@ class GoalPageHeader extends StatelessWidget {
               ), //BoxDecoration(color: props.goal.color),
               child: Padding(
                 padding:
-                    EdgeInsets.only(left: 5, right: 20, top: 50, bottom: 5),
+                    EdgeInsets.only(left: 5, right: 20, top: 15, bottom: 5),
                 child: Column(children: [
                   Row(children: [
                     IconButton(
@@ -81,7 +80,7 @@ class GoalPageHeader extends StatelessWidget {
                     Expanded(
                         child: Text(props.goal.name,
                             style:
-                                TextStyle(fontSize: 18, color: Colors.white))),
+                                TextStyle(fontSize: 20, color: Colors.white))),
                     ClipOval(
                       child: Material(
                         color: color, // button color
@@ -92,14 +91,6 @@ class GoalPageHeader extends StatelessWidget {
                               height: 35,
                               child: Icon(Icons.edit, color: Colors.white)),
                           onTap: () async {
-                            // String s = await showPendingNotifications();
-                            // showDialog(
-                            //   context: context,
-                            //   builder: (BuildContext context) => AlertDialog(
-                            //     title: Text("Notifications"),
-                            //     content: Text(s),
-                            //   ),
-                            // );
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -111,12 +102,10 @@ class GoalPageHeader extends StatelessWidget {
                       ),
                     ),
                   ]),
-                  Padding(padding: EdgeInsets.only(bottom: 20)),
+                  Padding(padding: EdgeInsets.only(left: 5)),
+                  Text(props.goal.workString(),
+                      style: TextStyle(color: Colors.white)),
                   Row(children: [
-                    Padding(padding: EdgeInsets.only(left: 5)),
-                    Text(props.goal.workString(),
-                        style: TextStyle(color: Colors.white)),
-                    Spacer(),
                     ClipOval(
                       child: Material(
                         color: Colors.white, // button color
@@ -131,29 +120,18 @@ class GoalPageHeader extends StatelessWidget {
                       ),
                     ),
                     Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 0),
-                        child: TextField(
-                          controller: TextEditingController()
-                            ..text = props.goal.workDone.toString(),
-                          onChanged: (String value) {
-                            try {
-                              int workDone = int.parse(value);
-                              props.setWork(workDone);
-                            } on FormatException {}
-                          },
-                          style: TextStyle(color: Colors.white),
-                          textAlign: TextAlign.center,
-                          cursorColor: Colors.white,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                    ),
+                        child: Slider(
+                      label: "hello", //props.goal.workString(),
+                      inactiveColor: props.goal.color,
+                      activeColor: Color.fromARGB(255, 255 - color.red,
+                          255 - color.green, 255 - color.blue),
+                      value: props.goal.workDone.toDouble(),
+                      onChanged: (double workDone) {
+                        props.setWork(workDone.round());
+                      },
+                      min: 0,
+                      max: props.goal.totalWork.toDouble(),
+                    )),
                     ClipOval(
                       child: Material(
                         color: Colors.white, // button color
@@ -172,11 +150,6 @@ class GoalPageHeader extends StatelessWidget {
               ),
             ))
           ]),
-          LinearProgressIndicator(
-              value: props.goal.progress(),
-              valueColor: new AlwaysStoppedAnimation<Color>(Color.fromARGB(
-                  255, 255 - color.red, 255 - color.green, 255 - color.blue)),
-              backgroundColor: props.goal.color),
         ]);
       },
     );
