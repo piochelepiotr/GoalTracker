@@ -20,18 +20,19 @@ class _Props {
   Function(int oldIndex, int newIndex) reOrder;
 
   _Props({
-    this.goal,
-    this.remove,
-    this.editHabit,
-    this.reOrder,
-    this.incrHabitAchieved,
-    this.decrHabitAchieved,
+    @required this.goal,
+    @required this.remove,
+    @required this.editHabit,
+    @required this.reOrder,
+    @required this.incrHabitAchieved,
+    @required this.decrHabitAchieved,
   });
 }
 
 class HabitsList extends StatefulWidget {
   final int goalID;
-  HabitsList({@required this.goalID});
+  final VoidCallback addCallback;
+  HabitsList({@required this.goalID, this.addCallback});
 
   @override
   _HabitsList createState() => _HabitsList();
@@ -42,6 +43,18 @@ class _HabitsList extends State<HabitsList> {
   @override
   void initState() {
     super.initState();
+  }
+
+  void addHabit() {
+    FocusScope.of(context).requestFocus(new FocusNode());
+    if (widget.addCallback != null) {
+      widget.addCallback();
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => AddHabitPage(goalID: widget.goalID)),
+    );
   }
 
   @override
@@ -263,12 +276,7 @@ class _HabitsList extends State<HabitsList> {
           Padding(padding: EdgeInsets.only(bottom: 5)),
           GestureDetector(
             onTap: () {
-              FocusScope.of(context).requestFocus(new FocusNode());
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => AddHabitPage(goalID: widget.goalID)),
-              );
+              addHabit();
             },
             child: Row(children: [
               Padding(padding: EdgeInsets.only(left: 15)),

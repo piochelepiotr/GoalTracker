@@ -7,7 +7,7 @@ class FirstOnBoarding extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(children: [
-        Padding(padding: EdgeInsets.only(top: 20)),
+        Padding(padding: EdgeInsets.only(top: 40)),
         Expanded(
             child: Container(
                 decoration: BoxDecoration(
@@ -15,7 +15,7 @@ class FirstOnBoarding extends StatelessWidget {
                         fit: BoxFit.contain,
                         image:
                             AssetImage("images/add_goal_onboarding_1.png"))))),
-        Padding(padding: EdgeInsets.only(top: 10)),
+        Padding(padding: EdgeInsets.only(top: 30)),
         Button(
             label: "Let’s get started on your goal journey!",
             onPressed: () {

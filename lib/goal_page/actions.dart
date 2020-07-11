@@ -9,18 +9,25 @@ class ActionsList extends StatefulWidget {
   final Function(ActionModel) editAction;
   final Function(ActionModel) addAction;
   final Function(ActionModel) cross;
-  ActionsList(
-      {@required this.goal,
-      @required this.remove,
-      @required this.editAction,
-      @required this.addAction,
-      @required this.cross});
+  ActionsList({
+    @required this.goal,
+    @required this.remove,
+    @required this.editAction,
+    @required this.addAction,
+    @required this.cross,
+  });
 
   @override
   _ActionsList createState() => _ActionsList();
 }
 
 class _ActionsList extends State<ActionsList> {
+  void addAction(String name) {
+    sendAnalyticsEvent("addAction");
+    widget.addAction(ActionModel(name: name));
+    newActionController.clear();
+  }
+
   FocusNode newActionFocusNode;
   final TextEditingController newActionController = TextEditingController();
   @override
@@ -32,8 +39,7 @@ class _ActionsList extends State<ActionsList> {
         String newAction = newActionController.text;
         newActionController.clear();
         if (newAction != "") {
-          sendAnalyticsEvent("addAction");
-          widget.addAction(ActionModel(name: newAction));
+          addAction(newAction);
         }
       }
     });
@@ -140,9 +146,7 @@ class _ActionsList extends State<ActionsList> {
                                   maxLines: null,
                                   onEditingComplete: () {},
                                   onSubmitted: (String value) {
-                                    sendAnalyticsEvent("addAction");
-                                    widget.addAction(ActionModel(name: value));
-                                    newActionController.clear();
+                                    addAction(value);
                                   },
                                   controller: newActionController,
                                   cursorColor: Colors.black,

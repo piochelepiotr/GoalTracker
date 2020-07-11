@@ -12,7 +12,6 @@ import 'components/form_line.dart';
 import 'components/form_divider.dart';
 import 'analytics/analytics.dart';
 import 'goal_page/goal_page.dart';
-import 'components/onboarding_dialog.dart';
 
 List<String> units = [
   "Hours",
@@ -132,14 +131,6 @@ class _State extends State<AddGoalPage> {
           });
       return Column(
         children: [
-          OnBoardingDialog(
-            title: "Your first goal!",
-            content:
-                "Your goal can be anything from finishing writing your book, to buying a home. Try to estimate the work required to achieve your goal. It will help you to keep track of the progress. You can always edit it later.",
-            dismissText: "Let's go!",
-            onDismiss: props.seenAddGoalOnBoarding,
-            show: !props.doneAddGoalOnBoarding,
-          ),
           Expanded(
               child: MediaQuery.removePadding(
                   context: context,
@@ -268,9 +259,7 @@ class _State extends State<AddGoalPage> {
           ]),
         ],
       );
-    }
-            // resizeToAvoidBottomInset: true,
-            ));
+    }));
   }
 }
 

@@ -48,7 +48,7 @@ class FlutterReduxApp extends StatelessWidget {
       store: store,
       child: MaterialApp(
         title: title,
-        home: FirstOnBoarding(), // GoalsPage(),
+        home: GoalsPage(),
       ),
     );
   }

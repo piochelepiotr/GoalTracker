@@ -11,18 +11,22 @@ import 'notifications/notifications.dart';
 import 'components/bottom_bar.dart';
 import 'analytics/analytics.dart';
 import 'dart:ui';
-import 'onboarding.dart';
+import 'onboarding/first_screen.dart';
+import 'onboarding/onboarding_pusher.dart';
+import 'tips.dart';
 
 class _Props {
   List<Goal> goals;
   Function(Goal) remove;
   Function(int oldIndex, int newIndex) reOrder;
-  final bool addGoalIntroDone;
+  final bool doneOnBoarding;
+  final VoidCallback doOnBoarding;
   _Props({
     @required this.goals,
     @required this.remove,
     @required this.reOrder,
-    @required this.addGoalIntroDone,
+    @required this.doneOnBoarding,
+    @required this.doOnBoarding,
   });
 }
 
@@ -32,12 +36,11 @@ class GoalsPage extends StatefulWidget {
 }
 
 class _State extends State<GoalsPage> {
-  GlobalKey _one = GlobalKey();
-
   @override
   void initState() {
     super.initState();
     initNotifications(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
   @override
@@ -53,10 +56,20 @@ class _State extends State<GoalsPage> {
           reOrder: (int oldIndex, int newIndex) => {
             store.dispatch(ReOrderGoals(oldIndex, newIndex)),
           },
-          addGoalIntroDone: store.state.onBoardingDone.contains("add_goal"),
+          doOnBoarding: () => store.dispatch(DoOnBoarding("add_goal")),
+          doneOnBoarding: store.state.onBoardingDone.contains("add_goal"),
         ),
         builder: (context, props) {
           return Column(children: [
+            OnBoardingPusher(
+                show: !props.doneOnBoarding,
+                onInit: () {
+                  props.doOnBoarding();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => FirstOnBoarding()),
+                  );
+                }),
             Quote(),
             props.goals.length > 0
                 ? Expanded(
@@ -143,9 +156,30 @@ class _State extends State<GoalsPage> {
                                 fontSize: 20,
                                 color: Colors.grey.withAlpha(180),
                                 fontStyle: FontStyle.italic)))),
-            BottomBar(buttons: [
-              props.addGoalIntroDone
-                  ? Button(
+            Padding(
+                padding:
+                    EdgeInsets.only(top: 5, bottom: 10, left: 5, right: 15),
+                child: Row(children: [
+                  RaisedButton(
+                      color: Colors.white,
+                      shape: CircleBorder(),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Tips()),
+                        );
+                      },
+                      child: SizedBox(
+                          width: 55,
+                          height: 55,
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.contain,
+                                      image: AssetImage(
+                                          "images/big_icon.png")))))),
+                  Spacer(),
+                  Button(
                       label: "Add Goal",
                       onPressed: () {
                         sendAnalyticsEvent("addGoalStart");
@@ -155,20 +189,7 @@ class _State extends State<GoalsPage> {
                               builder: (context) => AddGoalPage()),
                         );
                       })
-                  : OnBoardingWidget(
-                      key: _one,
-                      child: Button(
-                          label: "Add Goal",
-                          onPressed: () {
-                            sendAnalyticsEvent("addGoalStartOnBoarding");
-                            Navigator.pop(context);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddGoalPage()),
-                            );
-                          })),
-            ]),
+                ])),
           ]);
         },
       ),

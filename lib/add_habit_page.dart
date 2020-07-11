@@ -15,12 +15,20 @@ import 'components/datetime_picker.dart';
 import 'components/weekday_picker.dart';
 import 'notifications/notifications.dart';
 import 'analytics/analytics.dart';
+import 'onboarding/all_done.dart';
 
 class _Props {
+  final bool doneOnboarding;
+  final VoidCallback doOnboarding;
   VoidCallback addHabit;
   Function(Habit) editHabit;
   final Goal goal;
-  _Props({this.addHabit, this.editHabit, this.goal});
+  _Props(
+      {@required this.addHabit,
+      @required this.editHabit,
+      @required this.goal,
+      @required this.doneOnboarding,
+      @required this.doOnboarding});
 }
 
 class _AddHabitPage extends State<AddHabitPage> {
@@ -65,6 +73,8 @@ class _AddHabitPage extends State<AddHabitPage> {
       body: StoreConnector<AppState, _Props>(
         converter: (store) {
           return _Props(
+            doOnboarding: () => store.dispatch(DoOnBoarding("all_done")),
+            doneOnboarding: store.state.onBoardingDone.contains("all_done"),
             addHabit: () async {
               Habit habit = Habit(
                   name: _nameController.text,
@@ -238,6 +248,14 @@ class _AddHabitPage extends State<AddHabitPage> {
                       props.addHabit();
                     }
                     Navigator.pop(context);
+                    if (!props.doneOnboarding) {
+                      props.doOnboarding();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AllDoneOnBoarding()),
+                      );
+                    }
                   })
             ]),
           ]);

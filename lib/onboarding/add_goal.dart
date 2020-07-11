@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/bottom_bar.dart';
+import '../analytics/analytics.dart';
+import '../add_goal_page.dart';
 
 class AddGoalOnBoarding extends StatelessWidget {
   @override
@@ -24,13 +26,24 @@ class AddGoalOnBoarding extends StatelessWidget {
                 textAlign: TextAlign.center)),
         Padding(padding: EdgeInsets.only(top: 30)),
         BottomBar(buttons: [
-          Padding(
-              padding: EdgeInsets.only(left: 15),
-              child: Text("Skip", style: TextStyle(fontSize: 15))),
+          GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: Padding(
+                  padding: EdgeInsets.only(left: 15),
+                  child: Text("Skip", style: TextStyle(fontSize: 15)))),
           Button(
               label: "Add Goal",
               onPressed: () {
-                print("hello");
+                sendAnalyticsEvent("addGoalStartOnBoarding");
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AddGoalPage()),
+                );
               })
         ]),
         Padding(padding: EdgeInsets.only(top: 20)),

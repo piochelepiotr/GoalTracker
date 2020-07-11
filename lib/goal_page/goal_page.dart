@@ -4,11 +4,12 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'actions.dart';
 import 'habits.dart';
 import 'header.dart';
-import '../components/onboarding_dialog.dart';
 import '../redux/actions.dart';
 import '../redux/state.dart';
 import '../model/action.dart';
 import '../model/goal.dart';
+import '../onboarding/onboarding_pusher.dart';
+import '../onboarding/actions.dart';
 
 class _OnBoardingProps {
   final bool doneOnboarding;
@@ -53,14 +54,17 @@ class _GoalPage extends State<GoalPage> {
                     store.state.onBoardingDone.contains("goal_page"),
               );
             }, builder: (context, props) {
-              return OnBoardingDialog(
-                title: "The Goal Page",
-                content:
-                    "On the Goal Page, you can track the one time actions, and repeated actions (habits) that you need to take to achieve your goal.",
-                dismissText: "OK",
-                onDismiss: props.doOnboarding,
-                show: !props.doneOnboarding,
-              );
+              return OnBoardingPusher(
+                  show: !props.doneOnboarding,
+                  onInit: () {
+                    props.doOnboarding();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ActionsOnBoarding(goalID: widget.goalID)),
+                    );
+                  });
             }),
             Expanded(
                 child: MediaQuery.removePadding(
