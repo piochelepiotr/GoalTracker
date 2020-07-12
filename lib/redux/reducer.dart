@@ -106,6 +106,9 @@ Goal goalReducer(Goal prev, dynamic action) {
       color: action.goal.color,
     );
   }
+  if (action is AddGoalActivity) {
+    return prev.copyWith(activity: prev.activity.add(action.delta));
+  }
   if (action is HabitsAction) {
     return prev.copyWith(
       habits: habitsReducer(prev.habits, action),

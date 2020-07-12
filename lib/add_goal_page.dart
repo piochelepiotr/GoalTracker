@@ -4,6 +4,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'redux/state.dart';
 import 'redux/actions.dart';
 import 'model/goal.dart';
+import 'model/activity.dart';
 import 'components/color_picker.dart';
 import 'components/chip_picker.dart';
 import 'components/bottom_bar.dart';
@@ -104,6 +105,7 @@ class _State extends State<AddGoalPage> {
             workDone: workDone,
             color: goalColor,
             id: goalID,
+            activity: Activity(dayActivities: List<DayActivity>()),
           )));
           return newGoal ? goalID : null;
         },

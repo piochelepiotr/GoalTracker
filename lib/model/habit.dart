@@ -130,8 +130,6 @@ class Habit {
           objective: objective,
           achieved: achieved));
       achieved = 0;
-      print("adding history");
-      print(start);
       start = start.add(period);
     }
     return this.copyWith(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'action.dart';
 import 'habit.dart';
+import 'activity.dart';
 
 extension HexColor on Color {
   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
@@ -29,16 +30,19 @@ class Goal {
   final Color color;
   List<ActionModel> actions;
   List<Habit> habits;
+  Activity activity;
 
-  Goal(
-      {this.name,
-      this.id,
-      this.actions,
-      this.habits,
-      this.workUnit,
-      this.totalWork,
-      this.workDone,
-      this.color}) {
+  Goal({
+    this.name,
+    this.id,
+    this.actions,
+    this.habits,
+    this.workUnit,
+    this.totalWork,
+    this.workDone,
+    this.color,
+    this.activity,
+  }) {
     actions ??= List<ActionModel>();
     habits ??= List<Habit>();
   }
@@ -80,6 +84,7 @@ class Goal {
       workDone: json["work_done"],
       totalWork: json["total_work"],
       color: HexColor.fromHex(json["color"]),
+      activity: Activity.fromJson(json["activity"]),
     );
   }
 
@@ -93,18 +98,21 @@ class Goal {
       "work_done": workDone,
       "total_work": totalWork,
       "color": color.toHex(),
+      "activity": activity.toJson(),
     };
   }
 
-  Goal copyWith(
-      {int id,
-      String name,
-      String workUnit,
-      int totalWork,
-      int workDone,
-      Color color,
-      List<Habit> habits,
-      List<ActionModel> actions}) {
+  Goal copyWith({
+    int id,
+    String name,
+    String workUnit,
+    int totalWork,
+    int workDone,
+    Color color,
+    List<Habit> habits,
+    List<ActionModel> actions,
+    Activity activity,
+  }) {
     return Goal(
       name: name ?? this.name,
       id: id ?? this.id,
@@ -114,6 +122,7 @@ class Goal {
       color: color ?? this.color,
       actions: actions ?? this.actions,
       habits: habits ?? this.habits,
+      activity: activity ?? this.activity,
     );
   }
 }

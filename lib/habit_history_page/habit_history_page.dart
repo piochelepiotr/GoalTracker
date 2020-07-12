@@ -58,7 +58,14 @@ class HabitHistoryPage extends StatelessWidget {
           name: "Longest Strike",
           child: Text(habit.getLongestStrike().toString())),
       FormDivider(),
-      TimeSeriesBar(habit.habitHistory, habit.period, color),
+      ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: 200,
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 3),
+            child: habitHistoryGraph(habit.habitHistory, habit.period, color),
+          )),
       Text("% of achievement over time"),
     ]));
   }

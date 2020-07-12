@@ -11,6 +11,7 @@ import '../model/goal.dart';
 import '../onboarding/onboarding_pusher.dart';
 import '../onboarding/actions.dart';
 import 'achievement.dart';
+import 'activity.dart';
 
 class _OnBoardingProps {
   final bool doneOnboarding;
@@ -77,8 +78,13 @@ class _GoalPage extends State<GoalPage> {
                   remove: (ActionModel action) => {
                     store.dispatch(DeleteAction(action, widget.goalID)),
                   },
-                  cross: (ActionModel action) => {
-                    store.dispatch(CrossAction(action, widget.goalID)),
+                  cross: (ActionModel action) {
+                    store.dispatch(CrossAction(action, widget.goalID));
+                    int delta = 1;
+                    if (action.crossed) {
+                      delta = -1;
+                    }
+                    store.dispatch(AddGoalActivity(widget.goalID, delta));
                   },
                   editAction: (ActionModel action) => {
                     store.dispatch(EditAction(action, widget.goalID)),
@@ -92,13 +98,26 @@ class _GoalPage extends State<GoalPage> {
                   GoalPageHeader(goalID: widget.goalID),
                   Row(children: [
                     Expanded(
-                        child: FractionallySizedBox(
-                            widthFactor: 0.5,
-                            child: AspectRatio(
-                                aspectRatio: 1,
-                                child: DonutPieChart(
-                                    workDone: props.goal.progress(),
-                                    color: props.goal.color))))
+                        child: AspectRatio(
+                            aspectRatio: 1,
+                            child: Column(children: [
+                              Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  child: Text("Achievement")),
+                              Expanded(
+                                  child: AchievementChart(
+                                      workDone: props.goal.progress(),
+                                      color: props.goal.color))
+                            ]))),
+                    Expanded(
+                        child: AspectRatio(
+                            aspectRatio: 1,
+                            child: Column(children: [
+                              Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  child: Text("Weekly Activity")),
+                              Expanded(child: activityGraph(props.goal))
+                            ]))),
                   ]),
                   Padding(padding: EdgeInsets.only(top: 10)),
                   ActionsList(

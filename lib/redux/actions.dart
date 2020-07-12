@@ -46,6 +46,15 @@ class AddGoal extends GoalsAction {
   AddGoal(this.goal);
 }
 
+class AddGoalActivity extends GoalAction {
+  final int goalID;
+  int delta;
+  AddGoalActivity(this.goalID, this.delta);
+  int getGoalID() {
+    return goalID;
+  }
+}
+
 class AddAction extends ActionsAction {
   final int goalID;
   final ActionModel action;

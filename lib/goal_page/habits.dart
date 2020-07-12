@@ -70,12 +70,18 @@ class _HabitsList extends State<HabitsList> {
           editHabit: (Habit habit) => {
                 store.dispatch(EditHabit(habit, widget.goalID)),
               },
-          incrHabitAchieved: (Habit habit) => {
-                store.dispatch(IncrHabitAchieved(habit, widget.goalID)),
-              },
-          decrHabitAchieved: (Habit habit) => {
-                store.dispatch(DecrHabitAchieved(habit, widget.goalID)),
-              },
+          incrHabitAchieved: (Habit habit) {
+            if (habit.achieved < habit.objective) {
+              store.dispatch(AddGoalActivity(widget.goalID, 1));
+            }
+            store.dispatch(IncrHabitAchieved(habit, widget.goalID));
+          },
+          decrHabitAchieved: (Habit habit) {
+            if (habit.achieved > 0) {
+              store.dispatch(AddGoalActivity(widget.goalID, -1));
+            }
+            store.dispatch(DecrHabitAchieved(habit, widget.goalID));
+          },
           reOrder: (int oldIndex, int newIndex) {
             store.dispatch(ReOrderHabits(oldIndex, newIndex, widget.goalID));
           }),

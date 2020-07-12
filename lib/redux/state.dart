@@ -36,8 +36,8 @@ class AppState {
     var jsonData = jsonDecode(json);
     jsonData['goals']?.forEach((goalMap) => goals.add(Goal.fromJson(goalMap)));
     List<String> onBoardingDone = List();
-    // jsonData['onboarding_done']
-    //     ?.forEach((onBoarding) => onBoardingDone.add(onBoarding));
+    jsonData['onboarding_done']
+        ?.forEach((onBoarding) => onBoardingDone.add(onBoarding));
     return AppState(
       goals: goals,
       onBoardingDone: onBoardingDone,
