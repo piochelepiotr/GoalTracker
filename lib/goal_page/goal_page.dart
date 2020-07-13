@@ -7,11 +7,13 @@ import 'header.dart';
 import '../redux/actions.dart';
 import '../redux/state.dart';
 import '../model/action.dart';
+import '../model/habit.dart';
 import '../model/goal.dart';
 import '../onboarding/onboarding_pusher.dart';
 import '../onboarding/actions.dart';
 import 'achievement.dart';
 import 'activity.dart';
+import '../notifications/notifications.dart';
 
 class _OnBoardingProps {
   final bool doneOnboarding;
@@ -25,6 +27,11 @@ class _Props {
   Function(ActionModel) editAction;
   Function(ActionModel) addAction;
   Function(ActionModel) cross;
+  final Function(Habit) removeHabit;
+  final Function(Habit) editHabit;
+  final Function(Habit) incrHabitAchieved;
+  final Function(Habit) decrHabitAchieved;
+  final Function(int oldIndex, int newIndex) reOrder;
 
   _Props({
     @required this.goal,
@@ -32,6 +39,11 @@ class _Props {
     @required this.cross,
     @required this.editAction,
     @required this.addAction,
+    @required this.removeHabit,
+    @required this.editHabit,
+    @required this.reOrder,
+    @required this.incrHabitAchieved,
+    @required this.decrHabitAchieved,
   });
 }
 
@@ -92,6 +104,29 @@ class _GoalPage extends State<GoalPage> {
                   addAction: (ActionModel action) => {
                     store.dispatch(AddAction(action, widget.goalID)),
                   },
+                  removeHabit: (Habit habit) async {
+                    await removeHabitNotifications(habit);
+                    store.dispatch(DeleteHabit(habit, widget.goalID));
+                  },
+                  editHabit: (Habit habit) => {
+                    store.dispatch(EditHabit(habit, widget.goalID)),
+                  },
+                  incrHabitAchieved: (Habit habit) {
+                    if (habit.achieved < habit.objective) {
+                      store.dispatch(AddGoalActivity(widget.goalID, 1));
+                    }
+                    store.dispatch(IncrHabitAchieved(habit, widget.goalID));
+                  },
+                  decrHabitAchieved: (Habit habit) {
+                    if (habit.achieved > 0) {
+                      store.dispatch(AddGoalActivity(widget.goalID, -1));
+                    }
+                    store.dispatch(DecrHabitAchieved(habit, widget.goalID));
+                  },
+                  reOrder: (int oldIndex, int newIndex) {
+                    store.dispatch(
+                        ReOrderHabits(oldIndex, newIndex, widget.goalID));
+                  },
                 );
               }, builder: (context, props) {
                 return ListView(children: [
@@ -127,7 +162,14 @@ class _GoalPage extends State<GoalPage> {
                       editAction: props.editAction,
                       addAction: props.addAction),
                   Padding(padding: EdgeInsets.only(top: 5)),
-                  HabitsList(goalID: widget.goalID),
+                  HabitsList(
+                    goal: props.goal,
+                    remove: props.removeHabit,
+                    editHabit: props.editHabit,
+                    reOrder: props.reOrder,
+                    incrHabitAchieved: props.incrHabitAchieved,
+                    decrHabitAchieved: props.decrHabitAchieved,
+                  ),
                 ]);
               }),
             )),

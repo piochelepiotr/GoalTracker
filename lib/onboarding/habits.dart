@@ -1,15 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import '../model/goal.dart';
+import '../model/habit.dart';
 import '../redux/state.dart';
 import '../goal_page/habits.dart';
 import 'all_done.dart';
+import '../redux/actions.dart';
+import '../notifications/notifications.dart';
 
 class _Props {
   Goal goal;
+  final Function(Habit) removeHabit;
+  final Function(Habit) editHabit;
+  final Function(Habit) incrHabitAchieved;
+  final Function(Habit) decrHabitAchieved;
+  final Function(int oldIndex, int newIndex) reOrder;
 
   _Props({
     @required this.goal,
+    @required this.removeHabit,
+    @required this.editHabit,
+    @required this.reOrder,
+    @required this.incrHabitAchieved,
+    @required this.decrHabitAchieved,
   });
 }
 
@@ -28,6 +41,29 @@ class HabitsOnBoarding extends StatelessWidget {
               StoreConnector<AppState, _Props>(
                   converter: (store) => _Props(
                         goal: store.state.getGoal(goalID),
+                        removeHabit: (Habit habit) async {
+                          await removeHabitNotifications(habit);
+                          store.dispatch(DeleteHabit(habit, goalID));
+                        },
+                        editHabit: (Habit habit) => {
+                          store.dispatch(EditHabit(habit, goalID)),
+                        },
+                        incrHabitAchieved: (Habit habit) {
+                          if (habit.achieved < habit.objective) {
+                            store.dispatch(AddGoalActivity(goalID, 1));
+                          }
+                          store.dispatch(IncrHabitAchieved(habit, goalID));
+                        },
+                        decrHabitAchieved: (Habit habit) {
+                          if (habit.achieved > 0) {
+                            store.dispatch(AddGoalActivity(goalID, -1));
+                          }
+                          store.dispatch(DecrHabitAchieved(habit, goalID));
+                        },
+                        reOrder: (int oldIndex, int newIndex) {
+                          store.dispatch(
+                              ReOrderHabits(oldIndex, newIndex, goalID));
+                        },
                       ),
                   builder: (context, props) {
                     return Expanded(
@@ -63,7 +99,12 @@ class HabitsOnBoarding extends StatelessWidget {
                               ),
                               Padding(padding: EdgeInsets.only(top: 20)),
                               HabitsList(
-                                  goalID: goalID,
+                                  goal: props.goal,
+                                  remove: props.removeHabit,
+                                  editHabit: props.editHabit,
+                                  reOrder: props.reOrder,
+                                  incrHabitAchieved: props.incrHabitAchieved,
+                                  decrHabitAchieved: props.decrHabitAchieved,
                                   addCallback: () {
                                     Navigator.pop(context);
                                   }),
