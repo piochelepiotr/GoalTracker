@@ -48,10 +48,11 @@ class Activity {
           dayActivities: List<DayActivity>.from(dayActivities)
             ..add(DayActivity(day: day, activity: x)));
     }
+    DayActivity last = dayActivities[dayActivities.length - 1].add(x);
     return Activity(
         dayActivities: dayActivities
-          ..take(dayActivities.length - 1)
-          ..add(dayActivities[dayActivities.length - 1].add(x)));
+          ..removeLast()
+          ..add(last));
   }
 
   List<TimeSeries> getTimeSeries() {

@@ -108,6 +108,15 @@ class Habit {
     workRemaining = getWorkRemaining(objective, achieved, remainingTime);
   }
 
+  List<HabitResult> getHistory() {
+    return List<HabitResult>.from(habitHistory)
+      ..add(HabitResult(
+          start: start,
+          length: period,
+          objective: objective,
+          achieved: achieved));
+  }
+
   String getRemainingTime() {
     return formatDuration(start.add(period).difference(DateTime.now()));
   }

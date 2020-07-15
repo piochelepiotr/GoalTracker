@@ -16,7 +16,7 @@ import 'onboarding/onboarding_pusher.dart';
 import 'tips.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-final email = "piotr.wolski42@gmail.com";
+final email = "contact.magnolia.studio@gmail.com";
 
 class _Props {
   List<Goal> goals;
@@ -207,13 +207,14 @@ class _State extends State<GoalsPage> {
               PopupMenuButton<String>(
                   child: ClipOval(
                     child: Material(
-                      color: Colors.white, // button color
+                      color: Colors.transparent, // button color
                       child: InkWell(
                         splashColor: Colors.black, // inkwell color
                         child: SizedBox(
                             width: 35,
                             height: 35,
-                            child: Icon(Icons.email, color: Colors.red)),
+                            child: Icon(Icons.help_outline,
+                                color: Colors.white, size: 35)),
                       ),
                     ),
                   ),
@@ -231,9 +232,9 @@ class _State extends State<GoalsPage> {
                   onSelected: (String selected) async {
                     String uri;
                     if (selected == "help") {
-                      uri = 'mailto:$email?subject=Help}';
+                      uri = 'mailto:$email?subject=Help';
                     } else if (selected == "bug") {
-                      uri = 'mailto:$email?subject=Bug}';
+                      uri = 'mailto:$email?subject=Bug';
                     }
                     if (await canLaunch(uri)) {
                       await launch(uri);

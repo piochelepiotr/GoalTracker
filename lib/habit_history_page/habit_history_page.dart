@@ -64,7 +64,7 @@ class HabitHistoryPage extends StatelessWidget {
           ),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 3),
-            child: habitHistoryGraph(habit.habitHistory, habit.period, color),
+            child: habitHistoryGraph(habit.getHistory(), habit.period, color),
           )),
       Text("% of achievement over time"),
     ]));
