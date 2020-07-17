@@ -68,7 +68,7 @@ class GoalPageHeader extends StatelessWidget {
               ), //BoxDecoration(color: props.goal.color),
               child: Padding(
                 padding:
-                    EdgeInsets.only(left: 5, right: 20, top: 15, bottom: 5),
+                    EdgeInsets.only(left: 5, right: 20, top: 20, bottom: 5),
                 child: Column(children: [
                   Row(children: [
                     IconButton(
