@@ -31,7 +31,8 @@ class AchievementChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new charts.PieChart(seriesList,
+    return charts.PieChart(seriesList,
+        defaultInteractions: false,
         layoutConfig: charts.LayoutConfig(
             leftMarginSpec: charts.MarginSpec.fromPixel(maxPixel: 0),
             topMarginSpec: charts.MarginSpec.fromPixel(maxPixel: 0),

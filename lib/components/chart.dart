@@ -52,9 +52,6 @@ class TimeSeriesBar extends StatelessWidget {
       // renderer, because the line point highlighter is the default for time
       // series chart.
       defaultInteractions: false,
-      // If default interactions were removed, optionally add select nearest
-      // and the domain highlighter that are typical for bar charts.
-      behaviors: [charts.SelectNearest(), charts.DomainHighlighter()],
     );
   }
 }
